@@ -18,6 +18,11 @@ import javax.swing.JScrollPane;
 import lobby.core.Client;
 import lobby.core.Partie;
 
+/** Classe du panel de gestion de la partie
+ * 
+ * @author DHT
+ *
+ */
 public class FenetrePartie extends JPanel {
 	
 	/** Fenetre parent */
@@ -39,6 +44,9 @@ public class FenetrePartie extends JPanel {
 		initComponent();
 	}
 
+	/**
+	 * Initialisation des composants graphique fixe
+	 */
 	public void initComponent() {
 		
 		this.setLayout(new BorderLayout());
@@ -53,6 +61,7 @@ public class FenetrePartie extends JPanel {
 	    jl_clients.setBorder(BorderFactory.createTitledBorder("Autre joueurs"));
 
 		quitter = new JButton("Quitter Partie");
+		quitter.addActionListener(new QuitterPartieControleur(this));
 		
 		updateComponent();
 
@@ -61,7 +70,9 @@ public class FenetrePartie extends JPanel {
 		this.add(quitter, BorderLayout.SOUTH);
 	}
 	
-
+	/**
+	 * Mise a jour des composants graphiques variables
+	 */
 	public void updateComponent() {
 		if (parent.client.getPartie() != null ){
 			this.text.setText("Ma partie : "+ parent.client.getPartie().getName());
@@ -81,8 +92,11 @@ public class FenetrePartie extends JPanel {
 			quitter.setEnabled(false);
 		}
 	}
-	
 
+	/** Mettre a jour l'affichage de la liste des parties
+	 * 
+	 * @param lparties la liste des parties
+	 */
 	public void updatePartie(ArrayList<Partie> lparties) {
 		if (parent.client.getPartie() != null){
 			for (Partie p : lparties){
@@ -102,6 +116,12 @@ public class FenetrePartie extends JPanel {
 	
 }
 
+/** Controleur du bouton pour quitter la partie
+ * 
+ * @author DHT
+ * @version 1.0
+ *
+ */
 class QuitterPartieControleur implements ActionListener {
 	
 	/** La fenetre d'appel */

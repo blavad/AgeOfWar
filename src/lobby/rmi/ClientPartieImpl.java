@@ -57,10 +57,8 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 	public static void main(String[] args) {
 		Registry registry;
 		ServeurParties serveur;
-		DialogBox dialog = new DialogBox();
-		
-		String pseudo = dialog.infoPlayer("Pseudo :");
 		try {
+			String pseudo = DialogBox.infoPlayer(null, "Pseudo :");
 			if (args.length > 0)
 				registry = LocateRegistry.getRegistry(args[0]);
 			else 
@@ -75,6 +73,8 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 			DialogBox.error(null, "Serveur injoignable");
 		} catch (PseudoExistantException e) {
 			DialogBox.error(null, e.getMessage());
+		} catch (NullPointerException e) {
+			DialogBox.info(null, "Triste de savoir que vous nous quittez déjà... ","smiley_triste_150x150.png");
 		}
 	}
 

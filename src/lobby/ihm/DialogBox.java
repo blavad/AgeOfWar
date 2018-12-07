@@ -1,5 +1,10 @@
 package lobby.ihm;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -11,19 +16,24 @@ public class DialogBox {
 		
 	}
 	
-	public String infoPlayer(String message){
+	public static String infoPlayer(JFrame parent, String message){
 		JOptionPane jop = new JOptionPane();
-		String pseudo = jop.showInputDialog(null, message, "AgeOfWar", JOptionPane.QUESTION_MESSAGE);
-   		if (pseudo != null) 
-   			return pseudo;
+		String res = jop.showInputDialog(parent, message, "AgeOfWar", JOptionPane.QUESTION_MESSAGE);
+   		if (!res.equals("")) 
+   			return res;
    		else {
-   			return infoPlayer("Pseudo : ");
+   			return infoPlayer(parent, "Incorrect, réesseyez : ");
    		}
 	}
 	
-	public static void alert(JFrame parent, String message){
-		JOptionPane alert_dialog = new JOptionPane();
-		alert_dialog.showInputDialog(parent, message, "Attention", JOptionPane.WARNING_MESSAGE);
+	public static void info(JFrame parent, String message, String img_url){
+		ImageIcon img = new ImageIcon("res/"+img_url);
+		JOptionPane info = new JOptionPane();
+		if (img_url!=null)
+			info.showMessageDialog(parent, message, "", JOptionPane.INFORMATION_MESSAGE, img); 
+		else 
+			info.showMessageDialog(parent, message, "", JOptionPane.INFORMATION_MESSAGE);
+			
 	}
 	
 	public static void error(JFrame parent, String message){

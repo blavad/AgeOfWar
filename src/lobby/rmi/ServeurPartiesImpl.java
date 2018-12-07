@@ -93,9 +93,11 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	 */
 	@Override
 	public void deconnect(String pseudo) throws RemoteException {	
-		Client cl = new Client(pseudo);
-		this.parties.suppJoueur(cl);
-		clients.remove(cl);
+		this.parties.suppJoueur(new Client(pseudo));
+		for (Client client : clients){
+			if (client.getPseudo().equals(pseudo))
+				clients.remove(client);
+		}
 		System.out.println("#> Supp client ---> " + pseudo);
 		notifierClients();
 	}
@@ -145,11 +147,12 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	public void quitterPartie(Partie partie, Client client) throws RemoteException {
 		if (partie.getHost().equals(client)){
 			parties.getListParties().remove(partie);
+			System.out.println("#> Suppression partie ---> " + partie.getName());
 		}
 		else {
 			parties.getPartie(partie).suppJoueur(client);
+			System.out.println("#> Modif partie ---> " + partie.getName());
 		}
-		System.out.println("#> Mofif partie ---> " + parties.getPartie(partie));
 		notifierClients();
 	}
 	

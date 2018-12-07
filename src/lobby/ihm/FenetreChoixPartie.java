@@ -26,6 +26,11 @@ import lobby.rmi.PartieCompleteException;
 import lobby.rmi.PartieExistanteException;
 import lobby.rmi.ServeurParties;
 
+/** Classe de gestion du choix de la partie
+ * 
+ * @author DHT
+ *
+ */
 public class FenetreChoixPartie extends JPanel {
 	public static Color COLOR_BACKGROUND = new Color(120, 220, 120);
 	public static Color COLOR_TEXT= new Color(120, 60, 70);
@@ -160,11 +165,21 @@ class JoindrePartieControleur implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			Partie p = this.fenetre.pan_parties.getJListPartie().getSelectedValue();
-			fenetre.parent.serveur.rejoindrePartie(p , this.fenetre.parent.client);
-			fenetre.creerP.setEnabled(false);
-			fenetre.joindreP.setEnabled(false);
-			fenetre.parent.client.setPartie(p);
-			fenetre.parent.fen_partie.updateComponent();
+			String mdp;
+			boolean is_autorized = true;
+			if (p.estPrivee()){
+				mdp = DialogBox.infoPlayer(this.fenetre.parent, "Mot de passe");
+				is_autorized = p.verifierMDP(mdp);
+			}
+			if (is_autorized){
+				fenetre.parent.serveur.rejoindrePartie(p , this.fenetre.parent.client);
+				fenetre.creerP.setEnabled(false);
+				fenetre.joindreP.setEnabled(false);
+				fenetre.parent.client.setPartie(p);
+				fenetre.parent.fen_partie.updateComponent();
+			} else {
+				DialogBox.error(this.fenetre.parent, "Mot de passe incorrect");
+			}
 		} catch (RemoteException e1) {
 			e1.printStackTrace();
 		} catch (PartieCompleteException e2){

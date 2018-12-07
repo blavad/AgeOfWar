@@ -19,7 +19,7 @@ public class Partie implements Serializable {
 	private ArrayList<Client> clients = new ArrayList<Client>();
 	
 	/** Le nom de la partie et son mot de passe en cas de partie privee*/
-	private String nom, mdp;
+	private String nom, mdp = null;
 	
 	/** Le nombre de joueur pour demarrer la partie */
 	private Integer max_joueur;
@@ -74,12 +74,25 @@ public class Partie implements Serializable {
 		this.clients.remove(c);
 	}
 	
+	/** Verifie si le mot de passe est correct
+	 * 
+	 * @param m mot de passe à vérifier
+	 * @return vrai si le mor de passe est correct
+	 */
+	public boolean verifierMDP(String m){
+		return m.equals(this.mdp);
+	}
+	
 	
 	/** 
 	 * @return vrai si le nombre de place disponible est nul
 	 */
 	public Boolean estPleine(){
 		return getNbJoueur()+1==getNbMaxJoueur();
+	}
+	
+	public boolean estPrivee(){
+		return this.mdp != null;
 	}
 	
 	/** Lance la partie */

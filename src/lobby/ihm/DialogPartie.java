@@ -39,10 +39,11 @@ public class DialogPartie extends JDialog {
 	
 	/** Option de mot de passe */
 	JCheckBox checkMDP;
-	
+
+	/** Image */
 	JLabel icon;
 
-	/** Veirifie l'envoie des donnees*/
+	/** Verifie l'envoie des donnees*/
 	boolean sendData;
 
 	/** La partie creee */
@@ -159,10 +160,23 @@ public class DialogPartie extends JDialog {
 
 }
 
+
+
+/** Controleur de changement d'etat de l'activation du mot de passe
+ * 
+ * @author DHT
+ * @version 1.0
+ *
+ */
 class ControleurChangement implements javax.swing.event.ChangeListener{
 	
+	/** La boite de dialogueappelante */
 	private DialogPartie d;
 	
+	/** Le constructeur
+	 * 
+	 * @param d la boite de dialogue parent
+	 */
 	public ControleurChangement(DialogPartie d){
 		this.d = d;
 	}
