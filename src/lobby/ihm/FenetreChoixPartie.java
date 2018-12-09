@@ -55,6 +55,7 @@ public class FenetreChoixPartie extends JPanel {
 	public FenetreChoixPartie(FenetreClient parent, Client client, ServeurParties serveur){
 		super();
 		this.parent = parent;
+		
 		initComponent();
 	}
 	
@@ -133,7 +134,7 @@ class NouvellePartieControleur implements ActionListener {
 				fenetre.parent.client.setPartie(p);
 				fenetre.parent.fen_partie.updateComponent();
 			} catch (RemoteException e1) {
-				e1.printStackTrace();
+				DialogBox.error(fenetre.parent,"Connection serveur interrompue ! ");
 			} catch (PartieExistanteException e2) {
 				DialogBox.error(fenetre.parent,e2.getMessage());
 			}
@@ -168,7 +169,7 @@ class JoindrePartieControleur implements ActionListener {
 			String mdp;
 			boolean is_autorized = true;
 			if (p.estPrivee()){
-				mdp = DialogBox.infoPlayer(this.fenetre.parent, "Mot de passe");
+				mdp = DialogBox.infoPlayer(null, "Mot de passe");
 				is_autorized = p.verifierMDP(mdp);
 			}
 			if (is_autorized){
@@ -181,7 +182,7 @@ class JoindrePartieControleur implements ActionListener {
 				DialogBox.error(this.fenetre.parent, "Mot de passe incorrect");
 			}
 		} catch (RemoteException e1) {
-			e1.printStackTrace();
+			DialogBox.error(fenetre.parent,"Connection serveur interrompue ! ");
 		} catch (PartieCompleteException e2){
 			DialogBox.error(fenetre.parent,e2.getMessage());
 		} catch (NullPointerException e3){

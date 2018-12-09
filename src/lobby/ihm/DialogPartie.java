@@ -64,6 +64,8 @@ public class DialogPartie extends JDialog {
 		super(parent,title, modal);
 		this.client = client;
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		this.setLocationRelativeTo(null); //place la fenetre au milieu de l'ecran
+		
 		this.initComponent();
 	}
 	

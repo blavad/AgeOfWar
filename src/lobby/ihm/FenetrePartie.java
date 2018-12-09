@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 
 import lobby.core.Client;
 import lobby.core.Partie;
+import lobby.rmi.SuppressionPartieException;
 
 /** Classe du panel de gestion de la partie
  * 
@@ -103,11 +104,9 @@ public class FenetrePartie extends JPanel {
 				if (p.equals(this.parent.client.getPartie())){
 					DefaultListModel<Client> model = (DefaultListModel<Client>) this.jl_clients.getModel();
 					model.clear();
-					if (p.getHost() != parent.client)
-						model.addElement(p.getHost());
+					model.addElement(p.getHost());
 					for (Client cl : p.getClients()){
-						if (cl != parent.client)
-							model.addElement(cl);
+						model.addElement(cl);
 					}
 				}
 			}
@@ -141,9 +140,11 @@ class QuitterPartieControleur implements ActionListener {
 			this.fenetre.parent.fen_choix_partie.creerP.setEnabled(true);
 			this.fenetre.parent.fen_choix_partie.joindreP.setEnabled(true);
 			this.fenetre.parent.client.setPartie(null);
-			this.fenetre.updateComponent();
+			fenetre.updateComponent();
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			DialogBox.error(fenetre.parent,"Connection serveur interrompue ! ");
+		} catch (SuppressionPartieException e) {
+			DialogBox.error(fenetre.parent, e.getMessage());
 		}
 	}
 }

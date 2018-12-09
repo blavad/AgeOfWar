@@ -7,12 +7,14 @@ import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 
 import lobby.core.Client;
 import lobby.core.Partie;
 import lobby.rmi.ServeurParties;
+import lobby.rmi.SuppressionPartieException;
 
 /** La fenetre du choix de partie du client
  * 
@@ -40,6 +42,8 @@ public class FenetreClient extends JFrame {
 	/** Fenetre de partie */
 	FenetrePartie fen_partie = null;
 	
+	private String pathIcon = "/icon.jpg";
+	
 	/** Constructeur de la fenetre du client de parties
 	 * 
 	 * @param client le joueur associe
@@ -47,22 +51,18 @@ public class FenetreClient extends JFrame {
 	 * 
 	 */
 	public FenetreClient(Client client, ServeurParties serveur){
-		super("Age Of War - Choix Partie");
 		this.client = client;
 		this.serveur = serveur;
+		this.setIconImage(new ImageIcon(getClass().getResource(pathIcon)).getImage());
+		
+		this.setTitle("Age Of War - Choix Partie");
+		this.addWindowListener(new WindowClose(this));	 //ferme le programme et déconnecte du serveur quand on ferme la fenetre
+		this.setLocationRelativeTo(null); //place la fenetre au milieu de l'ecran
+		
 		this.fen_choix_partie = new FenetreChoixPartie(this, client, serveur);
 		this.fen_partie = new FenetrePartie(this);
 		
-		// Deconnection totale en cas d'arret du programme
-		this.addWindowListener(new WindowClose(this));	
 		this.getContentPane().setLayout(new GridLayout(1, 2));
-		initComponent();
-	}
-
-	/** Initialise les composants de la fenetre
-	 * 
-	 */
-	private void initComponent() {
 		this.getContentPane().add(this.fen_choix_partie);
 		this.getContentPane().add(this.fen_partie);
 	}
@@ -102,9 +102,10 @@ class WindowClose extends WindowAdapter {
 	@Override
 	public void windowClosing(WindowEvent we) {
 		try {
-			this.fenetre.serveur.deconnect(this.fenetre.client.getPseudo());
+			this.fenetre.serveur.deconnect(this.fenetre.client);
 		} catch (RemoteException e) {
-			e.printStackTrace();
+		} catch (SuppressionPartieException e) {
+			DialogBox.error(fenetre, "Vous devez commencer par quitter la partie");
 		}
 		System.exit(0);
 	}

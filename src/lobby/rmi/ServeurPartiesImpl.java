@@ -61,7 +61,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 				ClientPartie clientDistant = (ClientPartie)registry.lookup(cl.getPseudo());
 				clientDistant.notifier(this.parties.getListParties());
 			} catch (RemoteException | NotBoundException e) {
-				deconnect(cl.getPseudo());
+				deconnect(cl);
 			}
 		}
 	}
@@ -88,17 +88,22 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	/**
 	 * Deconnecte un joueur du serveur de parties
 	 * 
-	 * @param pseudo le pseudo du joueur qui doit etre unique pour un meme serveur de parties
+	 * @param cl le client a deconnecter
 	 * @throws RemoteException
+	 * @throws SuppressionPartieException 
 	 */
 	@Override
-	public void deconnect(String pseudo) throws RemoteException {	
-		this.parties.suppJoueur(new Client(pseudo));
+	public void deconnect(Client cl) throws RemoteException {
+		if (cl.getPartie()!= null){	
+			try {
+				quitterPartie(cl.getPartie(), cl);
+			} catch (SuppressionPartieException e) {}
+		}
 		for (Client client : clients){
-			if (client.getPseudo().equals(pseudo))
+			if (client.getPseudo().equals(cl.getPseudo()))
 				clients.remove(client);
 		}
-		System.out.println("#> Supp client ---> " + pseudo);
+		System.out.println("#> Supp client ---> " + cl.getPseudo());
 		notifierClients();
 	}
 
@@ -132,7 +137,10 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 			throw new PartieCompleteException();
 		}
 		parties.getPartie(partie).addJoueur(client);
-		System.out.println("#> Mofif partie ---> " + parties.getPartie(partie));
+		System.out.println("#> Modif partie ---> " + parties.getPartie(partie));
+		if (parties.getPartie(partie).estPleine()){
+			lancer(parties.getPartie(partie));
+		}
 		notifierClients();
 	}
 	
@@ -142,12 +150,18 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	 * @param partie la partie
 	 * @param client le client qui quitte la partie
 	 * @throws RemoteException
+	 * @throws SuppressionPartieException 
 	 */
 	@Override
-	public void quitterPartie(Partie partie, Client client) throws RemoteException {
+	public void quitterPartie(Partie partie, Client client) throws RemoteException, SuppressionPartieException {
 		if (partie.getHost().equals(client)){
-			parties.getListParties().remove(partie);
-			System.out.println("#> Suppression partie ---> " + partie.getName());
+			if (parties.getPartie(partie).getClients().size()>0){
+				throw new SuppressionPartieException("Clients en attente");
+			}
+			else {
+				parties.getListParties().remove(parties.getPartie(partie));
+				System.out.println("#> Suppression partie ---> " + partie.getName());
+			}
 		}
 		else {
 			parties.getPartie(partie).suppJoueur(client);
@@ -164,7 +178,23 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	 */
 	@Override
 	public void lancer(Partie partie) throws RemoteException {
-		parties.getPartie(partie).lancer();
+		String hote = parties.getPartie(partie).getHost().getPseudo();
+		ClientPartie hoteDistant;
+		Integer camp = 1;
+		try {
+			hoteDistant = (ClientPartie)registry.lookup(hote);
+			hoteDistant.lancerPartie(hote,camp++);
+			for (Client cl : parties.getPartie(partie).getClients()){
+				ClientPartie clientDistant = (ClientPartie)registry.lookup(cl.getPseudo());
+				clientDistant.lancerPartie(hote,camp++);
+			}
+		} catch (NotBoundException | RemoteException e1) {
+			e1.printStackTrace();
+		}
+		for (Client cl : parties.getPartie(partie).getClients()){
+			deconnect(cl);
+		}
+		deconnect(parties.getPartie(partie).getHost());
 		parties.getListParties().remove(partie);
 	}
 	

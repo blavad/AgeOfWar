@@ -27,16 +27,18 @@ public interface ServeurParties extends Remote {
 	/**
 	 * Deconnecte un joueur du serveur de parties
 	 * 
-	 * @param pseudo le pseudo du joueur qui doit etre unique pour un meme serveur de parties
+	 * @param cl le client qui doit etre deconnecter
 	 * @throws RemoteException
+	 * @throws SuppressionPartieException 
 	 */
-	public void deconnect(String pseudo) throws RemoteException;
+	public void deconnect(Client cl) throws RemoteException, SuppressionPartieException;
 	
 	/**
 	 * Cree une nouvelle partie en attente de joueur
 	 * 
 	 * @param partie la partie à creer
 	 * @throws RemoteException
+	 * @throws {@link PartieExistanteException}
 	 */
 	public void creerPartie(Partie p) throws RemoteException, PartieExistanteException;
 	
@@ -46,6 +48,8 @@ public interface ServeurParties extends Remote {
 	 * @param partie la partie à rejoindre
 	 * @param client le client qui rejoint la partie
 	 * @throws RemoteException
+	 * @throws {@link PartieCompleteException}
+	 * @throws NullPointerException
 	 */
 	public void rejoindrePartie(Partie partie, Client client) throws RemoteException, PartieCompleteException, NullPointerException;
 
@@ -55,8 +59,9 @@ public interface ServeurParties extends Remote {
 	 * @param partie la partie
 	 * @param client le client qui quitte la partie
 	 * @throws RemoteException
+	 * @throws {@link SuppressionPartieException} 
 	 */
-	public void quitterPartie(Partie partie, Client client) throws RemoteException;
+	public void quitterPartie(Partie partie, Client client) throws RemoteException, SuppressionPartieException;
 
 	/**
 	 * Lance une partie

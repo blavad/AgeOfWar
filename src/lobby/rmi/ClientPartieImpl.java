@@ -1,6 +1,5 @@
 package lobby.rmi;
 
-import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -8,12 +7,11 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
-
 import lobby.core.Client;
 import lobby.core.Partie;
 import lobby.ihm.DialogBox;
-import lobby.ihm.FenetreClient;
+
+import partie.rmi.*;
 
 /**
  * Le client RMI qui communique avec le serveur central pour avoir accès à la liste de parties
@@ -50,6 +48,33 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 	}
 	
 	/**
+	 * Lance la partie
+	 * @param hote le pseudo du joueur hote de la partie
+	 * 
+	 */
+	@Override
+	public void lancerPartie(String hote, Integer camp) throws RemoteException {
+		if (this.client.getPseudo().equals(hote)){
+			ServeurPartieImpl jeuHote = new ServeurPartieImpl();
+ 		}
+		else {
+			Registry registry;
+			ServeurPartie serveur;
+			
+			registry = LocateRegistry.getRegistry();
+			try {
+				serveur = (ServeurPartie)registry.lookup(hote);
+				JoueurPartieImpl jeuClient = new JoueurPartieImpl(serveur, camp);
+			} catch (NotBoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+
+	
+	
+	/**
 	 * La methode main qui lance le programme client et se connecte a un serveur de parties
 	 * 
 	 * @param args
@@ -69,7 +94,7 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 			registry.rebind(pseudo, client);	
 			serveur.connect(pseudo);
 			client.client.getFenetre().showFenetre();
-		} catch (RemoteException|NotBoundException e1) {
+		} catch (RemoteException|NotBoundException e1)  {
 			DialogBox.error(null, "Serveur injoignable");
 		} catch (PseudoExistantException e) {
 			DialogBox.error(null, e.getMessage());
