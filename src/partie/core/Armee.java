@@ -1,6 +1,9 @@
 package partie.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import partie.rmi.JoueurPartieImpl;
 
 public class Armee {
 	
@@ -25,5 +28,23 @@ public class Armee {
 	public void addGroupe(Groupe g) {
 		this.groupes.add(g);
 	}
- 	
+	
+	
+	public void update (float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+		for (int j = 0; j < this.getGroupes().size(); j++) {
+			this.getGroupes().get(j).update(dt, entites, joueurs);
+		}
+	}
+	
+	/**
+	 * Supprime l'unité en paramètre de la liste des unités du serveur
+	 * @param u
+	 * 				L'unité à supprimer
+	 */
+	public void supprimerUnite(Unite u) {
+		// Parcourt tous les groupes et supprimes U lorsque celle-ci est trouvée
+		for (Groupe g : this.getGroupes()) {
+			g.getUnites().remove(u);
+		}
+	}
 }

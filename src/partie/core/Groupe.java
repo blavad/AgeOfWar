@@ -1,6 +1,9 @@
 package partie.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import partie.rmi.JoueurPartieImpl;
 
 public class Groupe {
 	
@@ -29,5 +32,33 @@ public class Groupe {
 		int i = this.unites.indexOf(u);
 		this.unites.remove(i);
 	}
+	
+	/**
+	 * Met à jour un groupe en calculant ce que fait chaque unité
+	 * @param grp
+	 * 				groupe à mettre à jour
+	 * @param dt
+	 * 				temps depuis la dernière maj
+	 */
+	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+		
+		// Si le groupe n'est pas vide
+		if (unites.size() > 0) {
+			unites.get(0).update(dt, true, this, entites, joueurs); // update l'unité (cooldown, ...)
+			
+			
+			// On parcourt le reste du groupe
+			for (int i = 1; i < this.getUnites().size(); i++) {
+				// U pointe sur la (i + 1)e unité du groupe
+				this.getUnites().get(i).update(dt, false, this, entites, joueurs); // update l'unite (cooldown, ...)
+				
+			}
+			
+		}
+		
+		
+	}
+	
+	
 
 }

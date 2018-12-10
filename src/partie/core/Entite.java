@@ -53,6 +53,7 @@ public abstract class Entite {
 	
 	public Vect2 getPosition() { return this.position; }
 	public int getVie() { return this.vie; }
+	public boolean estMorte() { return this.vie == 0; }
 	public int getCamp() { return this.camp; }
 	public int getRayonUnite() { return this.rayonUnite; }
 	
@@ -64,15 +65,13 @@ public abstract class Entite {
 	 * 			Dommage pris
 	 * @return vrai si l'entité est tuée et faux sinon
 	 */
-	public boolean takeDamage(int d) {
+	public void takeDamage(int d) {
 		int v = this.vie - d;
 		if (v <= 0) {
 			this.vie = 0;
-			return true;
 		}
 		else {
 			this.vie = v;
-			return false;
 		}
 	}
 	

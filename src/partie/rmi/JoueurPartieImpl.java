@@ -50,7 +50,7 @@ public class JoueurPartieImpl {
 		this.interfaceP = new InterfacePartie(this);
 		selectionneGroupe(1); // Initialise le groupe sélectionné à 1
 		this.serveur = serv;
-		this.plateau = new ImageIcon(getClass().getResource("/plateau.jpg")).getImage();
+		this.plateau = new ImageIcon(getClass().getResource("/space.jpeg")).getImage();
 	}
 	
 	public int getArgent() { return this.argent; }
@@ -138,30 +138,37 @@ public class JoueurPartieImpl {
 	 * 				HashMap avec toutes les armées
 	 */
 	private void draw(Graphics g, HashMap<Integer, Armee> entites) {
-		// colore le fond => "supprime" l'ancienne frame
-		//g.setColor(interfaceP.getCenterPan().getBackground());
-		//g.fillRect(0, 0, interfaceP.getCenterPan().getWidth(), interfaceP.getCenterPan().getHeight());
 		
 		// Calcule le ratio taille de la fenetre / taille fixe du jeu
 		Vect2 ratios = new Vect2((float)interfaceP.getCenterPan().getWidth() / widthP, (float)interfaceP.getCenterPan().getHeight() / heightP);
 		
-		float ratio;
+		float ratioMin, ratioMax;
 		int longueur; // longueur du côté du plateau (carré) => longueur = min(widthFenetre, heightFenetre)
-		Vect2 offSet = new Vect2(); // Permet de centrer le plateau sur le côté le plus long
+		Vect2 offSet = new Vect2(); // Permet de centrer les Entites sur le côté le plus long
+		
+		int longueurFond;
+		Vect2 offSetFond = new Vect2();
 		if (ratios.x < ratios.y) {
 			// Si la fenêtre est plus haute que longue (width < height)
-			ratio = ratios.x;
-			longueur = interfaceP.getCenterPan().getWidth(); // longueur prend la hauteur de la largeur
+			ratioMin = ratios.x;
+			longueur = interfaceP.getCenterPan().getWidth(); // longueur prend la largeur de la fenetre
 			offSet.setPosY(((float)interfaceP.getCenterPan().getHeight() - longueur) / 2);
+			
+			ratioMax = ratios.y;
+			longueurFond = interfaceP.getCenterPan().getHeight();
+			offSetFond.setPosX(((float)interfaceP.getCenterPan().getWidth() - longueurFond) / 2);
 		} else {
-			ratio = ratios.y;
+			ratioMin = ratios.y;
 			longueur = interfaceP.getCenterPan().getHeight(); // longueur prend la hauteur de la fenêtre
 			offSet.setPosX(((float)interfaceP.getCenterPan().getWidth() - longueur) / 2);
+			
+			ratioMax = ratios.x;
+			longueurFond = interfaceP.getCenterPan().getWidth();
+			offSetFond.setPosY(((float)interfaceP.getCenterPan().getHeight() - longueurFond) / 2);
 		}
 		
 		// Dessine le plateau
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawImage(plateau, (int)offSet.x, (int)offSet.y, longueur, longueur, null);
+		g.drawImage(plateau, (int)offSetFond.x, (int)offSetFond.y, longueurFond, longueurFond, null);
 		
 		
 		// Parcourt toutes les entités et les dessine
@@ -171,7 +178,7 @@ public class JoueurPartieImpl {
 			// On vérifie si la base existe
 			if (a.getBase() != null) {
 				// On dessine la base sur le plateau
-				a.getBase().draw(g, ratio, offSet);
+				a.getBase().draw(g, ratioMin, offSet);
 			}
 			
 			try {
@@ -179,7 +186,7 @@ public class JoueurPartieImpl {
 				for (Groupe grp : a.getGroupes()) {
 					for(Unite u : grp.getUnites()) {
 						// On dessine l'unité sur le plateau
-						u.draw(g, ratio, offSet);
+						u.draw(g, ratioMin, offSet);
 					}
 				}
 			} catch (ConcurrentModificationException e) {
@@ -188,7 +195,7 @@ public class JoueurPartieImpl {
 		}
 		
 		// Dessine un point noir qui représente l'ojectif du groupe selectioné
-		drawObjectifSelect(g, entites.get(camp).getGroupes().get(groupeSelectioner - 1), ratio, offSet);
+		drawObjectifSelect(g, entites.get(camp).getGroupes().get(groupeSelectioner - 1), ratioMin, offSet);
 	}
 	
 	/**

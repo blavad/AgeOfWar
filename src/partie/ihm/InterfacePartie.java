@@ -92,12 +92,12 @@ public class InterfacePartie  extends JFrame {
 		labArgent = new JLabel(String.format("Argent : %d", joueurP.getArgent()));
 		labArgent.setForeground(Color.WHITE);
 		labArgent.setHorizontalAlignment(labArgent.CENTER);
-		labArgent.setPreferredSize(new Dimension(400,30));
+		labArgent.setPreferredSize(new Dimension(300,30));
 		panTop.add(labArgent, BorderLayout.CENTER);
 		
 		JPanel panBotCenter = new PanelImageFond(pathFondMenu3);
 		panBotCenter.setLayout(new BorderLayout());
-		panBotCenter.setPreferredSize(new Dimension(400,70));
+		panBotCenter.setPreferredSize(new Dimension(300,70));
 		JLabel label = new JLabel("CAMP " + joueurP.getCamp());
 		label.setHorizontalAlignment(label.CENTER);
 		label.setForeground(color);
@@ -196,7 +196,7 @@ public class InterfacePartie  extends JFrame {
 		//Construction du Panel central (Champ de bataille)
 		//----------------------------------------------------------------
 		panCenter = new JPanel();
-		panCenter.setPreferredSize(new Dimension(800, 350));
+		panCenter.setPreferredSize(new Dimension(300, 350));
 		panCenter.setBackground(Color.BLACK);
 		
 		
