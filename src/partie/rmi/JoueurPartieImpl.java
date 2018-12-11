@@ -47,7 +47,7 @@ public class JoueurPartieImpl {
 		this.interfaceP = new InterfacePartie(this);
 		selectionneGroupe(1); // Initialise le groupe sélectionné à 1
 		this.serveur = serv;
-		this.plateau = new ImageIcon(getClass().getResource("/space.jpeg")).getImage();
+		this.plateau = new ImageIcon(getClass().getResource("/space.jpg")).getImage();
 		this.uniteXmlLoader = new UniteXmlLoader();
 	}
 	
