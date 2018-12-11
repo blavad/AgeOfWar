@@ -153,7 +153,7 @@ public class Unite extends Entite {
 	 * 				l'attaquant
 	 * @return une entité à portée de l'attaquant et rien si aucune entité vérifie ce critère  
 	 */
-	private Entite entiteAAttaquer(HashMap<Integer, Armee> entites) {
+	protected Entite entiteAAttaquer(HashMap<Integer, Armee> entites) {
 		Entite e = null;
 		
 		// Parcourt toutes les entités de la partie
@@ -191,7 +191,7 @@ public class Unite extends Entite {
 	 * @param cible
 	 * 				entité qui se fait attaquer
 	 */
-	private void attaqueEntite(Entite cible, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+	protected void attaqueEntite(Entite cible, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
 		// Si U peut attaquer (le cooldown de U est à 0)
 		if (this.canAttack()) {
 			// U attaque la cible et renvoie vrai si elle tue la cible, faux sinon
@@ -221,7 +221,7 @@ public class Unite extends Entite {
 	 * 				l'attaquant
 	 * @return vrai si l'attaquant est à portée de tir de la cible et faux sinon
 	 */
-	private boolean aPorteeDe(Entite e, Unite u) {
+	protected boolean aPorteeDe(Entite e, Unite u) {
 		int dx = (int)Math.abs(u.getPosition().x - e.getPosition().x); // Distance selon x de E et U
 		int dy = (int)Math.abs(u.getPosition().y - e.getPosition().y); // Distance selon y de E et U
 		float dMin = u.getPorteeA() + e.getRayonEntite(); // Distance minimum pour que U puisse attaquer E

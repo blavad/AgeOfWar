@@ -75,7 +75,7 @@ public class JoueurPartieImpl {
 	}
 	
 	/**
-	 * Créer une défence lorque le bouton associé est pressé<li>
+	 * Créer une défence lorsque le bouton associé est pressé<li>
 	 * 	Vérifie avant la création si le joueur a assez d'argent.<li> 
 	 * 	Si la création est possible, enlève la somme d'argent au joueur
 	 * et demande au serveur de créer cette défence 
@@ -85,7 +85,7 @@ public class JoueurPartieImpl {
 	 * 				Type de défence à créer
 	 */
 	public void creerDefence(Menu menu, TypeDefence type) {
-		System.out.println("creation : " + menu.toString() + type.toString());
+		
 	}
 	
 	/**

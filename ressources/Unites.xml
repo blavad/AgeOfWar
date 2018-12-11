@@ -12,6 +12,10 @@
 		<Caracteristiques vieMax="600" rayonUnite="13" cout="150" vitesseDeplacement="35" />
 		<Attaque degat="150" vitesse="1000" cooldown="1500" portee="13" />
 	</TANK>
-
+	
+	<DEFI>
+		<Caracteristiques vieMax="0" rayonUnite="10" cout="300" vitesseDeplacement="0" />
+		<Attaque degat="150" vitesse="2000" cooldown="1500" portee="20" />
+	</DEFI>
 
 </Unites>

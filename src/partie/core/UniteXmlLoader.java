@@ -41,7 +41,6 @@ public class UniteXmlLoader {
 	}
 	
 	public Unite createUnite(TypeUnite typeU, int camp, Vect2 pos) {
-		
 		Node u = Outils.getChild(typeU.toString(), root);
 		if (u != null) {
 			
@@ -56,7 +55,6 @@ public class UniteXmlLoader {
 			float vitesseA = Float.parseFloat(attaque.getAttribute("vitesse"));
 			float cooldown = Float.parseFloat(attaque.getAttribute("cooldown"));
 			float porteeA = Float.parseFloat(attaque.getAttribute("portee"));
-			//System.out.println("trouv");
 			
 			return new Unite(pos, vieMax, camp, rayonUnite, cout, degatA, vitesseA, porteeA, vitesseD);
 			

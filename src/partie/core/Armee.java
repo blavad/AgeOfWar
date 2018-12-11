@@ -9,7 +9,7 @@ import partie.rmi.JoueurPartieImpl;
 public class Armee {
 	
 	private ArrayList<Groupe> groupes;
-	private Entite base;
+	private Base base;
 	
 	public Armee () {
 		this.groupes = new ArrayList<Groupe>();
@@ -23,8 +23,8 @@ public class Armee {
 	public Entite getBase() { return this.base; }
 	
 	
-	public void setBase(Entite e) {
-		this.base = e;
+	public void setBase(Base b) {
+		this.base = b;
 	}
 	public void addGroupe(Groupe g) {
 		this.groupes.add(g);
@@ -40,6 +40,7 @@ public class Armee {
 	 * 			Ensemble des joueurs
 	 */
 	public void update (float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+		if (base != null) this.base.update(dt, entites, joueurs);
 		for (int j = 0; j < this.getGroupes().size(); j++) {
 			this.getGroupes().get(j).update(dt, entites, joueurs);
 		}

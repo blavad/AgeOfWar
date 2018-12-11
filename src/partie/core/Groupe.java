@@ -36,10 +36,9 @@ public class Groupe {
 	
 	/**
 	 * Met à jour un groupe en calculant ce que fait chaque unité
-	 * @param grp
-	 * 				groupe à mettre à jour
-	 * @param dt
-	 * 				temps depuis la dernière maj
+	 * @param dt Float
+	 * @param entites HashMap<Integer, Armee>
+	 * @param joueurs HashMap<Integer, JoueurPartieImpl>
 	 */
 	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
 		

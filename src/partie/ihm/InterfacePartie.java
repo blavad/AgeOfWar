@@ -251,7 +251,6 @@ public class InterfacePartie  extends JFrame {
 		return pan;		
 	}
 	
-	@SuppressWarnings("unused")
 	private class PanelImageFond extends JPanel {
 		
 		private static final long serialVersionUID = 1L;
@@ -294,9 +293,9 @@ public class InterfacePartie  extends JFrame {
 		
 		JPanel pan = new PanelImageFond(pathFondMenu1);
 		pan.setBackground(Color.WHITE);
-		pan.add(new ButtonImageFond(pathFondMenu3, 50, 45, new ButtonDef(this, TypeDefence.I)));
-		pan.add(new ButtonImageFond(pathFondMenu3, 50, 45, new ButtonDef(this, TypeDefence.II)));
-		pan.add(new ButtonImageFond(pathFondMenu3, 50, 45, new ButtonDef(this, TypeDefence.III)));
+		pan.add(new ButtonImageFond(pathFondMenu3, 50, 45, new ButtonDef(this, TypeDefence.DEFI)));
+		pan.add(new ButtonImageFond(pathFondMenu3, 50, 45, new ButtonDef(this, TypeDefence.DEFII)));
+		pan.add(new ButtonImageFond(pathFondMenu3, 50, 45, new ButtonDef(this, TypeDefence.DEFIII)));
 		pan.add(new ButtonImageFond(pathFondMenu3, 60, 45, new ButtonSellDef(this)));
 		pan.add(new ButtonImageFond(pathFondMenu3, 41, 41, new ButtonBack(this)));
 		panP.add(pan, BorderLayout.CENTER);
