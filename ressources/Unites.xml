@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Unites>
+	<CAC>
+		<Caracteristiques vieMax="200" rayonUnite="10" cout="50" vitesseDeplacement="50" />
+		<Attaque degat="100" vitesse="1000" cooldown="1000" portee="10" />
+	</CAC>
+	<DISTANT>
+		<Caracteristiques vieMax="150" rayonUnite="8" cout="75" vitesseDeplacement="60" />
+		<Attaque degat="80" vitesse="1000" cooldown="800" portee="50" />
+	</DISTANT>
+	<TANK>
+		<Caracteristiques vieMax="600" rayonUnite="13" cout="150" vitesseDeplacement="35" />
+		<Attaque degat="150" vitesse="1000" cooldown="1500" portee="13" />
+	</TANK>
+
+
+</Unites>

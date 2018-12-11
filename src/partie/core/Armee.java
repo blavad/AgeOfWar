@@ -1,5 +1,6 @@
 package partie.core;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,10 +30,38 @@ public class Armee {
 		this.groupes.add(g);
 	}
 	
-	
+	/**
+	 * Met à jour toutes les unités de l'armée
+	 * @param dt
+	 * 			Temps depuis la derniere mis à jour
+	 * @param entites
+	 * 			Ensemble des entités du jeu
+	 * @param joueurs
+	 * 			Ensemble des joueurs
+	 */
 	public void update (float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
 		for (int j = 0; j < this.getGroupes().size(); j++) {
 			this.getGroupes().get(j).update(dt, entites, joueurs);
+		}
+	}
+	
+	/**
+	 * Dessine toutes les unites de l'armée
+	 * @param g
+	 * 			Graphics
+	 * @param ratio
+	 * 			Ratio d'affichage
+	 * @param offSet
+	 * 			Vect2 : décalage en x et y
+	 */
+	public void draw(Graphics g, float ratio, Vect2 offSet) {
+		// On vérifie si la base existe
+		if (this.getBase() != null) {
+			// On dessine la base sur le plateau
+			this.getBase().draw(g, ratio, offSet);
+		}
+		for (int j = 0; j < this.getGroupes().size(); j++) {
+			this.getGroupes().get(j).draw(g, ratio, offSet);
 		}
 	}
 	

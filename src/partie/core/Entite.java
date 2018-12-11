@@ -10,7 +10,7 @@ public abstract class Entite {
 	protected int camp;
 	
 	protected Color color;
-	protected int rayonUnite;
+	protected int rayonEntite;
 	
 	/**
 	 * Construteur de l'entité<li>
@@ -23,11 +23,12 @@ public abstract class Entite {
 	 * @param camp
 	 * 			Camp de l'entité
 	 */
-	public Entite(Vect2 pos, int vie, int camp) {
+	public Entite(Vect2 pos, int vie, int camp, int rayonEntite) {
 		this.position = new Vect2(pos.x, pos.y);
 		this.vieMax = vie;
 		this.vie = vie;
 		this.camp = camp;
+		this.rayonEntite = rayonEntite;
 		defineColor();
 	}
 	
@@ -55,7 +56,7 @@ public abstract class Entite {
 	public int getVie() { return this.vie; }
 	public boolean estMorte() { return this.vie == 0; }
 	public int getCamp() { return this.camp; }
-	public int getRayonUnite() { return this.rayonUnite; }
+	public int getRayonEntite() { return this.rayonEntite; }
 	
 	/**
 	 * Gère la prise de dommage<li>

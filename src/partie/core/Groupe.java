@@ -1,5 +1,6 @@
 package partie.core;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -57,6 +58,21 @@ public class Groupe {
 		}
 		
 		
+	}
+	
+	/**
+	 * Dessine toutes les unites du groupe
+	 * @param g
+	 * 			Graphics
+	 * @param ratio
+	 * 			Ratio d'affichage
+	 * @param offSet
+	 * 			Vect2 : décalage en x et y
+	 */
+	public void draw(Graphics g, float ratio, Vect2 offSet) {
+		for (Unite u : unites) {
+			u.draw(g, ratio, offSet);
+		}
 	}
 	
 	

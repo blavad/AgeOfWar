@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 import partie.core.Armee;
 import partie.core.Base;
-import partie.core.CacUnite;
 import partie.core.Entite;
 import partie.core.Groupe;
 import partie.core.Outils;
 import partie.core.TypeUnite;
 import partie.core.Unite;
+import partie.core.UniteXmlLoader;
 import partie.core.VarPartie;
 import partie.core.Vect2;
 
@@ -18,6 +18,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 	private HashMap<Integer, Armee> entites;
 	private HashMap<Integer, JoueurPartieImpl> joueurs;
 	private boolean finPartie;
+	private UniteXmlLoader uniteXmlLoader;
 	
 	private int widthP = VarPartie.WIDTH_PARTIE;
 	private int heightP = VarPartie.HEIGHT_PARTIE;
@@ -42,6 +43,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		// Initialisation des HashMap
 		joueurs = new HashMap<Integer, JoueurPartieImpl>();
 		entites = new HashMap<Integer, Armee>();
+		uniteXmlLoader = new UniteXmlLoader();
 		
 		// Initialise les 4 joueurs 
 		joueurs.put(1, new JoueurPartieImpl(this, 1));
@@ -138,8 +140,10 @@ public class ServeurPartieImpl implements ServeurPartie {
 	 * 				Le groupe sélectionné par le joueur lors de la création de l'unité
 	 */
 	public void ajouterUnite(int camp, TypeUnite typeU, int grpSelect) {
-		Unite u;
 		
+		
+		/*
+		 * Unite u;
 		// Créer la bonne unité selon typeU et la place dans le bon camp et le grp selectionné par le joueur
 		switch (typeU) {
 		case CAC:
@@ -156,6 +160,9 @@ public class ServeurPartieImpl implements ServeurPartie {
 			break;
 		
 		}
+		*/
+		
+		Unite u = uniteXmlLoader.createUnite(typeU, camp, entites.get(camp).getBase().getPosition());
 		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence à 1 (et les listes à 0)
 	}
 	

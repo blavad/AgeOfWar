@@ -1,5 +1,6 @@
 package partie.core;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.HashMap;
 
@@ -18,16 +19,24 @@ public class Unite extends Entite {
 	
 	/**
 	 * Constructeur de l'unité
-	 * @param pos
-	 * 			Position de l'unité
-	 * @param vie
-	 * 			Vie de l'unité
-	 * @param camp
-	 * 			Camp de l'unité
+	 * @param pos Vect2
+	 * @param vie int
+	 * @param camp int
+	 * @param rayonEntite int
+	 * @param cout int
+	 * @param degatA int
+	 * @param vitesseA float
+	 * @param porteeA float
+	 * @param vitesseDeDeplacement float
 	 */
-	public Unite (Vect2 pos, int vie, int camp) {
-		super(pos, vie, camp);
+	public Unite (Vect2 pos, int vie, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, float vitesseDeDeplacement) {
+		super(pos, vie, camp, rayonEntite);
 		cooldown = 0;
+		this.cout = cout;
+		this.degatA = degatA;
+		this.vitesseA = vitesseA;
+		this.porteeA = porteeA;
+		this.vitesseDeDeplacement = vitesseDeDeplacement;
 	}
 	
 	public float getPorteeA() { return this.porteeA; }
@@ -68,11 +77,20 @@ public class Unite extends Entite {
 		return cooldown == 0;
 	}
 	
-	/**
+	/***
 	 * Met à jour l'unité<li>
-	 * 	Diminue le cooldown grâce à dt
+	 * 	Diminue le cooldown grâce à dt<li>
+	 *  Détermine l'action de l'unité en fonction de son environnement
 	 * @param dt
-	 * 			Temps depuis la dernière mis à jour
+	 * 			Temps depuis la derniere mise à jour
+	 * @param estPremiere
+	 * 			Représente la position de l'unité dans son groupe
+	 * @param grp
+	 * 			Groupe dans lequel appartient l'unité
+	 * @param entites
+	 * 			Ensemble des unités de la partie
+	 * @param joueurs
+	 * 			Ensemble des joueurs de la partie
 	 */
 	public void update(float dt, boolean estPremiere, Groupe grp, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
 		if (cooldown > 0) {
@@ -114,7 +132,7 @@ public class Unite extends Entite {
 				
 				// d la distance entre U et U0
 				float d = (float)Math.sqrt(Outils.norme2AB(u0.getPosition(), this.getPosition()));
-				if (d > (this.getRayonUnite() + u0.getRayonUnite())) { //Gère les collisions
+				if (d > (this.getRayonEntite() + u0.getRayonEntite())) { //Gère les collisions
 					// Si U n'est pas en contact de U0, alors U avance
 					// idem
 					float dd = (dt / 1000)  * (float)this.getVitesseDeplacement() / d;
@@ -206,7 +224,7 @@ public class Unite extends Entite {
 	private boolean aPorteeDe(Entite e, Unite u) {
 		int dx = (int)Math.abs(u.getPosition().x - e.getPosition().x); // Distance selon x de E et U
 		int dy = (int)Math.abs(u.getPosition().y - e.getPosition().y); // Distance selon y de E et U
-		float dMin = u.getPorteeA() + e.getRayonUnite(); // Distance minimum pour que U puisse attaquer E
+		float dMin = u.getPorteeA() + e.getRayonEntite(); // Distance minimum pour que U puisse attaquer E
 		
 		// Si dx ou dy plus grand que dMin, alors inutile de calculer la vraie distance entre E et U ("pseudo optimisation") 
 		if (dx <= dMin && dy <= dMin) { 
@@ -227,14 +245,20 @@ public class Unite extends Entite {
 	 * 			Décalage d'affichage en X et Y
 	 */
 	public void draw(Graphics g, float ratio, Vect2 offSet) {
-		float rayon = rayonUnite * ratio;
+		float rayon = rayonEntite * ratio;
 		
 		int posX = (int)offSet.x + (int)Math.floor(position.x * ratio - rayon);
 		int posY = (int)offSet.y + (int)Math.floor(position.y * ratio - rayon);
 		int r = (int)(rayon * 2);
 		
 		g.setColor(color);
-		g.fillOval(posX, posY, r, r);		
+		g.fillOval(posX, posY, r, r);	
+		
+		
+		float ratioVie = (float)vie / (float)vieMax;
+		int hauteurBar = (int)Math.floor(5 * ratio);
+		g.setColor(Color.RED);
+		g.fillRect(posX, posY - hauteurBar, (int)Math.floor(r * ratioVie), hauteurBar);
 	}
 	
 	

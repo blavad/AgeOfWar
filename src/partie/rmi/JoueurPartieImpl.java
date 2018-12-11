@@ -1,21 +1,17 @@
 package partie.rmi;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 
 import partie.core.Armee;
-import partie.core.CacUnite;
 import partie.core.Groupe;
 import partie.core.TypeDefence;
 import partie.core.TypeUnite;
-import partie.core.Unite;
+import partie.core.UniteXmlLoader;
 import partie.core.VarPartie;
 import partie.core.Vect2;
 import partie.ihm.InterfacePartie;
@@ -24,6 +20,7 @@ import partie.ihm.InterfacePartie.Menu;
 public class JoueurPartieImpl {
 	
 	private ServeurPartie serveur;
+	private UniteXmlLoader uniteXmlLoader;
 	
 	private int argent;
 	private int camp;
@@ -51,6 +48,7 @@ public class JoueurPartieImpl {
 		selectionneGroupe(1); // Initialise le groupe sélectionné à 1
 		this.serveur = serv;
 		this.plateau = new ImageIcon(getClass().getResource("/space.jpeg")).getImage();
+		this.uniteXmlLoader = new UniteXmlLoader();
 	}
 	
 	public int getArgent() { return this.argent; }
@@ -66,22 +64,9 @@ public class JoueurPartieImpl {
 	 * 				Le type d'unité à créer
 	 */
 	public void creerUnite(TypeUnite typeU) {
-		int cout;
 		// Recherche le cout de l'unité crée avec le typeU
-		switch (typeU) {
-		case CAC:
-			cout = VarPartie.COUT_CACU;
-			break;
-		case DISTANT:
-			cout = VarPartie.COUT_CACU;
-			break;
-		case TANK:
-			cout = VarPartie.COUT_CACU;
-			break;
-		default:
-			cout = VarPartie.COUT_CACU;
-			break;
-		}
+		int cout = uniteXmlLoader.getCout(typeU);
+		
 		if (prendreArgent(cout)) {
 			// Si prendreArgent retourne vrai => le transfert a pu se faire 
 			// On signale donc au serveur de créer une nouvelle unité 
@@ -171,24 +156,12 @@ public class JoueurPartieImpl {
 		g.drawImage(plateau, (int)offSetFond.x, (int)offSetFond.y, longueurFond, longueurFond, null);
 		
 		
-		// Parcourt toutes les entités et les dessine
+		// Parcourt toutes armées et dessine les unités 
 		for (Integer i : entites.keySet()) {
 			Armee a = entites.get(i);
 			
-			// On vérifie si la base existe
-			if (a.getBase() != null) {
-				// On dessine la base sur le plateau
-				a.getBase().draw(g, ratioMin, offSet);
-			}
-			
 			try {
-				// Parcourt toutes les unités et les dessine
-				for (Groupe grp : a.getGroupes()) {
-					for(Unite u : grp.getUnites()) {
-						// On dessine l'unité sur le plateau
-						u.draw(g, ratioMin, offSet);
-					}
-				}
+				a.draw(g, ratioMin, offSet);
 			} catch (ConcurrentModificationException e) {
 				
 			}
