@@ -4,14 +4,17 @@ import java.util.HashMap;
 
 import partie.core.Armee;
 import partie.core.Base;
+import partie.core.Defence;
 import partie.core.Entite;
 import partie.core.Groupe;
 import partie.core.Outils;
+import partie.core.TypeDefence;
 import partie.core.TypeUnite;
 import partie.core.Unite;
 import partie.core.UniteXmlLoader;
 import partie.core.VarPartie;
 import partie.core.Vect2;
+import partie.ihm.InterfacePartie.Menu;
 
 public class ServeurPartieImpl implements ServeurPartie {
 	
@@ -51,7 +54,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		joueurs.put(3, new JoueurPartieImpl(this, 3));
 		joueurs.put(4, new JoueurPartieImpl(this, 4));
 		
-		int offSet = 35;
+		int offSet = 40;
 		// Initialise les 4 armées
 		Armee a1 = new Armee();
 		a1.setBase(new Base(new Vect2(offSet,offSet), 1));
@@ -141,29 +144,26 @@ public class ServeurPartieImpl implements ServeurPartie {
 	 */
 	public void ajouterUnite(int camp, TypeUnite typeU, int grpSelect) {
 		
-		
-		/*
-		 * Unite u;
-		// Créer la bonne unité selon typeU et la place dans le bon camp et le grp selectionné par le joueur
-		switch (typeU) {
-		case CAC:
-			u = new CacUnite(entites.get(camp).getBase().getPosition(), camp);
-			break;
-		case DISTANT:
-			u = new CacUnite(entites.get(camp).getBase().getPosition(), camp);
-			break;
-		case TANK:
-			u = new CacUnite(entites.get(camp).getBase().getPosition(), camp);
-			break;
-		default:
-			u = new CacUnite(entites.get(camp).getBase().getPosition(), camp);
-			break;
-		
-		}
-		*/
-		
 		Unite u = uniteXmlLoader.createUnite(typeU, camp, entites.get(camp).getBase().getPosition());
 		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence à 1 (et les listes à 0)
+	}
+
+	public void ajouterDefence(int camp, TypeDefence typeD, Menu menu) {
+		
+		Defence d = uniteXmlLoader.createDefence(typeD, camp, entites.get(camp).getBase().getPosition());
+		entites.get(camp).getBase().addDef(menu, d);
+		
+	}
+
+	public void supprimerDefence(int camp, Menu menu) {
+		Defence d = entites.get(camp).getBase().getDefence(menu); 
+		if (d != null) joueurs.get(camp).ajouterArgent((int)Math.floor(d.getCout() * VarPartie.REMBOURSEMENT_UNITE));
+		entites.get(camp).getBase().suppDef(menu);
+	}
+	
+
+	public boolean aDefence(int camp, Menu menu) {
+		return (entites.get(camp).getBase().getDefence(menu) != null);
 	}
 	
 	

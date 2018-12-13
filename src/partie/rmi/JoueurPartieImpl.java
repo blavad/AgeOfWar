@@ -1,5 +1,6 @@
 package partie.rmi;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ConcurrentModificationException;
@@ -44,16 +45,17 @@ public class JoueurPartieImpl {
 	public JoueurPartieImpl(ServeurPartie serv, int camp) {
 		this.argent = 1000;
 		this.camp = camp;
+		this.serveur = serv;
+		this.plateau = new ImageIcon(getClass().getResource("/space2.jpeg")).getImage();
+		this.uniteXmlLoader = new UniteXmlLoader();
 		this.interfaceP = new InterfacePartie(this);
 		selectionneGroupe(1); // Initialise le groupe sélectionné à 1
-		this.serveur = serv;
-		this.plateau = new ImageIcon(getClass().getResource("/space.jpg")).getImage();
-		this.uniteXmlLoader = new UniteXmlLoader();
 	}
 	
 	public int getArgent() { return this.argent; }
 	public int getGroupeSelect() { return this.groupeSelectioner; }
 	public int getCamp() { return this.camp; }
+	public UniteXmlLoader getUniteXmlLoader() { return this.uniteXmlLoader; }
 	
 	/**
 	 * Créer une unité lorque le bouton associé est pressé<li>
@@ -84,8 +86,16 @@ public class JoueurPartieImpl {
 	 * @param type
 	 * 				Type de défence à créer
 	 */
-	public void creerDefence(Menu menu, TypeDefence type) {
-		
+	public void creerDefence(Menu menu, TypeDefence typeD) {
+		if (!serveur.aDefence(camp, menu)) {
+			int cout = uniteXmlLoader.getCout(typeD);
+			
+			if (prendreArgent(cout)) {
+				// Si prendreArgent retourne vrai => le transfert a pu se faire 
+				// On signale donc au serveur de créer une nouvelle unité 
+				this.serveur.ajouterDefence(camp, typeD, menu);
+			}
+		}
 	}
 	
 	/**
@@ -96,7 +106,7 @@ public class JoueurPartieImpl {
 	 * @param menu
 	 */
 	public void vendreDefence(Menu menu) {
-		System.out.println("vente : " + menu.toString());
+		this.serveur.supprimerDefence(camp, menu);
 	}
 	
 	/**
@@ -189,7 +199,7 @@ public class JoueurPartieImpl {
 		int posY = (int)offSet.y + (int)Math.floor(grp.getObjectif().y * ratio - rayon);
 		int r = (int)(rayon * 2);
 		
-		g.setColor(VarPartie.COLOR_OBJECTIF);
+		g.setColor(Color.RED);
 		g.fillOval(posX, posY, r, r);
 	}
 	

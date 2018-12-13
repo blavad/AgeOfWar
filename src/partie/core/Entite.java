@@ -2,6 +2,9 @@ package partie.core;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
 
 public abstract class Entite {
 	
@@ -11,6 +14,8 @@ public abstract class Entite {
 	
 	protected Color color;
 	protected int rayonEntite;
+	protected Image image;
+	protected float angle;
 	
 	/**
 	 * Construteur de l'entité<li>
@@ -30,6 +35,7 @@ public abstract class Entite {
 		this.camp = camp;
 		this.rayonEntite = rayonEntite;
 		defineColor();
+		this.angle = 0;
 	}
 	
 	/**
@@ -57,6 +63,9 @@ public abstract class Entite {
 	public boolean estMorte() { return this.vie == 0; }
 	public int getCamp() { return this.camp; }
 	public int getRayonEntite() { return this.rayonEntite; }
+	public void setImage(String path) {
+		image = new ImageIcon(getClass().getResource("/" + path)).getImage();
+	}
 	
 	/**
 	 * Gère la prise de dommage<li>

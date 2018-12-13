@@ -24,4 +24,10 @@ public class Outils {
 		return null;
 	}
 	
+	public static final float getAngle(Vect2 p1, Vect2 p2) {
+		float dx = p2.x - p1.x;
+		float dy = p2.y - p1.y;
+		return (float)Math.atan2(dy, dx);
+	}
+	
 }

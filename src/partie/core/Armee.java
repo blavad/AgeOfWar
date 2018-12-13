@@ -20,7 +20,7 @@ public class Armee {
 	
 	
 	public ArrayList<Groupe> getGroupes() { return this.groupes; }
-	public Entite getBase() { return this.base; }
+	public Base getBase() { return this.base; }
 	
 	
 	public void setBase(Base b) {
@@ -56,13 +56,14 @@ public class Armee {
 	 * 			Vect2 : décalage en x et y
 	 */
 	public void draw(Graphics g, float ratio, Vect2 offSet) {
+		
+		for (int j = 0; j < this.getGroupes().size(); j++) {
+			this.getGroupes().get(j).draw(g, ratio, offSet);
+		}
 		// On vérifie si la base existe
 		if (this.getBase() != null) {
 			// On dessine la base sur le plateau
 			this.getBase().draw(g, ratio, offSet);
-		}
-		for (int j = 0; j < this.getGroupes().size(); j++) {
-			this.getGroupes().get(j).draw(g, ratio, offSet);
 		}
 	}
 	

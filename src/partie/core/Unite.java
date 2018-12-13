@@ -2,7 +2,12 @@ package partie.core;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.util.HashMap;
+
+import javax.swing.ImageIcon;
 
 import partie.rmi.JoueurPartieImpl;
 
@@ -29,7 +34,7 @@ public class Unite extends Entite {
 	 * @param porteeA float
 	 * @param vitesseDeDeplacement float
 	 */
-	public Unite (Vect2 pos, int vie, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, float vitesseDeDeplacement) {
+	public Unite (Vect2 pos, int vie, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, float vitesseDeDeplacement, String imageName) {
 		super(pos, vie, camp, rayonEntite);
 		cooldown = 0;
 		this.cout = cout;
@@ -37,6 +42,8 @@ public class Unite extends Entite {
 		this.vitesseA = vitesseA;
 		this.porteeA = porteeA;
 		this.vitesseDeDeplacement = vitesseDeDeplacement;
+		setImage(imageName);
+		
 	}
 	
 	public float getPorteeA() { return this.porteeA; }
@@ -106,7 +113,9 @@ public class Unite extends Entite {
 			
 			if (entiteCible != null) {
 				// Si la cible pointe sur une entité, U attaque la cible
+				
 				attaqueEntite(entiteCible, entites, joueurs); 
+				angle = Outils.getAngle(position, entiteCible.getPosition()) + (float)Math.PI / 2;
 			} else { 
 				// Sinon, si la cible est null, on calcule le deplacement de U
 				// d la distance entre U et l'objectif
@@ -118,6 +127,7 @@ public class Unite extends Entite {
 				float dx = dd * (grp.getObjectif().x - this.getPosition().x);
 				float dy = dd * (grp.getObjectif().y - this.getPosition().y);
 				this.deplacement(dx, dy); // application de ces déplacements
+				angle = Outils.getAngle(position, grp.getObjectif()) + (float)Math.PI / 2;
 				
 			}
 		} else {
@@ -140,6 +150,7 @@ public class Unite extends Entite {
 					float dx = dd * (u0.getPosition().x - this.getPosition().x);
 					float dy = dd * (u0.getPosition().y - this.getPosition().y);
 					this.deplacement(dx, dy);
+					angle = Outils.getAngle(position, grp.getObjectif()) + (float)Math.PI / 2;
 				}
 			}
 		}
@@ -199,12 +210,13 @@ public class Unite extends Entite {
 			if (cible.estMorte()) {
 				if (cible instanceof Base) {
 					// Si l'unité tuée est une base
-					System.out.println("Joueur " + cible.getCamp() + "éliminé");
+					
+					//entites.remove(cible.camp);
 				} else 
 					if (cible instanceof Unite) {
 						// Si l'unité tuée est une unité
 						// Donne l'argent de l'élimination au joueur "assassin"
-						joueurs.get(this.getCamp()).ajouterArgent(((Unite)cible).getCout());
+						joueurs.get(this.getCamp()).ajouterArgent((int)Math.floor(((Unite)cible).getCout() * VarPartie.REMBOURSEMENT_UNITE));
 						entites.get(cible.getCamp()).supprimerUnite((Unite)cible);
 				}
 			}
@@ -252,13 +264,26 @@ public class Unite extends Entite {
 		int r = (int)(rayon * 2);
 		
 		g.setColor(color);
-		g.fillOval(posX, posY, r, r);	
+		if (image != null) {
+			AffineTransform rotation = new AffineTransform();
+			rotation.translate(posX , posY);
+			rotation.scale(r / (float)(image.getWidth(null)), r / (float)(image.getHeight(null)));
+			rotation.rotate(angle, (int)(image.getWidth(null)/2),(int)(image.getHeight(null)/2));
+			((Graphics2D)g).drawImage(image, rotation, null);
+		}
 		
+		int posX2 = (int)offSet.x + (int)Math.floor(position.x * ratio - rayon/3);
+		int posY2 = (int)offSet.y + (int)Math.floor(position.y * ratio - rayon/3);
+		int r2 = (int)(rayon * 2f/3f);
+		g.fillOval(posX2, posY2, r2, r2);
 		
 		float ratioVie = (float)vie / (float)vieMax;
 		int hauteurBar = (int)Math.floor(5 * ratio);
 		g.setColor(Color.RED);
 		g.fillRect(posX, posY - hauteurBar, (int)Math.floor(r * ratioVie), hauteurBar);
+		
+		
+		
 	}
 	
 	

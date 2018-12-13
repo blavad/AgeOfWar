@@ -1,14 +1,17 @@
 package partie.core;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 
+import javafx.scene.paint.Color;
 import partie.rmi.JoueurPartieImpl;
 
 public class Defence extends Unite {
 
-	public Defence(Vect2 pos, int vie, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA,
-			float vitesseDeDeplacement) {
-		super(pos, vie, camp, rayonEntite, cout, degatA, vitesseA, porteeA, vitesseDeDeplacement);
+	public Defence(Vect2 pos, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, String imageName) {
+		super(pos, 0, camp, rayonEntite, cout, degatA, vitesseA, porteeA, 0, imageName);
 		
 	}
 	
@@ -39,7 +42,38 @@ public class Defence extends Unite {
 		if (entiteCible != null) {
 			// Si la cible pointe sur une entité, U attaque la cible
 			attaqueEntite(entiteCible, entites, joueurs); 
+			angle = Outils.getAngle(position, entiteCible.getPosition()) + (float)Math.PI / 2;
 		}
+	}
+	
+	/**
+	 * Dessine l'unité sur le plateau
+	 * @param g
+	 * 			Graphics du JPanel plateau
+	 * @param ratio
+	 * 			Ratio d'affichage
+	 * @param offSet
+	 * 			Décalage d'affichage en X et Y
+	 */
+	public void draw(Graphics g, float ratio, Vect2 offSet) {
+		float rayon = rayonEntite * ratio;
+		
+		int posX = (int)offSet.x + (int)Math.floor(position.x * ratio - rayon);
+		int posY = (int)offSet.y + (int)Math.floor(position.y * ratio - rayon);
+		int r = (int)(rayon * 2);
+		
+		g.setColor(color);
+		if (image != null) {
+			AffineTransform rotation = new AffineTransform();
+			rotation.translate(posX , posY);
+			rotation.scale(r / (float)(image.getWidth(null)), r / (float)(image.getHeight(null)));
+			rotation.rotate(angle, (int)(image.getWidth(null)/2),(int)(image.getHeight(null)/2));
+			((Graphics2D)g).drawImage(image, rotation, null);
+		}
+		
+		
+		
+		
 	}
 
 }
