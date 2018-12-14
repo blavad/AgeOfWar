@@ -34,9 +34,9 @@ public class ServeurPartieImpl implements ServeurPartie {
 	
 	/**
 	 * Initialise la partie<li>
-	 * 	Créer les différents HashMap<li>
-	 * 	Créer les joueurs<li>
-	 * 	Initialise les armées et l'objectif de chaque groupe
+	 * 	Crï¿½er les diffï¿½rents HashMap<li>
+	 * 	Crï¿½er les joueurs<li>
+	 * 	Initialise les armï¿½es et l'objectif de chaque groupe
 	 */
 	private void initialiserPartie() {
 		// Initialisation des HashMap
@@ -50,7 +50,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		joueurs.put(4, new JoueurPartieImpl(this, 4));
 		
 		int offSet = 35;
-		// Initialise les 4 armées
+		// Initialise les 4 armees
 		Armee a1 = new Armee();
 		a1.setBase(new Base(new Vect2(offSet,offSet), 1));
 		
@@ -63,7 +63,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		Armee a4 = new Armee();
 		a4.setBase(new Base(new Vect2(offSet,heightP-offSet), 4));
 		
-		// Initialise les 3 objectifs de chaque armée sur chaque base énemies
+		// Initialise les 3 objectifs de chaque armï¿½e sur chaque base ï¿½nemies
 		a1.getGroupes().get(0).setObjectif(a2.getBase().getPosition());
 		a1.getGroupes().get(1).setObjectif(a3.getBase().getPosition());
 		a1.getGroupes().get(2).setObjectif(a4.getBase().getPosition());
@@ -80,7 +80,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		a4.getGroupes().get(1).setObjectif(a2.getBase().getPosition());
 		a4.getGroupes().get(2).setObjectif(a3.getBase().getPosition());
 		
-		// Rajoute les armées dans le Hashmap des unités
+		// Rajoute les armï¿½es dans le Hashmap des unitï¿½s
 		entites.put(1, a1);
 		entites.put(2, a2);
 		entites.put(3, a3);
@@ -89,8 +89,8 @@ public class ServeurPartieImpl implements ServeurPartie {
 	
 	/**
 	 * Lance la boucle du jeu<li>
-	 *  Gère les déplacements des unités<li>
-	 *  Envoie aux joueurs la liste des armées pour que ces derniers puissent les afficher
+	 *  Gï¿½re les dï¿½placements des unitï¿½s<li>
+	 *  Envoie aux joueurs la liste des armï¿½es pour que ces derniers puissent les afficher
 	 */
 	private void bouclePartie() {
 		finPartie = true;
@@ -101,17 +101,17 @@ public class ServeurPartieImpl implements ServeurPartie {
 		while (finPartie) {
 			currentTime = System.currentTimeMillis();
 			dt += currentTime - previousTime;
-			// Permet de gérer la fréquence de calcul
+			// Permet de gï¿½rer la frï¿½quence de calcul
 			if (dt > 1000/40) { 
 				
-				// Met à jour tous les groupes un par un
+				// Met ï¿½ jour tous les groupes un par un
 				for (Integer i : entites.keySet()) {
 					for (int j = 0; j < entites.get(i).getGroupes().size(); j++) {
 						updateGroupe(entites.get(i).getGroupes().get(j), dt);
 					}
 				}
 
-				// Envoie à tous les joueurs la liste des armées afin qu'ils les affichent
+				// Envoie ï¿½ tous les joueurs la liste des armï¿½es afin qu'ils les affichent
 				for (Integer i : joueurs.keySet()) {
 					joueurs.get(i).update(entites);
 				}
@@ -124,25 +124,25 @@ public class ServeurPartieImpl implements ServeurPartie {
 	}
 	
 	/**
-	 * Met à jour un groupe en calculant ce que fait chaque unité
+	 * Met ï¿½ jour un groupe en calculant ce que fait chaque unitï¿½
 	 * @param grp
-	 * 				groupe à mettre à jour
+	 * 				groupe ï¿½ mettre ï¿½ jour
 	 * @param dt
-	 * 				temps depuis la dernière maj
+	 * 				temps depuis la derniï¿½re maj
 	 */
 	public void updateGroupe(Groupe grp, float dt) {
 		
 		// Si le groupe n'est pas vide
 		if (grp.getUnites().size() > 0) {
-			// U pointe sur la première unite du groupe
+			// U pointe sur la premiï¿½re unite du groupe
 			Unite u = grp.getUnites().get(0); 
-			u.update(dt); // update l'unité (cooldown, ...)
+			u.update(dt); // update l'unitï¿½ (cooldown, ...)
 			
-			// Calcule et renvoie l'unité la plus proche à distance d'attaque de U
+			// Calcule et renvoie l'unitï¿½ la plus proche ï¿½ distance d'attaque de U
 			Entite entiteCible = entiteAAttaquer(u); 
 			
 			if (entiteCible != null) {
-				// Si la cible pointe sur une entité, U attaque la cible
+				// Si la cible pointe sur une entitï¿½, U attaque la cible
 				attaqueEntite(u, entiteCible); 
 			} else { 
 				// Sinon, si la cible est null, on calcule le deplacement de U
@@ -151,27 +151,27 @@ public class ServeurPartieImpl implements ServeurPartie {
 				// dd la distance de deplacement de U pendant dt en fonction de sa vitesse
 				float dd = (dt / 1000)  * (float)u.getVitesseDeplacement() / d;
 
-				// Théorème de Thales => on calcule dx et dy les déplacements en x et y
+				// Thï¿½orï¿½me de Thales => on calcule dx et dy les dï¿½placements en x et y
 				float dx = dd * (grp.getObjectif().x - u.getPosition().x);
 				float dy = dd * (grp.getObjectif().y - u.getPosition().y);
-				u.deplacement(dx, dy); // application de ces déplacements
+				u.deplacement(dx, dy); // application de ces dï¿½placements
 				
 			}
 			
 			// On parcourt le reste du groupe
 			for (int i = 1; i < grp.getUnites().size(); i++) {
-				// U pointe sur la (i + 1)e unité du groupe
+				// U pointe sur la (i + 1)e unitï¿½ du groupe
 				u = grp.getUnites().get(i);
 				u.update(dt); // update l'unite (cooldown, ...)
 				
-				// Calcule et renvoie l'unité la plus proche à distance d'attaque de U
+				// Calcule et renvoie l'unitï¿½ la plus proche ï¿½ distance d'attaque de U
 				entiteCible = entiteAAttaquer(u);
 				
 				if (entiteCible != null) {
 					attaqueEntite(u, entiteCible);
 				} else {
-					// U0 pointe sur la (i)e unité du groupe (l'unité devant U)
-					Unite u0 = grp.getUnites().get(i-1);// U pointe sur la (i + 1)e unité du groupe
+					// U0 pointe sur la (i)e unitï¿½ du groupe (l'unitï¿½ devant U)
+					Unite u0 = grp.getUnites().get(i-1);// U pointe sur la (i + 1)e unitï¿½ du groupe
 					
 					// d la distance entre U et U0
 					float d = (float)Math.sqrt(Outils.norme2AB(u0.getPosition(), u.getPosition()));
@@ -192,27 +192,27 @@ public class ServeurPartieImpl implements ServeurPartie {
 	}
 	
 	/**
-	 * Gère l'attaque de l'unité u sur l'entité cible
+	 * Gï¿½re l'attaque de l'unitï¿½ u sur l'entitï¿½ cible
 	 * @param u
 	 * 				attaquant
 	 * @param cible
-	 * 				entité qui se fait attaquer
+	 * 				entitï¿½ qui se fait attaquer
 	 */
 	private void attaqueEntite(Unite u, Entite cible) {
-		// Si U peut attaquer (le cooldown de U est à 0)
+		// Si U peut attaquer (le cooldown de U est ï¿½ 0)
 		if (u.canAttack()) {
 			// U attaque la cible et renvoie vrai si elle tue la cible, faux sinon
 			boolean tue = u.attaque(cible);
 			if (tue) {
 				if (cible instanceof Base) {
-					// Si l'unité tuée est une base
-					System.out.println("Joueur " + cible.getCamp() + "éliminé");
+					// Si l'unitï¿½ tuï¿½e est une base
+					System.out.println("Joueur " + cible.getCamp() + "ï¿½liminï¿½");
 				} else 
 					if (cible instanceof Unite) {
-						// Si l'unité tuée est une unité
-						// Donne l'argent de l'élimination au joueur "assassin"
+						// Si l'unitï¿½ tuï¿½e est une unitï¿½
+						// Donne l'argent de l'ï¿½limination au joueur "assassin"
 						joueurs.get(u.getCamp()).ajouterArgent(((Unite)cible).getCout());
-						// Supprime l'unité tuée de la liste d'entités
+						// Supprime l'unitï¿½ tuï¿½e de la liste d'entitï¿½s
 						supprimerUnite((Unite)cible);
 				}
 			}
@@ -220,30 +220,30 @@ public class ServeurPartieImpl implements ServeurPartie {
 	}
 	
 	/**
-	 * Définit l'entité que u doit attaquer 
+	 * Dï¿½finit l'entitï¿½ que u doit attaquer 
 	 * @param unite
 	 * 				l'attaquant
-	 * @return une entité à portée de l'attaquant et rien si aucune entité vérifie ce critère  
+	 * @return une entitï¿½ ï¿½ portï¿½e de l'attaquant et rien si aucune entitï¿½ vï¿½rifie ce critï¿½re  
 	 */
 	private Entite entiteAAttaquer(Unite unite) {
 		Entite e = null;
 		
-		// Parcourt toutes les entités de la partie
+		// Parcourt toutes les entitï¿½s de la partie
 		for (Integer i : entites.keySet()) {
-			// Regarde seulelement les unités des autres camps
+			// Regarde seulelement les unitï¿½s des autres camps
 			if (i != unite.getCamp()) {
 				
 				if (aPorteeDe(entites.get(i).getBase(), unite)) {
-					// Si la base est à portée d'attaque, alors elle devient la cible
+					// Si la base est ï¿½ portï¿½e d'attaque, alors elle devient la cible
 					e = entites.get(i).getBase();
 				}
 				
-				// Parcourt toutes les unités
+				// Parcourt toutes les unitï¿½s
 				for (int j = 0; j < entites.get(i).getGroupes().size(); j++) {
 					for (Unite u : entites.get(i).getGroupes().get(j).getUnites()) {
 						if (aPorteeDe(u, unite)) {
-							// Si l'unité est à portée d'attaque, alors elle devient la cible 
-							// Remarque : les unités sont prioritaires face aux bases
+							// Si l'unitï¿½ est ï¿½ portï¿½e d'attaque, alors elle devient la cible 
+							// Remarque : les unitï¿½s sont prioritaires face aux bases
 							e = u;
 						}
 					}
@@ -256,12 +256,12 @@ public class ServeurPartieImpl implements ServeurPartie {
 	}
 	
 	/**
-	 * Calcule si l'entité e est à portée d'attaque de l'attaquant u
+	 * Calcule si l'entitï¿½ e est ï¿½ portï¿½e d'attaque de l'attaquant u
 	 * @param e
-	 * 				l'entité cible 
+	 * 				l'entitï¿½ cible 
 	 * @param u
 	 * 				l'attaquant
-	 * @return vrai si l'attaquant est à portée de tir de la cible et faux sinon
+	 * @return vrai si l'attaquant est ï¿½ portï¿½e de tir de la cible et faux sinon
 	 */
 	private boolean aPorteeDe(Entite e, Unite u) {
 		int dx = (int)Math.abs(u.getPosition().x - e.getPosition().x); // Distance selon x de E et U
@@ -278,18 +278,18 @@ public class ServeurPartieImpl implements ServeurPartie {
 	}
 	
 	/**
-	 * Créer une unité selon typeU et la place dans le bon camp et le grp selectionné par le joueur
+	 * Crï¿½er une unitï¿½ selon typeU et la place dans le bon camp et le grp selectionnï¿½ par le joueur
 	 * @param camp
 	 * 				Le camp du joueur
 	 * @param typeU
-	 * 				Le tupe d'unité créée
+	 * 				Le tupe d'unitï¿½ crï¿½ï¿½e
 	 * @param grpSelect 
-	 * 				Le groupe sélectionné par le joueur lors de la création de l'unité
+	 * 				Le groupe sï¿½lectionnï¿½ par le joueur lors de la crï¿½ation de l'unitï¿½
 	 */
 	public void ajouterUnite(int camp, TypeUnite typeU, int grpSelect) {
 		Unite u;
 		
-		// Créer la bonne unité selon typeU et la place dans le bon camp et le grp selectionné par le joueur
+		// Crï¿½er la bonne unitï¿½ selon typeU et la place dans le bon camp et le grp selectionnï¿½ par le joueur
 		switch (typeU) {
 		case CAC:
 			u = new CacUnite(entites.get(camp).getBase().getPosition(), camp);
@@ -305,23 +305,23 @@ public class ServeurPartieImpl implements ServeurPartie {
 			break;
 		
 		}
-		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence à 1 (et les listes à 0)
+		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence ï¿½ 1 (et les listes ï¿½ 0)
 	}
 	
 	/**
-	 * Supprime l'unité en paramètre de la liste des unités du serveur
+	 * Supprime l'unitï¿½ en paramï¿½tre de la liste des unitï¿½s du serveur
 	 * @param u
-	 * 				L'unité à supprimer
+	 * 				L'unitï¿½ ï¿½ supprimer
 	 */
 	private void supprimerUnite(Unite u) {
-		// Parcourt tous les groupes et supprimes U lorsque celle-ci est trouvée
+		// Parcourt tous les groupes et supprimes U lorsque celle-ci est trouvï¿½e
 		for (Groupe g : entites.get(u.getCamp()).getGroupes()) {
 			g.getUnites().remove(u);
 		}
 	}
 	
 	
-	public static final void main(String[] args) {
+	public static void main(String[] args) {
 		new ServeurPartieImpl();
 	}
 
