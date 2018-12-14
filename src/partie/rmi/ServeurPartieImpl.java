@@ -53,14 +53,9 @@ public class ServeurPartieImpl implements ServeurPartie {
 		joueurs.put(2, new JoueurPartieImpl(this, 2));
 		joueurs.put(3, new JoueurPartieImpl(this, 3));
 		joueurs.put(4, new JoueurPartieImpl(this, 4));
-		
-<<<<<<< HEAD
-		int offSet = 35;
-		// Initialise les 4 armees
-=======
+	
 		int offSet = 40;
 		// Initialise les 4 armées
->>>>>>> 8fd4f4825c6cec70a1426a89ecc1f6e9626e4b29
 		Armee a1 = new Armee();
 		a1.setBase(new Base(new Vect2(offSet,offSet), 1));
 		
