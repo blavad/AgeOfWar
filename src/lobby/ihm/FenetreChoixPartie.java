@@ -32,15 +32,14 @@ import lobby.rmi.ServeurParties;
  *
  */
 public class FenetreChoixPartie extends JPanel {
-	public static Color COLOR_BACKGROUND = new Color(120, 220, 120);
-	public static Color COLOR_TEXT= new Color(120, 60, 70);
-	public static Color COLOR_CONTOUR= new Color(255, 255, 255);
 
 	/** Fenetre parent */
 	FenetreClient parent;
 
 	/** Le panel qui gere l'affichage des parties */
 	PanelParties pan_parties;
+	
+	JLabel text;
 	
 	/** Les boutons d'action */
 	JButton creerP = new JButton("Creer Partie"), joindreP = new JButton("Rejoindre Partie");
@@ -65,10 +64,12 @@ public class FenetreChoixPartie extends JPanel {
 	private void initComponent() {
 		
 		this.setLayout(new BorderLayout());
+		this.setBackground(FenetreClient.COLOR_BACKGROUND);
 		
-		JLabel text = new JLabel("Liste parties");
+		text = new JLabel("  Parties en attente");
 		text.setFont(new Font("Serif", Font.BOLD, 18));
-		text.setForeground(FenetreClient.COLOR_BACKGROUND);
+		text.setForeground(FenetreClient.COLOR_TEXT);
+		text.setBorder(BorderFactory.createLineBorder(FenetreClient.COLOR_CONTOUR,2));
 	    
 		// Creation du panel de liste de parties
 		pan_parties = new PanelParties();
@@ -77,18 +78,18 @@ public class FenetreChoixPartie extends JPanel {
 		JPanel panelBoutton = new JPanel();
 		panelBoutton.setLayout(new FlowLayout());
 		
-		creerP.setBackground(COLOR_BACKGROUND);
-		creerP.setForeground(COLOR_TEXT);
+		creerP.setBackground(FenetreClient.COLOR_BACKGROUND);
+		creerP.setForeground(FenetreClient.COLOR_TEXT);
 		creerP.addActionListener(new NouvellePartieControleur(this));
 		panelBoutton.add(creerP);
 		
-		joindreP.setBackground(COLOR_BACKGROUND);
-		joindreP.setForeground(COLOR_TEXT);
+		joindreP.setBackground(FenetreClient.COLOR_BACKGROUND);
+		joindreP.setForeground(FenetreClient.COLOR_TEXT);
 		joindreP.addActionListener(new JoindrePartieControleur(this));
 		panelBoutton.add(joindreP);
 		
 
-		//this.add(text, BorderLayout.NORTH);
+		this.add(text, BorderLayout.NORTH);
 		this.add(new JScrollPane(pan_parties.getJListPartie()), BorderLayout.CENTER);
 		this.add(panelBoutton,BorderLayout.SOUTH);	
 

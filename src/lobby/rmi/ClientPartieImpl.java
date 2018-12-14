@@ -54,6 +54,7 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 	 */
 	@Override
 	public void lancerPartie(String hote, Integer camp) throws RemoteException {
+		this.client.fenetreConnexion.setVisible(false);
 		if (this.client.getPseudo().equals(hote)){
 			ServeurPartieImpl jeuHote = new ServeurPartieImpl();
  		}

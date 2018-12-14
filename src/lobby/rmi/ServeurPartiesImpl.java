@@ -195,7 +195,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 			deconnect(cl);
 		}
 		deconnect(parties.getPartie(partie).getHost());
-		parties.getListParties().remove(partie);
+		parties.getListParties().remove(parties.getPartie(partie));
 	}
 	
 	

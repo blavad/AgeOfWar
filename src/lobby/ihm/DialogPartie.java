@@ -42,6 +42,7 @@ public class DialogPartie extends JDialog {
 
 	/** Image */
 	JLabel icon;
+	String pathIcon = "/age-of-war.jpg";
 
 	/** Verifie l'envoie des donnees*/
 	boolean sendData;
@@ -75,7 +76,7 @@ public class DialogPartie extends JDialog {
 	public void initComponent(){
 		
 		//Icône
-	    icon = new JLabel(new ImageIcon("res/age-of-war.jpg"));
+	    icon = new JLabel(new ImageIcon(getClass().getResource(pathIcon)));
 	    JPanel panIcon = new JPanel();
 	    panIcon.setLayout(new BorderLayout());
 	    panIcon.add(icon);

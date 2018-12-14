@@ -56,12 +56,14 @@ public class FenetrePartie extends JPanel {
 		text = new JLabel();
 		text.setFont(new Font("Serif", Font.BOLD, 18));
 		text.setForeground(FenetreClient.COLOR_TEXT);
-		text.setBackground(FenetreClient.COLOR_BACKGROUND);
+		text.setBorder(BorderFactory.createLineBorder(FenetreClient.COLOR_CONTOUR,2));
 		
 		jl_clients = new JList<Client>(new DefaultListModel<Client>());
-	    jl_clients.setBorder(BorderFactory.createTitledBorder("Autre joueurs"));
+	    jl_clients.setBorder(BorderFactory.createTitledBorder("  Liste joueurs"));
 
 		quitter = new JButton("Quitter Partie");
+		quitter.setForeground(FenetreClient.COLOR_TEXT);
+		quitter.setBackground(FenetreClient.COLOR_BACKGROUND);
 		quitter.addActionListener(new QuitterPartieControleur(this));
 		
 		updateComponent();
@@ -76,7 +78,7 @@ public class FenetrePartie extends JPanel {
 	 */
 	public void updateComponent() {
 		if (parent.client.getPartie() != null ){
-			this.text.setText("Ma partie : "+ parent.client.getPartie().getName());
+			this.text.setText("  Ma partie : "+ parent.client.getPartie().getName());
 			
 			DefaultListModel<Client> model = (DefaultListModel<Client>) this.jl_clients.getModel();
 			model.clear();
@@ -87,7 +89,7 @@ public class FenetrePartie extends JPanel {
 			quitter.setEnabled(true);
 		}
 		else {
-			this.text.setText("Ma partie : ???");
+			this.text.setText("  Ma partie : ???");
 			DefaultListModel<Client> model = (DefaultListModel<Client>) this.jl_clients.getModel();
 			model.clear();
 			quitter.setEnabled(false);

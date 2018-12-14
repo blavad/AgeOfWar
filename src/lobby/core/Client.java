@@ -20,7 +20,7 @@ public class Client implements Serializable {
 	/**
 	 * La fenetre du joueur
 	 */
-	public FenetreClient fenetreConnexion;
+	public transient FenetreClient fenetreConnexion;
 	
 	public Client(String pseudo){
 		this.pseudo = pseudo;

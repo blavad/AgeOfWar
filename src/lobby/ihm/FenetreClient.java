@@ -25,9 +25,9 @@ import lobby.rmi.SuppressionPartieException;
 
 public class FenetreClient extends JFrame {
 	
-	public static Color COLOR_BACKGROUND = new Color(120, 220, 120);
-	public static Color COLOR_TEXT= new Color(120, 60, 70);
-	public static Color COLOR_CONTOUR= new Color(255, 255, 255);
+	public static Color COLOR_BACKGROUND = new Color(50, 50, 220);
+	public static Color COLOR_TEXT= new Color(220, 220, 220);
+	public static Color COLOR_CONTOUR= new Color(240, 240, 240);
 
 	
 	/** Le joueur associe a la fenetre */
