@@ -97,6 +97,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 	 *  Gï¿½re les dï¿½placements des unitï¿½s<li>
 	 *  Envoie aux joueurs la liste des armï¿½es pour que ces derniers puissent les afficher
 	 */
+	
 	private void bouclePartie() {
 		finPartie = true;
 		long dt = 0;
