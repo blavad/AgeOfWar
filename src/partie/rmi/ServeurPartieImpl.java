@@ -4,20 +4,24 @@ import java.util.HashMap;
 
 import partie.core.Armee;
 import partie.core.Base;
-import partie.core.CacUnite;
+import partie.core.Defence;
 import partie.core.Entite;
 import partie.core.Groupe;
 import partie.core.Outils;
+import partie.core.TypeDefense;
 import partie.core.TypeUnite;
 import partie.core.Unite;
+import partie.core.UniteXmlLoader;
 import partie.core.VarPartie;
 import partie.core.Vect2;
+import partie.ihm.InterfacePartie.Menu;
 
 public class ServeurPartieImpl implements ServeurPartie {
 	
 	private HashMap<Integer, Armee> entites;
 	private HashMap<Integer, JoueurPartieImpl> joueurs;
 	private boolean finPartie;
+	private UniteXmlLoader uniteXmlLoader;
 	
 	private int widthP = VarPartie.WIDTH_PARTIE;
 	private int heightP = VarPartie.HEIGHT_PARTIE;
@@ -42,6 +46,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		// Initialisation des HashMap
 		joueurs = new HashMap<Integer, JoueurPartieImpl>();
 		entites = new HashMap<Integer, Armee>();
+		uniteXmlLoader = new UniteXmlLoader();
 		
 		// Initialise les 4 joueurs 
 		joueurs.put(1, new JoueurPartieImpl(this, 1));
@@ -49,8 +54,13 @@ public class ServeurPartieImpl implements ServeurPartie {
 		joueurs.put(3, new JoueurPartieImpl(this, 3));
 		joueurs.put(4, new JoueurPartieImpl(this, 4));
 		
+<<<<<<< HEAD
 		int offSet = 35;
 		// Initialise les 4 armees
+=======
+		int offSet = 40;
+		// Initialise les 4 armées
+>>>>>>> 8fd4f4825c6cec70a1426a89ecc1f6e9626e4b29
 		Armee a1 = new Armee();
 		a1.setBase(new Base(new Vect2(offSet,offSet), 1));
 		
@@ -97,21 +107,32 @@ public class ServeurPartieImpl implements ServeurPartie {
 		long dt = 0;
 		long previousTime = System.currentTimeMillis();
 		long currentTime;
+		float FPSLIMIT = 40;
+		float LIMITEUR = 1000/FPSLIMIT;
 		
 		while (finPartie) {
 			currentTime = System.currentTimeMillis();
 			dt += currentTime - previousTime;
+<<<<<<< HEAD
 			// Permet de gï¿½rer la frï¿½quence de calcul
 			if (dt > 1000/40) { 
+=======
+			// Permet de gérer la fréquence de calcul
+			if (dt > LIMITEUR) { 
+>>>>>>> 8fd4f4825c6cec70a1426a89ecc1f6e9626e4b29
 				
 				// Met ï¿½ jour tous les groupes un par un
 				for (Integer i : entites.keySet()) {
-					for (int j = 0; j < entites.get(i).getGroupes().size(); j++) {
-						updateGroupe(entites.get(i).getGroupes().get(j), dt);
-					}
+					entites.get(i).update(dt, entites, joueurs);
 				}
+<<<<<<< HEAD
 
 				// Envoie ï¿½ tous les joueurs la liste des armï¿½es afin qu'ils les affichent
+=======
+				
+				
+				// Envoie à tous les joueurs la liste des armées afin qu'ils les affichent
+>>>>>>> 8fd4f4825c6cec70a1426a89ecc1f6e9626e4b29
 				for (Integer i : joueurs.keySet()) {
 					joueurs.get(i).update(entites);
 				}
@@ -123,6 +144,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		}
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Met ï¿½ jour un groupe en calculant ce que fait chaque unitï¿½
 	 * @param grp
@@ -276,6 +298,11 @@ public class ServeurPartieImpl implements ServeurPartie {
 		}
 		else return false;
 	}
+=======
+	
+	
+	
+>>>>>>> 8fd4f4825c6cec70a1426a89ecc1f6e9626e4b29
 	
 	/**
 	 * Crï¿½er une unitï¿½ selon typeU et la place dans le bon camp et le grp selectionnï¿½ par le joueur
@@ -287,8 +314,8 @@ public class ServeurPartieImpl implements ServeurPartie {
 	 * 				Le groupe sï¿½lectionnï¿½ par le joueur lors de la crï¿½ation de l'unitï¿½
 	 */
 	public void ajouterUnite(int camp, TypeUnite typeU, int grpSelect) {
-		Unite u;
 		
+<<<<<<< HEAD
 		// Crï¿½er la bonne unitï¿½ selon typeU et la place dans le bon camp et le grp selectionnï¿½ par le joueur
 		switch (typeU) {
 		case CAC:
@@ -306,8 +333,26 @@ public class ServeurPartieImpl implements ServeurPartie {
 		
 		}
 		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence ï¿½ 1 (et les listes ï¿½ 0)
+=======
+		Unite u = uniteXmlLoader.createUnite(typeU, camp, entites.get(camp).getBase().getPosition());
+		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence à 1 (et les listes à 0)
+>>>>>>> 8fd4f4825c6cec70a1426a89ecc1f6e9626e4b29
+	}
+
+	public void ajouterDefence(int camp, TypeDefense typeD, Menu menu) {
+		
+		Defence d = uniteXmlLoader.createDefence(typeD, camp, entites.get(camp).getBase().getPosition());
+		entites.get(camp).getBase().addDef(menu, d);
+		
+	}
+
+	public void supprimerDefence(int camp, Menu menu) {
+		Defence d = entites.get(camp).getBase().getDefence(menu); 
+		if (d != null) joueurs.get(camp).ajouterArgent((int)Math.floor(d.getCout() * VarPartie.REMBOURSEMENT_UNITE));
+		entites.get(camp).getBase().suppDef(menu);
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Supprime l'unitï¿½ en paramï¿½tre de la liste des unitï¿½s du serveur
 	 * @param u
@@ -318,6 +363,11 @@ public class ServeurPartieImpl implements ServeurPartie {
 		for (Groupe g : entites.get(u.getCamp()).getGroupes()) {
 			g.getUnites().remove(u);
 		}
+=======
+
+	public boolean aDefence(int camp, Menu menu) {
+		return (entites.get(camp).getBase().getDefence(menu) != null);
+>>>>>>> 8fd4f4825c6cec70a1426a89ecc1f6e9626e4b29
 	}
 	
 	

@@ -3,19 +3,16 @@ package partie.rmi;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 
 import partie.core.Armee;
-import partie.core.CacUnite;
 import partie.core.Groupe;
-import partie.core.TypeDefence;
+import partie.core.TypeDefense;
 import partie.core.TypeUnite;
-import partie.core.Unite;
+import partie.core.UniteXmlLoader;
 import partie.core.VarPartie;
 import partie.core.Vect2;
 import partie.ihm.InterfacePartie;
@@ -24,6 +21,7 @@ import partie.ihm.InterfacePartie.Menu;
 public class JoueurPartieImpl {
 	
 	private ServeurPartie serveur;
+	private UniteXmlLoader uniteXmlLoader;
 	
 	private int argent;
 	private int camp;
@@ -47,15 +45,17 @@ public class JoueurPartieImpl {
 	public JoueurPartieImpl(ServeurPartie serv, int camp) {
 		this.argent = 1000;
 		this.camp = camp;
+		this.serveur = serv;
+		this.plateau = new ImageIcon(getClass().getResource("/space2.jpeg")).getImage();
+		this.uniteXmlLoader = new UniteXmlLoader();
 		this.interfaceP = new InterfacePartie(this);
 		selectionneGroupe(1); // Initialise le groupe sélectionné à 1
-		this.serveur = serv;
-		this.plateau = new ImageIcon(getClass().getResource("/plateau.jpg")).getImage();
 	}
 	
 	public int getArgent() { return this.argent; }
 	public int getGroupeSelect() { return this.groupeSelectioner; }
 	public int getCamp() { return this.camp; }
+	public UniteXmlLoader getUniteXmlLoader() { return this.uniteXmlLoader; }
 	
 	/**
 	 * Créer une unité lorque le bouton associé est pressé<li>
@@ -66,22 +66,9 @@ public class JoueurPartieImpl {
 	 * 				Le type d'unité à créer
 	 */
 	public void creerUnite(TypeUnite typeU) {
-		int cout;
 		// Recherche le cout de l'unité crée avec le typeU
-		switch (typeU) {
-		case CAC:
-			cout = VarPartie.COUT_CACU;
-			break;
-		case DISTANT:
-			cout = VarPartie.COUT_CACU;
-			break;
-		case TANK:
-			cout = VarPartie.COUT_CACU;
-			break;
-		default:
-			cout = VarPartie.COUT_CACU;
-			break;
-		}
+		int cout = uniteXmlLoader.getCout(typeU);
+		
 		if (prendreArgent(cout)) {
 			// Si prendreArgent retourne vrai => le transfert a pu se faire 
 			// On signale donc au serveur de créer une nouvelle unité 
@@ -90,7 +77,7 @@ public class JoueurPartieImpl {
 	}
 	
 	/**
-	 * Créer une défence lorque le bouton associé est pressé<li>
+	 * Créer une défence lorsque le bouton associé est pressé<li>
 	 * 	Vérifie avant la création si le joueur a assez d'argent.<li> 
 	 * 	Si la création est possible, enlève la somme d'argent au joueur
 	 * et demande au serveur de créer cette défence 
@@ -99,8 +86,16 @@ public class JoueurPartieImpl {
 	 * @param type
 	 * 				Type de défence à créer
 	 */
-	public void creerDefence(Menu menu, TypeDefence type) {
-		System.out.println("creation : " + menu.toString() + type.toString());
+	public void creerDefence(Menu menu, TypeDefense typeD) {
+		if (!serveur.aDefence(camp, menu)) {
+			int cout = uniteXmlLoader.getCout(typeD);
+			
+			if (prendreArgent(cout)) {
+				// Si prendreArgent retourne vrai => le transfert a pu se faire 
+				// On signale donc au serveur de créer une nouvelle unité 
+				this.serveur.ajouterDefence(camp, typeD, menu);
+			}
+		}
 	}
 	
 	/**
@@ -111,7 +106,7 @@ public class JoueurPartieImpl {
 	 * @param menu
 	 */
 	public void vendreDefence(Menu menu) {
-		System.out.println("vente : " + menu.toString());
+		this.serveur.supprimerDefence(camp, menu);
 	}
 	
 	/**
@@ -138,57 +133,52 @@ public class JoueurPartieImpl {
 	 * 				HashMap avec toutes les armées
 	 */
 	private void draw(Graphics g, HashMap<Integer, Armee> entites) {
-		// colore le fond => "supprime" l'ancienne frame
-		//g.setColor(interfaceP.getCenterPan().getBackground());
-		//g.fillRect(0, 0, interfaceP.getCenterPan().getWidth(), interfaceP.getCenterPan().getHeight());
 		
 		// Calcule le ratio taille de la fenetre / taille fixe du jeu
 		Vect2 ratios = new Vect2((float)interfaceP.getCenterPan().getWidth() / widthP, (float)interfaceP.getCenterPan().getHeight() / heightP);
 		
-		float ratio;
+		float ratioMin, ratioMax;
 		int longueur; // longueur du côté du plateau (carré) => longueur = min(widthFenetre, heightFenetre)
-		Vect2 offSet = new Vect2(); // Permet de centrer le plateau sur le côté le plus long
+		Vect2 offSet = new Vect2(); // Permet de centrer les Entites sur le côté le plus long
+		
+		int longueurFond;
+		Vect2 offSetFond = new Vect2();
 		if (ratios.x < ratios.y) {
 			// Si la fenêtre est plus haute que longue (width < height)
-			ratio = ratios.x;
-			longueur = interfaceP.getCenterPan().getWidth(); // longueur prend la hauteur de la largeur
+			ratioMin = ratios.x;
+			longueur = interfaceP.getCenterPan().getWidth(); // longueur prend la largeur de la fenetre
 			offSet.setPosY(((float)interfaceP.getCenterPan().getHeight() - longueur) / 2);
+			
+			ratioMax = ratios.y;
+			longueurFond = interfaceP.getCenterPan().getHeight();
+			offSetFond.setPosX(((float)interfaceP.getCenterPan().getWidth() - longueurFond) / 2);
 		} else {
-			ratio = ratios.y;
+			ratioMin = ratios.y;
 			longueur = interfaceP.getCenterPan().getHeight(); // longueur prend la hauteur de la fenêtre
 			offSet.setPosX(((float)interfaceP.getCenterPan().getWidth() - longueur) / 2);
+			
+			ratioMax = ratios.x;
+			longueurFond = interfaceP.getCenterPan().getWidth();
+			offSetFond.setPosY(((float)interfaceP.getCenterPan().getHeight() - longueurFond) / 2);
 		}
 		
 		// Dessine le plateau
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawImage(plateau, (int)offSet.x, (int)offSet.y, longueur, longueur, null);
+		g.drawImage(plateau, (int)offSetFond.x, (int)offSetFond.y, longueurFond, longueurFond, null);
 		
 		
-		// Parcourt toutes les entités et les dessine
+		// Parcourt toutes armées et dessine les unités 
 		for (Integer i : entites.keySet()) {
 			Armee a = entites.get(i);
 			
-			// On vérifie si la base existe
-			if (a.getBase() != null) {
-				// On dessine la base sur le plateau
-				a.getBase().draw(g, ratio, offSet);
-			}
-			
 			try {
-				// Parcourt toutes les unités et les dessine
-				for (Groupe grp : a.getGroupes()) {
-					for(Unite u : grp.getUnites()) {
-						// On dessine l'unité sur le plateau
-						u.draw(g, ratio, offSet);
-					}
-				}
+				a.draw(g, ratioMin, offSet);
 			} catch (ConcurrentModificationException e) {
 				
 			}
 		}
 		
 		// Dessine un point noir qui représente l'ojectif du groupe selectioné
-		drawObjectifSelect(g, entites.get(camp).getGroupes().get(groupeSelectioner - 1), ratio, offSet);
+		drawObjectifSelect(g, entites.get(camp).getGroupes().get(groupeSelectioner - 1), ratioMin, offSet);
 	}
 	
 	/**
@@ -209,7 +199,7 @@ public class JoueurPartieImpl {
 		int posY = (int)offSet.y + (int)Math.floor(grp.getObjectif().y * ratio - rayon);
 		int r = (int)(rayon * 2);
 		
-		g.setColor(VarPartie.COLOR_OBJECTIF);
+		g.setColor(Color.RED);
 		g.fillOval(posX, posY, r, r);
 	}
 	

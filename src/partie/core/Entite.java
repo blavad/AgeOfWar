@@ -2,6 +2,9 @@ package partie.core;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
 
 public abstract class Entite {
 	
@@ -10,7 +13,9 @@ public abstract class Entite {
 	protected int camp;
 	
 	protected Color color;
-	protected int rayonUnite;
+	protected int rayonEntite;
+	protected Image image;
+	protected float angle;
 	
 	/**
 	 * Construteur de l'entité<li>
@@ -23,12 +28,14 @@ public abstract class Entite {
 	 * @param camp
 	 * 			Camp de l'entité
 	 */
-	public Entite(Vect2 pos, int vie, int camp) {
+	public Entite(Vect2 pos, int vie, int camp, int rayonEntite) {
 		this.position = new Vect2(pos.x, pos.y);
 		this.vieMax = vie;
 		this.vie = vie;
 		this.camp = camp;
+		this.rayonEntite = rayonEntite;
 		defineColor();
+		this.angle = 0;
 	}
 	
 	/**
@@ -53,8 +60,12 @@ public abstract class Entite {
 	
 	public Vect2 getPosition() { return this.position; }
 	public int getVie() { return this.vie; }
+	public boolean estMorte() { return this.vie == 0; }
 	public int getCamp() { return this.camp; }
-	public int getRayonUnite() { return this.rayonUnite; }
+	public int getRayonEntite() { return this.rayonEntite; }
+	public void setImage(String path) {
+		image = new ImageIcon(getClass().getResource("/" + path)).getImage();
+	}
 	
 	/**
 	 * Gère la prise de dommage<li>
@@ -64,15 +75,13 @@ public abstract class Entite {
 	 * 			Dommage pris
 	 * @return vrai si l'entité est tuée et faux sinon
 	 */
-	public boolean takeDamage(int d) {
+	public void takeDamage(int d) {
 		int v = this.vie - d;
 		if (v <= 0) {
 			this.vie = 0;
-			return true;
 		}
 		else {
 			this.vie = v;
-			return false;
 		}
 	}
 	
