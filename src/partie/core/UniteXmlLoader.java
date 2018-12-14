@@ -62,7 +62,7 @@ public class UniteXmlLoader {
 		
 	}
 	
-	public Defence createDefence(TypeDefence typeD, int camp, Vect2 pos) {
+	public Defence createDefence(TypeDefense typeD, int camp, Vect2 pos) {
 		Node u = Outils.getChild(typeD.toString(), root);
 		if (u != null) {
 			
@@ -91,7 +91,7 @@ public class UniteXmlLoader {
 		} else { return 0; }
 		
 	}
-	public int getCout(TypeDefence typeD) {
+	public int getCout(TypeDefense typeD) {
 		Node u = Outils.getChild(typeD.toString(), root);
 		if (u != null) {
 			Element carac = (Element)Outils.getChild("Caracteristiques", u);

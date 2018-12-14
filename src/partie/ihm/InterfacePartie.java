@@ -25,7 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import partie.core.TypeDefence;
+import partie.core.TypeDefense;
 import partie.core.TypeUnite;
 import partie.rmi.JoueurPartieImpl;
 
@@ -41,11 +41,12 @@ public class InterfacePartie  extends JFrame {
 	private JLabel labArgent;
 	
 	private JPanel panBot;
-	public enum Menu {GENERAL, UNITES, DEFENCES, DEF1, DEF2, DEF3}
+	public enum Menu {GENERAL, UNITES, DEFENSES, DEF1, DEF2, DEF3}
 	private JPanel panMenu;
 	private JPanel panUnites;
-	private JPanel panDefences;
+	private JPanel panDefenses;
 	private JPanel panDef1, panDef2, panDef3;
+	private JLabel venteDef1, venteDef2, venteDef3;
 	
 	private JPanel panGroupe;
 	private JLabel labGroupe;
@@ -57,9 +58,9 @@ public class InterfacePartie  extends JFrame {
 	private String pathImageV1 = "/Vaisseau1.png";
 	private String pathImageV2 = "/Vaisseau2.png";
 	private String pathImageV3 = "/Vaisseau3.png";
-	private String pathImageD1 = "/Defence1.png";
-	private String pathImageD2 = "/Defence2.png";
-	private String pathImageD3 = "/Defence3.png";
+	private String pathImageD1 = "/Defense1.png";
+	private String pathImageD2 = "/Defense2.png";
+	private String pathImageD3 = "/Defense3.png";
 	private String pathFondBGroupe = "/Bordure3.jpg";
 	private String pathFondBRetour = "/Bordure2.jpg";
 	private String pathFondBUnite = "/Bordure1.jpg";
@@ -125,7 +126,7 @@ public class InterfacePartie  extends JFrame {
 		panMenu = createPanelMenu(Menu.GENERAL);
 		
 		JButton bUnites = buttonWithLabelFond(pathFondMenu3, "Unites", color, 90, 45, new ButtonMenu(this, Menu.UNITES));
-		JButton bDefences = buttonWithLabelFond(pathFondMenu3, "Defences", color, 90, 45, new ButtonMenu(this, Menu.DEFENCES));
+		JButton bDefences = buttonWithLabelFond(pathFondMenu3, "Defenses", color, 90, 45, new ButtonMenu(this, Menu.DEFENSES));
 		
 		JPanel panM = new PanelImageFond(pathFondMenu1);
 		panM.add(bUnites);
@@ -150,7 +151,7 @@ public class InterfacePartie  extends JFrame {
 		panUnites.add(panU, BorderLayout.CENTER);
 		
 		//Construction du Menu des defences
-		panDefences = createPanelMenu(Menu.DEFENCES);
+		panDefenses = createPanelMenu(Menu.DEFENSES);
 		
 		JButton bDef1 = buttonWithLabelFond(pathFondBUnite, "Def1", color, 65, 45, new ButtonMenu(this, Menu.DEF1));
 		JButton bDef2 = buttonWithLabelFond(pathFondBUnite, "Def2", color, 65, 45, new ButtonMenu(this, Menu.DEF2));
@@ -164,7 +165,7 @@ public class InterfacePartie  extends JFrame {
 		panD.add(bDef2);
 		panD.add(bDef3);
 		panD.add(bBackD);
-		panDefences.add(panD, BorderLayout.CENTER);
+		panDefenses.add(panD, BorderLayout.CENTER);
 	
 		//Construction du Menu de chaque Def
 		panDef1 = createPanDef(Menu.DEF1);
@@ -340,15 +341,21 @@ public class InterfacePartie  extends JFrame {
 		
 		JPanel pan = new PanelImageFond(pathFondMenu1);
 		pan.setBackground(Color.WHITE);
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD1, ""+joueurP.getUniteXmlLoader().getCout(TypeDefence.DEFI), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefence.DEFI)));
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeDefence.DEFII), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefence.DEFII)));
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeDefence.DEFIII), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefence.DEFIII)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD1, ""+joueurP.getUniteXmlLoader().getCout(TypeDefense.DEFI), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefense.DEFI)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD2, ""+joueurP.getUniteXmlLoader().getCout(TypeDefense.DEFII), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefense.DEFII)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeDefense.DEFIII), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefense.DEFIII)));
+		
 		pan.add(new ButtonImageFond(pathFondMenu3, 60, 45, new ButtonSellDef(this)));
+		
+		
+		
 		pan.add(new ButtonImageFond(pathFondBRetour, 35, 35, new ButtonBack(this)));
 		panP.add(pan, BorderLayout.CENTER);
 		
 		return panP;
 	}
+	
+	
 	
 	public JPanel getCenterPan() { return this.panCenter; }
 	
@@ -387,8 +394,8 @@ public class InterfacePartie  extends JFrame {
 		case DEF3:
 			panDef3.setVisible(false);
 			break;
-		case DEFENCES:
-			panDefences.setVisible(false);
+		case DEFENSES:
+			panDefenses.setVisible(false);
 			break;
 		case GENERAL:
 			panMenu.setVisible(false);
@@ -410,9 +417,9 @@ public class InterfacePartie  extends JFrame {
 			panBot.add(panUnites, BorderLayout.SOUTH);
 			panUnites.setVisible(true);
 			break;
-		case DEFENCES :
-			panBot.add(panDefences, BorderLayout.SOUTH);
-			panDefences.setVisible(true);
+		case DEFENSES :
+			panBot.add(panDefenses, BorderLayout.SOUTH);
+			panDefenses.setVisible(true);
 			break;
 		case DEF1:
 			panBot.add(panDef1, BorderLayout.SOUTH);
@@ -439,15 +446,15 @@ public class InterfacePartie  extends JFrame {
 	public void backMenu() {
 		switch (currentMenu) {
 		case DEF1:
-			switchMenu(Menu.DEFENCES);
+			switchMenu(Menu.DEFENSES);
 			break;
 		case DEF2:
-			switchMenu(Menu.DEFENCES);
+			switchMenu(Menu.DEFENSES);
 			break;
 		case DEF3:
-			switchMenu(Menu.DEFENCES);
+			switchMenu(Menu.DEFENSES);
 			break;
-		case DEFENCES:
+		case DEFENSES:
 			switchMenu(Menu.GENERAL);
 			break;
 		case GENERAL:
@@ -514,9 +521,9 @@ public class InterfacePartie  extends JFrame {
 	private class ButtonDef implements ActionListener {
 
 		private InterfacePartie interfaceP;
-		private TypeDefence typeD;
+		private TypeDefense typeD;
 		
-		ButtonDef (InterfacePartie i, TypeDefence type) {
+		ButtonDef (InterfacePartie i, TypeDefense type) {
 			this.interfaceP = i;
 			this.typeD = type;
 		}

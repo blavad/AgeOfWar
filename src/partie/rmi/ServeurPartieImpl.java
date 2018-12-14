@@ -8,7 +8,7 @@ import partie.core.Defence;
 import partie.core.Entite;
 import partie.core.Groupe;
 import partie.core.Outils;
-import partie.core.TypeDefence;
+import partie.core.TypeDefense;
 import partie.core.TypeUnite;
 import partie.core.Unite;
 import partie.core.UniteXmlLoader;
@@ -148,7 +148,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence à 1 (et les listes à 0)
 	}
 
-	public void ajouterDefence(int camp, TypeDefence typeD, Menu menu) {
+	public void ajouterDefence(int camp, TypeDefense typeD, Menu menu) {
 		
 		Defence d = uniteXmlLoader.createDefence(typeD, camp, entites.get(camp).getBase().getPosition());
 		entites.get(camp).getBase().addDef(menu, d);

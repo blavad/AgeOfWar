@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 
 import partie.core.Armee;
 import partie.core.Groupe;
-import partie.core.TypeDefence;
+import partie.core.TypeDefense;
 import partie.core.TypeUnite;
 import partie.core.UniteXmlLoader;
 import partie.core.VarPartie;
@@ -86,7 +86,7 @@ public class JoueurPartieImpl {
 	 * @param type
 	 * 				Type de défence à créer
 	 */
-	public void creerDefence(Menu menu, TypeDefence typeD) {
+	public void creerDefence(Menu menu, TypeDefense typeD) {
 		if (!serveur.aDefence(camp, menu)) {
 			int cout = uniteXmlLoader.getCout(typeD);
 			

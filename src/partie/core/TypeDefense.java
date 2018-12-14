@@ -1,6 +1,6 @@
 package partie.core;
 
-public enum TypeDefence {
+public enum TypeDefense {
 	DEFI,
 	DEFII,
 	DEFIII
