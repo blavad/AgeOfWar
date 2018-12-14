@@ -169,6 +169,7 @@ public class ServeurPartieImpl implements ServeurPartie {
 		for (Groupe g : entites.get(u.getCamp()).getGroupes()) {
 			g.getUnites().remove(u);
 		}
+	}
 
 
 	public boolean aDefence(int camp, Menu menu) {
