@@ -108,8 +108,6 @@ public class ServeurPartieImpl implements ServeurPartie {
 		while (finPartie) {
 			currentTime = System.currentTimeMillis();
 			dt += currentTime - previousTime;
-			// Permet de gï¿½rer la frï¿½quence de calcul
-			if (dt > 1000/40) { 
 			// Permet de gérer la fréquence de calcul
 			if (dt > LIMITEUR) { 
 				
