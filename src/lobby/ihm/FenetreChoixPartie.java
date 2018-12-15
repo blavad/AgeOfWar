@@ -2,6 +2,7 @@ package lobby.ihm;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -64,6 +65,7 @@ public class FenetreChoixPartie extends JPanel {
 	private void initComponent() {
 		
 		this.setLayout(new BorderLayout());
+		this.setPreferredSize(new Dimension(400,350));
 		this.setBackground(FenetreClient.COLOR_BACKGROUND);
 		
 		text = new JLabel("  Parties en attente");
@@ -125,7 +127,7 @@ class NouvellePartieControleur implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		DialogPartie dialogP = new DialogPartie(null, "Creer nouvelle partie", true, fenetre.parent.client);
+		DialogPartie dialogP = new DialogPartie(this.fenetre.parent, "Creer nouvelle partie", true, fenetre.parent.client);
 		Partie p = dialogP.showDialogPartie();
 		if (p!= null){
 			try {

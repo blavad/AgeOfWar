@@ -1,12 +1,14 @@
 package partie.core;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import partie.rmi.JoueurPartie;
 import partie.rmi.JoueurPartieImpl;
 
-public class Armee {
+public class Armee implements Serializable {
 	
 	private ArrayList<Groupe> groupes;
 	private Base base;
@@ -39,7 +41,7 @@ public class Armee {
 	 * @param joueurs
 	 * 			Ensemble des joueurs
 	 */
-	public void update (float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+	public void update (float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		if (base != null) this.base.update(dt, entites, joueurs);
 		for (int j = 0; j < this.getGroupes().size(); j++) {
 			this.getGroupes().get(j).update(dt, entites, joueurs);

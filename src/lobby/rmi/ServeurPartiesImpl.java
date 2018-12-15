@@ -5,8 +5,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import lobby.core.Client;
@@ -100,7 +98,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 			} catch (SuppressionPartieException e) {}
 		}
 		for (Client client : clients){
-			if (client.getPseudo().equals(cl.getPseudo()))
+			if (client.equals(cl))
 				clients.remove(client);
 		}
 		System.out.println("#> Supp client ---> " + cl.getPseudo());
@@ -180,6 +178,8 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	public void lancer(Partie partie) throws RemoteException {
 		String hote = parties.getPartie(partie).getHost().getPseudo();
 		ClientPartie hoteDistant;
+		
+		// Lancement du jeu 
 		Integer camp = 1;
 		try {
 			hoteDistant = (ClientPartie)registry.lookup(hote);
@@ -191,6 +191,8 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 		} catch (NotBoundException | RemoteException e1) {
 			e1.printStackTrace();
 		}
+		
+		// Suppression des joueurs et de la partie
 		for (Client cl : parties.getPartie(partie).getClients()){
 			deconnect(cl);
 		}
@@ -208,7 +210,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 		try {
 			Registry registry;
 			if (args.length > 0) registry = LocateRegistry.getRegistry(args[0]);
-			else registry = LocateRegistry.getRegistry();
+			else registry = LocateRegistry.getRegistry("192.168.122.1");
 			ServeurPartiesImpl servCentral = new ServeurPartiesImpl(registry);
 			registry.rebind("ServeurParties", servCentral);
 			System.out.println("#> Serveur Partie lancé !!!");

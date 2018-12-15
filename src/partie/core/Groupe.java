@@ -1,12 +1,14 @@
 package partie.core;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import partie.rmi.JoueurPartie;
 import partie.rmi.JoueurPartieImpl;
 
-public class Groupe {
+public class Groupe implements Serializable {
 	
 	private ArrayList<Unite> unites;
 	private Vect2 objectif;
@@ -40,7 +42,7 @@ public class Groupe {
 	 * @param entites HashMap<Integer, Armee>
 	 * @param joueurs HashMap<Integer, JoueurPartieImpl>
 	 */
-	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		
 		// Si le groupe n'est pas vide
 		if (unites.size() > 0) {

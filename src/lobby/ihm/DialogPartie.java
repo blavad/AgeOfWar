@@ -42,7 +42,7 @@ public class DialogPartie extends JDialog {
 
 	/** Image */
 	JLabel icon;
-	String pathIcon = "/age-of-war.jpg";
+	String pathIcon = "/age-of-war_300.jpg";
 
 	/** Verifie l'envoie des donnees*/
 	boolean sendData;
@@ -65,7 +65,7 @@ public class DialogPartie extends JDialog {
 		super(parent,title, modal);
 		this.client = client;
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		this.setLocationRelativeTo(null); //place la fenetre au milieu de l'ecran
+		this.setLocationRelativeTo(parent); //place la fenetre 
 		
 		this.initComponent();
 	}

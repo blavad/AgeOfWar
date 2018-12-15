@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.io.Serializable;
 import java.util.HashMap;
 
 import partie.ihm.InterfacePartie.Menu;
+import partie.rmi.JoueurPartie;
 import partie.rmi.JoueurPartieImpl;
 
 public class Base extends Entite {
@@ -40,7 +42,7 @@ public class Base extends Entite {
 	 * @param entites HashMap<Integer, Armee>
 	 * @param joueurs HashMap<Integer, JoueurPartieImpl>
 	 */
-	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		
 		for (Menu m : defences.keySet()) {
 			defences.get(m).update(dt, entites, joueurs); // update l'unité (cooldown, ...)

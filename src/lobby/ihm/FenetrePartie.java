@@ -1,6 +1,8 @@
 package lobby.ihm;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,13 +33,23 @@ public class FenetrePartie extends JPanel {
 	
 	Partie partie;
 	
+	/** Text au nord du layout*/
 	JLabel text;
 	
+	/** Nom de l'hote qui doit apparaitre en grand */
+	JLabel nomHote;
+	
+	/** Bouton pour quitter la partie */
 	JButton quitter;
 
 	/** La liste des parties */
 	private JList<Client> jl_clients;
 	
+	
+	/** Constructeur
+	 * 
+	 * @param parent
+	 */
 	public FenetrePartie(FenetreClient parent){
 		super();
 		this.parent = parent; 
@@ -48,28 +60,46 @@ public class FenetrePartie extends JPanel {
 	/**
 	 * Initialisation des composants graphique fixe
 	 */
-	public void initComponent() {
+	private void initComponent() {
 		
+		// Parametres de la fenetre
 		this.setLayout(new BorderLayout());
+		this.setPreferredSize(new Dimension(400,350));
 		this.setBackground(FenetreClient.COLOR_BACKGROUND);
 		
+		// Initialisation du texte affichant le nom de la partie
 		text = new JLabel();
 		text.setFont(new Font("Serif", Font.BOLD, 18));
 		text.setForeground(FenetreClient.COLOR_TEXT);
 		text.setBorder(BorderFactory.createLineBorder(FenetreClient.COLOR_CONTOUR,2));
 		
+		// Panel du centre de la fenetre partie
+		JPanel panel_centre = new JPanel();
+		panel_centre.setLayout(new BorderLayout());
+
+		// Initialisation du JLabel affichant l'hote
+		nomHote = new JLabel();
+		nomHote.setFont(new Font("Serif", Font.BOLD, 18));
+		nomHote.setForeground(new Color(255,50,50));
+		panel_centre.add(nomHote, BorderLayout.NORTH);	
+		
+		// Initialisation de la liste d'affichage
 		jl_clients = new JList<Client>(new DefaultListModel<Client>());
 	    jl_clients.setBorder(BorderFactory.createTitledBorder("  Liste joueurs"));
+		panel_centre.add(new JScrollPane(jl_clients), BorderLayout.CENTER);
 
+	    // Initialisation du bouton quitter et de son controleur
 		quitter = new JButton("Quitter Partie");
 		quitter.setForeground(FenetreClient.COLOR_TEXT);
 		quitter.setBackground(FenetreClient.COLOR_BACKGROUND);
 		quitter.addActionListener(new QuitterPartieControleur(this));
 		
+		// Mise en place des composants variables
 		updateComponent();
 
+		// Ajout des composants graphiques dans le panel
 		this.add(text, BorderLayout.NORTH);
-		this.add(new JScrollPane(jl_clients), BorderLayout.CENTER);
+		this.add(panel_centre, BorderLayout.CENTER);
 		this.add(quitter, BorderLayout.SOUTH);
 	}
 	
@@ -79,17 +109,18 @@ public class FenetrePartie extends JPanel {
 	public void updateComponent() {
 		if (parent.client.getPartie() != null ){
 			this.text.setText("  Ma partie : "+ parent.client.getPartie().getName());
+			this.nomHote.setText("  Hote : " + parent.client.getPartie().getHost().getPseudo());
 			
 			DefaultListModel<Client> model = (DefaultListModel<Client>) this.jl_clients.getModel();
 			model.clear();
-			model.addElement(parent.client.getPartie().getHost());
 			for (Client cl : parent.client.getPartie().getClients()){
 				model.addElement(cl);
 			}
 			quitter.setEnabled(true);
 		}
 		else {
-			this.text.setText("  Ma partie : ???");
+			this.text.setText("  Ma partie : ...");
+			this.nomHote.setText("");
 			DefaultListModel<Client> model = (DefaultListModel<Client>) this.jl_clients.getModel();
 			model.clear();
 			quitter.setEnabled(false);
@@ -100,21 +131,14 @@ public class FenetrePartie extends JPanel {
 	 * 
 	 * @param lparties la liste des parties
 	 */
-	public void updatePartie(ArrayList<Partie> lparties) {
-		if (parent.client.getPartie() != null){
-			for (Partie p : lparties){
-				if (p.equals(this.parent.client.getPartie())){
-					DefaultListModel<Client> model = (DefaultListModel<Client>) this.jl_clients.getModel();
-					model.clear();
-					model.addElement(p.getHost());
-					for (Client cl : p.getClients()){
-						model.addElement(cl);
-					}
-				}
+	public void updatePartie(Partie p) {
+			DefaultListModel<Client> model = (DefaultListModel<Client>) this.jl_clients.getModel();
+			model.clear();
+			for (Client cl : p.getClients()){
+				if (!cl.equals(parent.client))
+					model.addElement(cl);
 			}
-		}
 	}
-	
 }
 
 /** Controleur du bouton pour quitter la partie

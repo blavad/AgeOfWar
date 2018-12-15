@@ -84,16 +84,21 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 		Registry registry;
 		ServeurParties serveur;
 		try {
-			String pseudo = DialogBox.infoPlayer(null, "Pseudo :");
+			// Connection au serveur grace a une IP
+			String ip = DialogBox.infoPlayer(null, "IP Serveur :");
 			if (args.length > 0)
 				registry = LocateRegistry.getRegistry(args[0]);
 			else 
-				registry = LocateRegistry.getRegistry();
-			
+				registry = LocateRegistry.getRegistry(ip);
 			serveur = (ServeurParties)registry.lookup("ServeurParties");
+			
+			// Creation du client avec son pseudo
+			String pseudo = DialogBox.infoPlayer(null, "Pseudo :");
 			ClientPartieImpl client = new ClientPartieImpl(pseudo, serveur);
-			registry.rebind(pseudo, client);	
+			registry.rebind(pseudo, client);
 			serveur.connect(pseudo);
+			
+			// Affiche la fenetre apres avoir connecter le joueur et correctement au serveur
 			client.client.getFenetre().showFenetre();
 		} catch (RemoteException|NotBoundException e1)  {
 			DialogBox.error(null, "Serveur injoignable");
