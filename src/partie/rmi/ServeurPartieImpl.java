@@ -1,5 +1,11 @@
 package partie.rmi;
 
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
 import partie.core.Armee;
@@ -16,13 +22,13 @@ import partie.core.VarPartie;
 import partie.core.Vect2;
 import partie.ihm.InterfacePartie.Menu;
 
-public class ServeurPartieImpl implements ServeurPartie {
+public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPartie  {
 	
+	private Registry registry;
 	private HashMap<Integer, Armee> entites;
-	private HashMap<Integer, JoueurPartieImpl> joueurs;
+	private HashMap<Integer, JoueurPartie> joueurs;
 	private boolean finPartie;
 	private UniteXmlLoader uniteXmlLoader;
-	
 	private int widthP = VarPartie.WIDTH_PARTIE;
 	private int heightP = VarPartie.HEIGHT_PARTIE;
 	
@@ -30,10 +36,34 @@ public class ServeurPartieImpl implements ServeurPartie {
 	 * Constructeur du serveur<li>
 	 * Il lance l'initialisationeet et la boucle du jeu
 	 */
-	public ServeurPartieImpl() {
-		
+	public ServeurPartieImpl() throws RemoteException {
+		super();
+		register();
+		// Cette boucle for est a retirer, elle sert a tester le fonctionnement pour le moment
+		for (int i=1; i<=4; i++) {
+			JoueurPartieImpl joueur = new JoueurPartieImpl(registry,i); 
+		}
 		initialiserPartie();
 		bouclePartie();
+	}
+	
+	/**
+	 * Enregistre le serveur sur le registre
+	 */
+	private void register() {
+		try {
+			this.registry = LocateRegistry.getRegistry();
+			registry.rebind("hote", this);
+			System.out.println("hote bound");
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		try {
+			System.out.println(registry.list()[0]);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -43,16 +73,23 @@ public class ServeurPartieImpl implements ServeurPartie {
 	 * 	Initialise les armï¿½es et l'objectif de chaque groupe
 	 */
 	private void initialiserPartie() {
+		
+
 		// Initialisation des HashMap
-		joueurs = new HashMap<Integer, JoueurPartieImpl>();
+		joueurs = new HashMap<Integer, JoueurPartie>();
 		entites = new HashMap<Integer, Armee>();
 		uniteXmlLoader = new UniteXmlLoader();
 		
 		// Initialise les 4 joueurs 
-		joueurs.put(1, new JoueurPartieImpl(this, 1));
-		joueurs.put(2, new JoueurPartieImpl(this, 2));
-		joueurs.put(3, new JoueurPartieImpl(this, 3));
-		joueurs.put(4, new JoueurPartieImpl(this, 4));
+		
+		try {
+			joueurs.put(1, (JoueurPartie) registry.lookup("joueur 1"));
+			joueurs.put(2, (JoueurPartie) registry.lookup("joueur 2"));
+			joueurs.put(3, (JoueurPartie) registry.lookup("joueur 3"));
+			joueurs.put(4, (JoueurPartie) registry.lookup("joueur 4"));
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
 	
 		int offSet = 40;
 		// Initialise les 4 armées
@@ -118,7 +155,11 @@ public class ServeurPartieImpl implements ServeurPartie {
 				}
 				
 				for (Integer i : joueurs.keySet()) {
-					joueurs.get(i).update(entites);
+					try {
+						joueurs.get(i).update(entites);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
 				}
 				dt = 0;
 			}
@@ -156,7 +197,12 @@ public class ServeurPartieImpl implements ServeurPartie {
 
 	public void supprimerDefence(int camp, Menu menu) {
 		Defence d = entites.get(camp).getBase().getDefence(menu); 
-		if (d != null) joueurs.get(camp).ajouterArgent((int)Math.floor(d.getCout() * VarPartie.REMBOURSEMENT_UNITE));
+		if (d != null)
+			try {
+				joueurs.get(camp).ajouterArgent((int)Math.floor(d.getCout() * VarPartie.REMBOURSEMENT_UNITE));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		entites.get(camp).getBase().suppDef(menu);
 	}
 	
@@ -179,7 +225,14 @@ public class ServeurPartieImpl implements ServeurPartie {
 	
 	
 	public static void main(String[] args) {
-		new ServeurPartieImpl();
+		try {
+			//on cree le registre directement au bon endroit pour les tests
+			Registry registry = LocateRegistry.createRegistry(1099);
+			// les joueurs sont ajoutes par serveurPartie pour respecter l'ordre d'enregistrement sur le registre
+			new ServeurPartieImpl();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

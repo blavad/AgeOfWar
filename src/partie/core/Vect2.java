@@ -1,6 +1,8 @@
 package partie.core;
 
-public class Vect2 {
+import java.io.Serializable;
+
+public class Vect2 implements Serializable {
 	
 	public float x, y;
 	

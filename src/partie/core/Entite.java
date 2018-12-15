@@ -3,10 +3,11 @@ package partie.core;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
-public abstract class Entite {
+public abstract class Entite implements Serializable {
 	
 	protected Vect2 position;
 	protected int vie, vieMax;

@@ -5,10 +5,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
+import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 
+import partie.rmi.JoueurPartie;
 import partie.rmi.JoueurPartieImpl;
 
 public class Unite extends Entite {
@@ -99,7 +102,7 @@ public class Unite extends Entite {
 	 * @param joueurs
 	 * 			Ensemble des joueurs de la partie
 	 */
-	public void update(float dt, boolean estPremiere, Groupe grp, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+	public void update(float dt, boolean estPremiere, Groupe grp, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		if (cooldown > 0) {
 			cooldown -= dt;
 			if (cooldown < 0) {
@@ -202,7 +205,7 @@ public class Unite extends Entite {
 	 * @param cible
 	 * 				entité qui se fait attaquer
 	 */
-	protected void attaqueEntite(Entite cible, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+	protected void attaqueEntite(Entite cible, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		// Si U peut attaquer (le cooldown de U est à 0)
 		if (this.canAttack()) {
 			// U attaque la cible et renvoie vrai si elle tue la cible, faux sinon
@@ -216,7 +219,11 @@ public class Unite extends Entite {
 					if (cible instanceof Unite) {
 						// Si l'unité tuée est une unité
 						// Donne l'argent de l'élimination au joueur "assassin"
-						joueurs.get(this.getCamp()).ajouterArgent((int)Math.floor(((Unite)cible).getCout() * VarPartie.REMBOURSEMENT_UNITE));
+						try {
+							joueurs.get(this.getCamp()).ajouterArgent((int)Math.floor(((Unite)cible).getCout() * VarPartie.REMBOURSEMENT_UNITE));
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
 						entites.get(cible.getCamp()).supprimerUnite((Unite)cible);
 				}
 			}

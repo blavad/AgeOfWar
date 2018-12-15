@@ -1,11 +1,13 @@
 package partie.rmi;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 
 import partie.core.Armee;
 
-public interface JoueurPartie {
+public interface JoueurPartie extends Remote {
 	
-	void update(HashMap<Integer, Armee> entites);
-	void ajouterArgent(int arg);
+	void update(HashMap<Integer, Armee> entites) throws RemoteException;
+	void ajouterArgent(int arg) throws RemoteException;
 }

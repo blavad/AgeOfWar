@@ -3,12 +3,14 @@ package partie.core;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.io.Serializable;
 import java.util.HashMap;
 
 import javafx.scene.paint.Color;
+import partie.rmi.JoueurPartie;
 import partie.rmi.JoueurPartieImpl;
 
-public class Defence extends Unite {
+public class Defence extends Unite implements Serializable {
 
 	public Defence(Vect2 pos, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, String imageName) {
 		super(pos, 0, camp, rayonEntite, cout, degatA, vitesseA, porteeA, 0, imageName);
@@ -28,7 +30,7 @@ public class Defence extends Unite {
 	 * @param joueurs
 	 * 			Ensemble des joueurs de la partie
 	 */
-	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartieImpl> joueurs) {
+	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		if (cooldown > 0) {
 			cooldown -= dt;
 			if (cooldown < 0) {

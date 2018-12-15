@@ -3,6 +3,11 @@ package partie.rmi;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 
@@ -18,9 +23,10 @@ import partie.core.Vect2;
 import partie.ihm.InterfacePartie;
 import partie.ihm.InterfacePartie.Menu;
 
-public class JoueurPartieImpl {
+public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurPartie {
 	
 	private ServeurPartie serveur;
+	private Registry registry;
 	private UniteXmlLoader uniteXmlLoader;
 	
 	private int argent;
@@ -41,11 +47,19 @@ public class JoueurPartieImpl {
 	 * 				Le pointeur sur le serveur de partie
 	 * @param camp
 	 * 				Le camp du joueur
+	 * @throws RemoteException 
 	 */
-	public JoueurPartieImpl(ServeurPartie serv, int camp) {
+	public JoueurPartieImpl(Registry reg, int camp) throws RemoteException {
+		super();
 		this.argent = 1000;
 		this.camp = camp;
-		this.serveur = serv;
+		try {
+			this.registry = reg;
+			registry.rebind("joueur "+camp, this);
+			serveur = (ServeurPartie) registry.lookup("hote");
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
 		this.plateau = new ImageIcon(getClass().getResource("/space2.jpeg")).getImage();
 		this.uniteXmlLoader = new UniteXmlLoader();
 		this.interfaceP = new InterfacePartie(this);
@@ -72,7 +86,11 @@ public class JoueurPartieImpl {
 		if (prendreArgent(cout)) {
 			// Si prendreArgent retourne vrai => le transfert a pu se faire 
 			// On signale donc au serveur de créer une nouvelle unité 
-			this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
+			try {
+				this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -87,14 +105,18 @@ public class JoueurPartieImpl {
 	 * 				Type de défence à créer
 	 */
 	public void creerDefence(Menu menu, TypeDefense typeD) {
-		if (!serveur.aDefence(camp, menu)) {
-			int cout = uniteXmlLoader.getCout(typeD);
-			
-			if (prendreArgent(cout)) {
-				// Si prendreArgent retourne vrai => le transfert a pu se faire 
-				// On signale donc au serveur de créer une nouvelle unité 
-				this.serveur.ajouterDefence(camp, typeD, menu);
+		try {
+			if (!serveur.aDefence(camp, menu)) {
+				int cout = uniteXmlLoader.getCout(typeD);
+				
+				if (prendreArgent(cout)) {
+					// Si prendreArgent retourne vrai => le transfert a pu se faire 
+					// On signale donc au serveur de créer une nouvelle unité 
+					this.serveur.ajouterDefence(camp, typeD, menu);
+				}
 			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -106,7 +128,11 @@ public class JoueurPartieImpl {
 	 * @param menu
 	 */
 	public void vendreDefence(Menu menu) {
-		this.serveur.supprimerDefence(camp, menu);
+		try {
+			this.serveur.supprimerDefence(camp, menu);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
