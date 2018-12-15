@@ -138,7 +138,12 @@ public class Partie implements Serializable {
 
 	@Override
 	public boolean equals(Object o){
-		return this.getName().equals(((Partie)o).getName());
+		if (o == null) return false;
+		else {
+			if (o.getClass() == Partie.class)
+				return ((Partie)o).getName().equals(this.getName());
+			else return false;
+		}
 	}
 	
 	@Override

@@ -42,6 +42,7 @@ public class FenetreClient extends JFrame {
 	/** Fenetre de partie */
 	FenetrePartie fen_partie = null;
 	
+	/** Chemin de l'icone */
 	private String pathIcon = "/icon.jpg";
 	
 	/** Constructeur de la fenetre du client de parties
@@ -51,17 +52,21 @@ public class FenetreClient extends JFrame {
 	 * 
 	 */
 	public FenetreClient(Client client, ServeurParties serveur){
+		
 		this.client = client;
 		this.serveur = serveur;
+		
+		// Parametrage de la fenetre
 		this.setIconImage(new ImageIcon(getClass().getResource(pathIcon)).getImage());
-		
 		this.setTitle("Age Of War - Choix Partie");
-		this.addWindowListener(new WindowClose(this));	 //ferme le programme et déconnecte du serveur quand on ferme la fenetre
-		this.setLocationRelativeTo(null); //place la fenetre au milieu de l'ecran
+		this.addWindowListener(new WindowClose(this));	 //ferme le programme et deconnecte du serveur quand on ferme la fenetre
+		this.setLocationRelativeTo(null); // place la fenetre au milieu de l'ecran
 		
+		// Initialisation des 2 panels (liste des parties et infor d'une partie)
 		this.fen_choix_partie = new FenetreChoixPartie(this, client, serveur);
 		this.fen_partie = new FenetrePartie(this);
 		
+		// Ajout des 2 panels a la fenetre
 		this.getContentPane().setLayout(new GridLayout(1, 2));
 		this.getContentPane().add(this.fen_choix_partie);
 		this.getContentPane().add(this.fen_partie);
@@ -76,8 +81,13 @@ public class FenetreClient extends JFrame {
 	/** Mets a jour les liste des parties */
 	public void updateParties(ArrayList<Partie> lparties) {
 		this.fen_choix_partie.updateParties(lparties);
-		this.fen_partie.updatePartie(lparties);	
-		
+		if (client.getPartie() != null){
+			for (Partie p : lparties){
+				if (p.equals(client.getPartie())){
+					this.fen_partie.updatePartie(p);	
+				}
+			}
+		}	
 	}	
 }
 
