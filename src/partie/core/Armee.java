@@ -58,15 +58,15 @@ public class Armee implements Serializable {
 	 * @param offSet
 	 * 			Vect2 : décalage en x et y
 	 */
-	public void draw(Graphics g, float ratio, Vect2 offSet, Images images) {
+	public void draw(Graphics g, float ratio, Vect2 offSet, Images images, int campJoueurImpl) {
 		
 		for (int j = 0; j < this.getGroupes().size(); j++) {
-			this.getGroupes().get(j).draw(g, ratio, offSet, images);
+			this.getGroupes().get(j).draw(g, ratio, offSet, images, campJoueurImpl);
 		}
 		// On vérifie si la base existe
 		if (this.getBase() != null) {
 			// On dessine la base sur le plateau
-			this.getBase().draw(g, ratio, offSet, images);
+			this.getBase().draw(g, ratio, offSet, images, campJoueurImpl);
 		}
 	}
 	

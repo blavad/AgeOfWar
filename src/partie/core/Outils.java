@@ -30,4 +30,8 @@ public class Outils {
 		return (float)Math.atan2(dy, dx);
 	}
 	
+	public static final boolean estDefense(TypeUnite typeU) {
+		return !(typeU == TypeUnite.CAC || typeU == TypeUnite.DISTANT || typeU == TypeUnite.TANK);
+	}
+	
 }

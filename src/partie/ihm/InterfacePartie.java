@@ -27,8 +27,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import partie.core.TypeDefense;
 import partie.core.TypeUnite;
+import partie.core.VarPartie;
 import partie.rmi.JoueurPartieImpl;
 
 public class InterfacePartie  extends JFrame {
@@ -152,7 +152,7 @@ public class InterfacePartie  extends JFrame {
 		panU.add(bBackU);
 		panUnites.add(panU, BorderLayout.CENTER);
 		
-		//Construction du Menu des defences
+		//Construction du Menu des defenses
 		panDefenses = createPanelMenu(Menu.DEFENSES);
 		
 		JButton bDef1 = buttonWithLabelFond(pathFondBUnite, "Def1", color, 65, 45, new ButtonMenu(this, Menu.DEF1));
@@ -344,13 +344,40 @@ public class InterfacePartie  extends JFrame {
 		
 		JPanel pan = new PanelImageFond(pathFondMenu1);
 		pan.setBackground(Color.WHITE);
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD1, ""+joueurP.getUniteXmlLoader().getCout(TypeDefense.DEFI), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefense.DEFI)));
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD2, ""+joueurP.getUniteXmlLoader().getCout(TypeDefense.DEFII), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefense.DEFII)));
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeDefense.DEFIII), Color.ORANGE, 65, 45, new ButtonDef(this, TypeDefense.DEFIII)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD1, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFI), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DEFI)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD2, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFII), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DEFII)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFIII), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DEFIII)));
 		
-		pan.add(new ButtonImageFond(pathFondMenu3, 60, 45, new ButtonSellDef(this)));
+		//pan.add(new ButtonImageFond(pathFondMenu3, 60, 45, new ButtonSellDef(this)));
 		
-		
+		JButton sellButton = new ButtonImageFond(pathFondMenu3, 65, 45, new ButtonSellDef(this));
+		sellButton.setLayout(new BorderLayout());
+		switch (m) {
+		case DEF1:
+			venteDef1 = new JLabel(String.format("0"));
+			venteDef1.setForeground(Color.WHITE);
+			venteDef1.setHorizontalAlignment(labArgent.CENTER);
+			venteDef1.setPreferredSize(new Dimension(300,30));
+			sellButton.add(venteDef1, BorderLayout.CENTER);
+			break;
+		case DEF2:
+			venteDef2 = new JLabel(String.format("0"));
+			venteDef2.setForeground(Color.WHITE);
+			venteDef2.setHorizontalAlignment(labArgent.CENTER);
+			venteDef2.setPreferredSize(new Dimension(300,30));
+			sellButton.add(venteDef2, BorderLayout.CENTER);
+			break;
+		case DEF3:
+			venteDef3 = new JLabel(String.format("0"));
+			venteDef3.setForeground(Color.WHITE);
+			venteDef3.setHorizontalAlignment(labArgent.CENTER);
+			venteDef3.setPreferredSize(new Dimension(300,30));
+			sellButton.add(venteDef3, BorderLayout.CENTER);
+			break;
+		default:
+			break;
+		}
+		pan.add(sellButton);
 		
 		pan.add(new ButtonImageFond(pathFondBRetour, 35, 35, new ButtonBack(this)));
 		panP.add(pan, BorderLayout.CENTER);
@@ -369,15 +396,31 @@ public class InterfacePartie  extends JFrame {
 	private Color defineColor() {
 		switch (joueurP.getCamp()) {
 		case 1 :
-			return Color.RED;
+			color = Color.RED;
+			break;
 		case 2 :
-			return Color.BLUE;
+			color = Color.BLUE;
+			break;
 		case 3 :
-			return Color.DARK_GRAY;
+			color = Color.DARK_GRAY;
+			break;
 		case 4 :
-			return Color.MAGENTA;
+			color = Color.MAGENTA;
+			break;
+		case 5 :
+			color = Color.GREEN;
+			break;
+		case 6 :
+			color = Color.CYAN;
+			break;
+		case 7 :
+			color = Color.ORANGE;
+			break;
+		case 8 :
+			color = Color.YELLOW;
+			break;
 		}
-		return Color.RED;
+		return color;
 	}
 	
 	/**
@@ -483,6 +526,22 @@ public class InterfacePartie  extends JFrame {
 	public void changementGroupe() {
 		labGroupe.setText(String.format("Groupe selectionne : %d", joueurP.getGroupeSelect()));
 	}
+	
+	public void changementDefense(Menu m, int cout) {
+		switch (m) {
+		case DEF1:
+			venteDef1.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_UNITE)));
+			break;
+		case DEF2:
+			venteDef2.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_UNITE)));
+			break;
+		case DEF3:
+			venteDef3.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_UNITE)));
+			break;
+		default:
+			break;
+		}
+	}
 
 	public Menu getCurrentMenu() { return this.currentMenu; }
 	public JoueurPartieImpl getJoueurP() { return this.joueurP; }
@@ -518,25 +577,9 @@ public class InterfacePartie  extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			interfaceP.getJoueurP().creerUnite(typeU);
+			interfaceP.getJoueurP().creerUnite(interfaceP.currentMenu, typeU);
 		}
 	}
-	private class ButtonDef implements ActionListener {
-
-		private InterfacePartie interfaceP;
-		private TypeDefense typeD;
-		
-		ButtonDef (InterfacePartie i, TypeDefense type) {
-			this.interfaceP = i;
-			this.typeD = type;
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			interfaceP.getJoueurP().creerDefence(interfaceP.getCurrentMenu(), typeD);
-		}
-	}	
 	private class ButtonSellDef implements ActionListener {
 
 		private InterfacePartie interfaceP;

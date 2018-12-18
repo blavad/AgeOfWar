@@ -56,6 +56,18 @@ public abstract class Entite implements Serializable {
 		case 4 :
 			color = Color.MAGENTA;
 			break;
+		case 5 :
+			color = Color.GREEN;
+			break;
+		case 6 :
+			color = Color.CYAN;
+			break;
+		case 7 :
+			color = Color.ORANGE;
+			break;
+		case 8 :
+			color = Color.YELLOW;
+			break;
 		}
 	}
 	
@@ -85,18 +97,6 @@ public abstract class Entite implements Serializable {
 			this.vie = v;
 		}
 	}
-	
-	/**
-	 * Dessine l'unite sur le plateau
-	 * @param g
-	 * 			Graphics du JPanel plateau
-	 * @param ratio
-	 * 			Ratio d'affichage
-	 * @param offSet
-	 * 			Decalage d'affichage en X et Y
-	 */
-	public abstract void draw(Graphics g, float ratio, Vect2 offSet, Images images);
-	
 	
 
 }

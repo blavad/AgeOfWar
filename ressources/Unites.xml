@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Unites>
 	<CAC>
-		<Caracteristiques vieMax="200" rayonUnite="15" cout="50" vitesseDeplacement="50" imageName="Vaisseau1" />
-		<Attaque degat="100" vitesse="1000" cooldown="1000" portee="16" />
+		<Caracteristiques vieMax="200" rayonUnite="10" cout="50" vitesseDeplacement="50" imageName="Vaisseau1" />
+		<Attaque degat="100" vitesse="1000" cooldown="1000" portee="11" />
 	</CAC>
 	<DISTANT>
-		<Caracteristiques vieMax="150" rayonUnite="11" cout="75" vitesseDeplacement="60" imageName="Vaisseau2" />
-		<Attaque degat="80" vitesse="1000" cooldown="800" portee="50" />
+		<Caracteristiques vieMax="150" rayonUnite="7" cout="75" vitesseDeplacement="60" imageName="Vaisseau2" />
+		<Attaque degat="80" vitesse="1000" cooldown="800" portee="30" />
 	</DISTANT>
 	<TANK>
-		<Caracteristiques vieMax="600" rayonUnite="22" cout="150" vitesseDeplacement="35" imageName="Vaisseau3" />
-		<Attaque degat="150" vitesse="1000" cooldown="1500" portee="23" />
+		<Caracteristiques vieMax="600" rayonUnite="15" cout="150" vitesseDeplacement="35" imageName="Vaisseau3" />
+		<Attaque degat="150" vitesse="1000" cooldown="1500" portee="20" />
 	</TANK>
 	
 	<DEFI>
-		<Caracteristiques vieMax="0" rayonUnite="15" cout="300" vitesseDeplacement="0" imageName="Defense1" />
-		<Attaque degat="150" vitesse="2000" cooldown="1500" portee="100" />
+		<Caracteristiques vieMax="0" rayonUnite="10" cout="300" vitesseDeplacement="0" imageName="Defense1" />
+		<Attaque degat="150" vitesse="2000" cooldown="1500" portee="50" />
 	</DEFI>
 	<DEFII>
-		<Caracteristiques vieMax="0" rayonUnite="18" cout="300" vitesseDeplacement="0" imageName="Defense2" />
-		<Attaque degat="150" vitesse="2000" cooldown="1500" portee="120" />
+		<Caracteristiques vieMax="0" rayonUnite="12" cout="300" vitesseDeplacement="0" imageName="Defense2" />
+		<Attaque degat="150" vitesse="2000" cooldown="1500" portee="60" />
 	</DEFII>
 	<DEFIII>
-		<Caracteristiques vieMax="0" rayonUnite="22" cout="300" vitesseDeplacement="0" imageName="Defense3" />
-		<Attaque degat="150" vitesse="2000" cooldown="1500" portee="150" />
+		<Caracteristiques vieMax="0" rayonUnite="15" cout="300" vitesseDeplacement="0" imageName="Defense3" />
+		<Attaque degat="150" vitesse="2000" cooldown="1500" portee="70" />
 	</DEFIII>
 
 </Unites>

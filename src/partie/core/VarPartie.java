@@ -12,6 +12,6 @@ public class VarPartie {
 	public static final int RAYON_OBJECTIF = 5;
 	
 	public static final int VIE_BASE = 1000;
-	public static final int RAYON_BASE = 30;
+	public static final int RAYON_BASE = 20;
 	
 }

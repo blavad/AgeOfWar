@@ -3,5 +3,8 @@ package partie.core;
 public enum TypeUnite {
 	CAC,
 	DISTANT,
-	TANK
+	TANK,
+	DEFI,
+	DEFII,
+	DEFIII
 }

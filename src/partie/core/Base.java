@@ -63,7 +63,7 @@ public class Base extends Entite {
 	 * @param offSet
 	 * 			Decalage d'affichage en X et Y
 	 */
-	public void draw(Graphics g, float ratio, Vect2 offSet, Images images) {
+	public void draw(Graphics g, float ratio, Vect2 offSet, Images images, int campJoueurImpl) {
 		float rayon = rayonEntite * ratio;
 		
 		int posX = (int)offSet.x + (int)Math.floor(position.x * ratio - rayon);
@@ -99,13 +99,13 @@ public class Base extends Entite {
 
 		//Dessine les defences
 		if (defences.containsKey(Menu.DEF1)) {
-			defences.get(Menu.DEF1).draw(g, ratio, new Vect2(offSet.x, offSet.y - (int)Math.floor(15 * ratio)), images);
+			defences.get(Menu.DEF1).draw(g, ratio, offSet, new Vect2(0, - (int)Math.floor(15 * ratio)), images, campJoueurImpl);
 		}
 		if (defences.containsKey(Menu.DEF2)) {
-			defences.get(Menu.DEF2).draw(g, ratio, new Vect2(offSet.x + (int)Math.floor(12 * ratio), offSet.y + (int)Math.floor(10 * ratio)), images);
+			defences.get(Menu.DEF2).draw(g, ratio, offSet, new Vect2( (int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
 		}
 		if (defences.containsKey(Menu.DEF3)) {
-			defences.get(Menu.DEF3).draw(g, ratio, new Vect2(offSet.x - (int)Math.floor(12 * ratio), offSet.y + (int)Math.floor(10 * ratio)), images);
+			defences.get(Menu.DEF3).draw(g, ratio, offSet, new Vect2(- (int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
 		}
 		
 		

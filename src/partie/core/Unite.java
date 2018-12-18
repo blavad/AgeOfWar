@@ -19,10 +19,11 @@ public class Unite extends Entite {
 	transient protected int degatA;
 	transient protected float vitesseA;
 	transient protected float cooldown;
-	transient protected float porteeA;
+	protected float porteeA;
 	
 	transient protected float vitesseDeDeplacement;
 	transient protected int cout;
+	protected TypeUnite typeU;
 	
 	/**
 	 * Constructeur de l'unite
@@ -36,7 +37,7 @@ public class Unite extends Entite {
 	 * @param porteeA float
 	 * @param vitesseDeDeplacement float
 	 */
-	public Unite (Vect2 pos, int vie, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, float vitesseDeDeplacement, String imageName) {
+	public Unite (Vect2 pos, int vie, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, float vitesseDeDeplacement, String imageName, TypeUnite typeU) {
 		super(pos, vie, camp, rayonEntite);
 		cooldown = 0;
 		this.cout = cout;
@@ -45,12 +46,14 @@ public class Unite extends Entite {
 		this.porteeA = porteeA;
 		this.vitesseDeDeplacement = vitesseDeDeplacement;
 		setImageName(imageName);
+		this.typeU = typeU;
 		
 	}
 	
 	public float getPorteeA() { return this.porteeA; }
 	public int getCout() { return this.cout; }
 	public float getVitesseDeplacement() { return this.vitesseDeDeplacement; }
+	public TypeUnite getTypeUnite() { return this.typeU; }
 	
 	
 	/**
@@ -263,7 +266,7 @@ public class Unite extends Entite {
 	 * @param offSet
 	 * 			Decalage d'affichage en X et Y
 	 */
-	public void draw(Graphics g, float ratio, Vect2 offSet, Images images) {
+	public void draw(Graphics g, float ratio, Vect2 offSet, Images images, int campJoueurImpl) {
 		float rayon = rayonEntite * ratio;
 		
 		int posX = (int)offSet.x + (int)Math.floor(position.x * ratio - rayon);
@@ -284,10 +287,18 @@ public class Unite extends Entite {
 		int posY2 = (int)offSet.y + (int)Math.floor(position.y * ratio - rayon/3);
 		int r2 = (int)(rayon * 2f/3f);
 		g.fillOval(posX2, posY2, r2, r2);
+
+		if (camp == campJoueurImpl) {
+			g.setColor(Color.WHITE);
+			int posX3 = (int)offSet.x + (int)Math.floor((position.x - porteeA) * ratio);
+			int posY3 = (int)offSet.y + (int)Math.floor((position.y - porteeA) * ratio);
+			int r3 = (int)Math.floor(porteeA * ratio * 2);
+			g.drawOval(posX3, posY3, r3, r3);
+		}
 		
 		float ratioVie = (float)vie / (float)vieMax;
 		int hauteurBar = (int)Math.floor(5 * ratio);
-		g.setColor(Color.RED);
+		g.setColor(color);
 		g.fillRect(posX, posY - hauteurBar, (int)Math.floor(r * ratioVie), hauteurBar);
 		
 		

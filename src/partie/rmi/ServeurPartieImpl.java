@@ -14,7 +14,6 @@ import partie.core.Defense;
 import partie.core.Entite;
 import partie.core.Groupe;
 import partie.core.Outils;
-import partie.core.TypeDefense;
 import partie.core.TypeUnite;
 import partie.core.Unite;
 import partie.core.UniteXmlLoader;
@@ -38,12 +37,13 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 */
 	public ServeurPartieImpl() throws RemoteException {
 		super();
+		int nbJ = 8;
 		register();
 		// Cette boucle for est a retirer, elle sert a tester le fonctionnement pour le moment
-		for (int i=1; i<=4; i++) {
+		for (int i=1; i<=nbJ; i++) {
 			new JoueurPartieImpl(registry,i); 
 		}
-		initialiserPartie();
+		initialiserPartie(nbJ);
 		bouclePartie();
 	}
 	
@@ -72,7 +72,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 * 	Creer les joueurs<li>
 	 * 	Initialise les armees et l'objectif de chaque groupe
 	 */
-	private void initialiserPartie() {
+	private void initialiserPartie(int nbJ) {
 		
 
 		// Initialisation des HashMap
@@ -80,33 +80,19 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		entites = new HashMap<Integer, Armee>();
 		uniteXmlLoader = new UniteXmlLoader();
 		
-		// Initialise les 4 joueurs 
+		float rayon = (widthP / 2) * 0.8f;
+		Vect2 offSet = new Vect2(widthP / 2, heightP / 2);
 		
-		try {
-			joueurs.put(1, (JoueurPartie) registry.lookup("joueur 1"));
-			joueurs.put(2, (JoueurPartie) registry.lookup("joueur 2"));
-			joueurs.put(3, (JoueurPartie) registry.lookup("joueur 3"));
-			joueurs.put(4, (JoueurPartie) registry.lookup("joueur 4"));
-		} catch (RemoteException | NotBoundException e) {
-			e.printStackTrace();
+		for (int i = 1; i < nbJ + 1; i++) {
+			try {
+				joueurs.put(i, (JoueurPartie) registry.lookup("joueur " + i));
+			} catch (RemoteException | NotBoundException e) {
+				e.printStackTrace();
+			}
+			float angle = (float)(Math.PI * 2 * (i - 1)) / nbJ;
+			Armee a = new Armee((new Vect2(offSet.x + (float)Math.sin(angle) * rayon, offSet.y + (float)Math.cos(angle) * rayon)), i);
+			entites.put(i, a);
 		}
-	
-		int offSet = 40;
-		// Initialise les 4 armees
-		Armee a1 = new Armee(new Vect2(offSet,offSet), 1);
-		
-		Armee a2 = new Armee(new Vect2(widthP-offSet,offSet), 2);
-
-		Armee a3 = new Armee(new Vect2(widthP-offSet,heightP-offSet), 3);
-
-		Armee a4 = new Armee(new Vect2(offSet,heightP-offSet), 4);
-		
-		
-		// Rajoute les armees dans le Hashmap des unites
-		entites.put(1, a1);
-		entites.put(2, a2);
-		entites.put(3, a3);
-		entites.put(4, a4);
 	}
 	
 	/**
@@ -148,9 +134,6 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 			
 		}
 	}
-	
-	
-
 
 	/**
 	 * Creer une unite selon typeU et la place dans le bon camp et le grp selectionne par le joueur
@@ -162,15 +145,15 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 * 				Le groupe selectionne par le joueur lors de la creation de l'unite
 	 */
 	public void ajouterUnite(int camp, TypeUnite typeU, int grpSelect) {
-		
+	
 		Unite u = uniteXmlLoader.createUnite(typeU, camp, entites.get(camp).getBase().getPosition());
 		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence a  1 (et les listes a 0)
 
 	}
 
-	public void ajouterDefence(int camp, TypeDefense typeD, Menu menu) {
+	public void ajouterDefence(int camp, TypeUnite typeU, Menu menu) {
 		
-		Defense d = uniteXmlLoader.createDefence(typeD, camp, entites.get(camp).getBase().getPosition());
+		Defense d = (Defense)uniteXmlLoader.createUnite(typeU, camp, entites.get(camp).getBase().getPosition());
 		entites.get(camp).getBase().addDef(menu, d);
 		
 	}
@@ -192,7 +175,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 * 				L'unite e supprimer
 	 */
 	private void supprimerUnite(Unite u) {
-		// Parcourt tous les groupes et supprimes U lorsque celle-ci est trouvee
+		//  Parcourt tous les groupes et supprimes U lorsque celle-ci est trouvee
 		for (Groupe g : entites.get(u.getCamp()).getGroupes()) {
 			g.getUnites().remove(u);
 		}
@@ -211,7 +194,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	public static void main(String[] args) {
 		try {
 			//on cree le registre directement au bon endroit pour les tests
-			Registry registry = LocateRegistry.createRegistry(1099);
+			Registry registry = LocateRegistry.createRegistry(1091);
 			// les joueurs sont ajoutes par serveurPartie pour respecter l'ordre d'enregistrement sur le registre
 			new ServeurPartieImpl();
 		} catch (RemoteException e) {

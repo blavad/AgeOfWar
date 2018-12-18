@@ -16,7 +16,7 @@ import javax.swing.ImageIcon;
 import partie.core.Armee;
 import partie.core.Groupe;
 import partie.core.Images;
-import partie.core.TypeDefense;
+import partie.core.Outils;
 import partie.core.TypeUnite;
 import partie.core.UniteXmlLoader;
 import partie.core.VarPartie;
@@ -82,41 +82,22 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * @param typeU
 	 * 				Le type d'unite à creer
 	 */
-	public void creerUnite(TypeUnite typeU) {
-		// Recherche le cout de l'unite cree avec le typeU
-		int cout = uniteXmlLoader.getCout(typeU);
-		
-		if (prendreArgent(cout)) {
-			// Si prendreArgent retourne vrai => le transfert a pu se faire 
-			// On signale donc au serveur de creer une nouvelle unite 
-			try {
-				this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	/**
-	 * Creer une defence lorsque le bouton associe est presse<li>
-	 * 	Verifie avant la creation si le joueur a assez d'argent.<li> 
-	 * 	Si la creation est possible, enlève la somme d'argent au joueur
-	 * et demande au serveur de creer cette defence 
-	 * @param menu
-	 * 				Permet de savoir sur quel emplacement creer la defence
-	 * @param type
-	 * 				Type de defence à creer
-	 */
-	public void creerDefence(Menu menu, TypeDefense typeD) {
+	public void creerUnite(Menu menu, TypeUnite typeU) { 
 		try {
-			if (!serveur.aDefence(camp, menu)) {
-				int cout = uniteXmlLoader.getCout(typeD);
-				
-				if (prendreArgent(cout)) {
-					// Si prendreArgent retourne vrai => le transfert a pu se faire 
-					// On signale donc au serveur de creer une nouvelle unite 
-					this.serveur.ajouterDefence(camp, typeD, menu);
+			if (Outils.estDefense(typeU)) {
+				if (!serveur.aDefence(camp, menu)) {
+					// Recherche le cout de l'unite cree avec le typeU
+					int cout = uniteXmlLoader.getCout(typeU);
+					
+					if (prendreArgent(cout)) {
+						// Si prendreArgent retourne vrai => le transfert a pu se faire 
+						// On signale donc au serveur de creer une nouvelle unite 
+						this.serveur.ajouterDefence(camp, typeU, menu);
+						this.interfaceP.changementDefense(menu, cout);					}
 				}
+			} else {
+				int cout = uniteXmlLoader.getCout(typeU);
+				this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -133,6 +114,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	public void vendreDefence(Menu menu) {
 		try {
 			this.serveur.supprimerDefence(camp, menu);
+			this.interfaceP.changementDefense(menu, 0);	
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -213,7 +195,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 			Armee a = entites.get(i);
 			
 			try {
-				a.draw(g, ratioMin, offSet, images);
+				a.draw(g, ratioMin, offSet, images, camp);
 			} catch (ConcurrentModificationException e) {
 				
 			}

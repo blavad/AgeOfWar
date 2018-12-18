@@ -15,8 +15,8 @@ import partie.rmi.JoueurPartieImpl;
 
 public class Defense extends Unite implements Serializable {
 
-	public Defense(Vect2 pos, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, String imageName) {
-		super(pos, 0, camp, rayonEntite, cout, degatA, vitesseA, porteeA, 0, imageName);
+	public Defense(Vect2 pos, int camp, int rayonEntite, int cout, int degatA, float vitesseA, float porteeA, String imageName, TypeUnite typeU) {
+		super(pos, 0, camp, rayonEntite, cout, degatA, vitesseA, porteeA, 0, imageName, typeU);
 		
 	}
 	
@@ -60,11 +60,11 @@ public class Defense extends Unite implements Serializable {
 	 * @param offSet
 	 * 			Decalage d'affichage en X et Y
 	 */
-	public void draw(Graphics g, float ratio, Vect2 offSet, Images images) {
+	public void draw(Graphics g, float ratio, Vect2 offSetA, Vect2 offSetB, Images images, int campJoueurImpl) {
 		float rayon = rayonEntite * ratio;
 		
-		int posX = (int)offSet.x + (int)Math.floor(position.x * ratio - rayon);
-		int posY = (int)offSet.y + (int)Math.floor(position.y * ratio - rayon);
+		int posX = (int)offSetA.x + (int)offSetB.x + (int)Math.floor(position.x * ratio - rayon);
+		int posY = (int)offSetA.y + (int)offSetB.x + (int)Math.floor(position.y * ratio - rayon);
 		int r = (int)(rayon * 2);
 		
 		g.setColor(color);
@@ -75,6 +75,14 @@ public class Defense extends Unite implements Serializable {
 			rotation.scale(r / (float)(image.getWidth(null)), r / (float)(image.getHeight(null)));
 			rotation.rotate(angle, (int)(image.getWidth(null)/2),(int)(image.getHeight(null)/2));
 			((Graphics2D)g).drawImage(image, rotation, null);
+		}
+		
+		if (camp == campJoueurImpl) {
+			g.setColor(java.awt.Color.WHITE);
+			int posX2 = (int)offSetA.x + (int)Math.floor((position.x - porteeA) * ratio);
+			int posY2 = (int)offSetA.y + (int)Math.floor((position.y - porteeA) * ratio);
+			int r2 = (int)Math.floor(porteeA * ratio * 2);
+			g.drawOval(posX2, posY2, r2, r2);
 		}
 		
 		

@@ -41,58 +41,50 @@ public class UniteXmlLoader {
 	}
 	
 	public Unite createUnite(TypeUnite typeU, int camp, Vect2 pos) {
-		Node u = Outils.getChild(typeU.toString(), root);
-		if (u != null) {
-			
-			Element carac = (Element)Outils.getChild("Caracteristiques", u);
-			Element attaque = (Element)Outils.getChild("Attaque", u);
-			
-			int cout = Integer.parseInt(carac.getAttribute("cout"));
-			int vieMax = Integer.parseInt(carac.getAttribute("vieMax"));
-			int rayonUnite = Integer.parseInt(carac.getAttribute("rayonUnite"));
-			float vitesseD = Float.parseFloat(carac.getAttribute("vitesseDeplacement"));
-			String imageName = carac.getAttribute("imageName");
-			int degatA = Integer.parseInt(attaque.getAttribute("degat"));
-			float vitesseA = Float.parseFloat(attaque.getAttribute("vitesse"));
-			float porteeA = Float.parseFloat(attaque.getAttribute("portee"));
-			
-			return new Unite(pos, vieMax, camp, rayonUnite, cout, degatA, vitesseA, porteeA, vitesseD, imageName);
-			
-		} else { return null; }
+		if (!Outils.estDefense(typeU)) {
+			Node u = Outils.getChild(typeU.toString(), root);
+			if (u != null) {
+				
+				Element carac = (Element)Outils.getChild("Caracteristiques", u);
+				Element attaque = (Element)Outils.getChild("Attaque", u);
+				
+				int cout = Integer.parseInt(carac.getAttribute("cout"));
+				int vieMax = Integer.parseInt(carac.getAttribute("vieMax"));
+				int rayonUnite = Integer.parseInt(carac.getAttribute("rayonUnite"));
+				float vitesseD = Float.parseFloat(carac.getAttribute("vitesseDeplacement"));
+				String imageName = carac.getAttribute("imageName");
+				int degatA = Integer.parseInt(attaque.getAttribute("degat"));
+				float vitesseA = Float.parseFloat(attaque.getAttribute("vitesse"));
+				float porteeA = Float.parseFloat(attaque.getAttribute("portee"));
+				
+				return new Unite(pos, vieMax, camp, rayonUnite, cout, degatA, vitesseA, porteeA, vitesseD, imageName, typeU);
+				
+			} else { return null; }
+		}
+		else {
+			Node u = Outils.getChild(typeU.toString(), root);
+			if (u != null) {
+				
+				Element carac = (Element)Outils.getChild("Caracteristiques", u);
+				Element attaque = (Element)Outils.getChild("Attaque", u);
+				
+				int cout = Integer.parseInt(carac.getAttribute("cout"));
+				int rayonUnite = Integer.parseInt(carac.getAttribute("rayonUnite"));
+				String imageName = carac.getAttribute("imageName");
+				int degatA = Integer.parseInt(attaque.getAttribute("degat"));
+				float vitesseA = Float.parseFloat(attaque.getAttribute("vitesse"));
+				float porteeA = Float.parseFloat(attaque.getAttribute("portee"));
+				
+				return new Defense(pos, camp, rayonUnite, cout, degatA, vitesseA, porteeA, imageName, typeU);
+				
+			} else { return null; }
+		}
 		
 	}
 	
-	public Defense createDefence(TypeDefense typeD, int camp, Vect2 pos) {
-		Node u = Outils.getChild(typeD.toString(), root);
-		if (u != null) {
-			
-			Element carac = (Element)Outils.getChild("Caracteristiques", u);
-			Element attaque = (Element)Outils.getChild("Attaque", u);
-			
-			int cout = Integer.parseInt(carac.getAttribute("cout"));
-			int rayonUnite = Integer.parseInt(carac.getAttribute("rayonUnite"));
-			String imageName = carac.getAttribute("imageName");
-			int degatA = Integer.parseInt(attaque.getAttribute("degat"));
-			float vitesseA = Float.parseFloat(attaque.getAttribute("vitesse"));
-			float porteeA = Float.parseFloat(attaque.getAttribute("portee"));
-			
-			return new Defense(pos, camp, rayonUnite, cout, degatA, vitesseA, porteeA, imageName);
-			
-		} else { return null; }
-		
-	}
 	
 	public int getCout(TypeUnite typeU) {
 		Node u = Outils.getChild(typeU.toString(), root);
-		if (u != null) {
-			Element carac = (Element)Outils.getChild("Caracteristiques", u);
-			
-			return Integer.parseInt(carac.getAttribute("cout"));
-		} else { return 0; }
-		
-	}
-	public int getCout(TypeDefense typeD) {
-		Node u = Outils.getChild(typeD.toString(), root);
 		if (u != null) {
 			Element carac = (Element)Outils.getChild("Caracteristiques", u);
 			
