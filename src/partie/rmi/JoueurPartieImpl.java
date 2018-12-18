@@ -45,10 +45,8 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * Constructeur de JoueurPartieImpl<li>
 	 * 	Initialise l'argent du joueur et son camp<li>
 	 * 	Lance l'interface graphique
-	 * @param serv
-	 * 				Le pointeur sur le serveur de partie
-	 * @param camp
-	 * 				Le camp du joueur
+	 * @param serv Registry : Le pointeur sur le serveur de partie
+	 * @param camp int : Le camp du joueur
 	 * @throws RemoteException 
 	 */
 	public JoueurPartieImpl(Registry reg, int camp) throws RemoteException {
@@ -76,11 +74,13 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	
 	/**
 	 * Creer une unite lorque le bouton associe est presse<li>
+	 * 	Regarde si c'est une defense ou une unite cree<li>
 	 * 	Verifie avant la creation si le joueur a assez d'argent.<li> 
 	 * 	Si la creation est possible, enlève la somme d'argent au joueur
-	 * et demande au serveur de creer cette unite 
-	 * @param typeU
-	 * 				Le type d'unite à creer
+	 * et demande au serveur de creer cette unite<li>
+	 * Notifie l'interface graphique du changement
+	 * @param menu Menu : Permet de determiner l'emplacement de defense selectionne s'il faut creer une defense
+	 * @param typeU TypeUnite : Le type d'unite à creer
 	 */
 	public void creerUnite(Menu menu, TypeUnite typeU) { 
 		try {
@@ -108,8 +108,9 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * Vend la defence selectionnee<li>
 	 * 	Si l'emplacement de defence selectionne n'est pas vide, 
 	 * demande au serveur d'enlever cette defence 
-	 * et ajoute l'argent de la vente au joueur
-	 * @param menu TypeMenu : permet de savoir la defence selectionnee
+	 * et ajoute l'argent de la vente au joueur<li>
+	 * Notifie l'interface graphique du changement
+	 * @param menu Menu : permet de savoir la defence selectionnee
 	 */
 	public void vendreDefence(Menu menu) {
 		try {
@@ -151,10 +152,8 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 *  Dessine le plateau<li>
 	 *  Dessine l'objectif du groupe selectionne<li>
 	 *  Dessine toutes le entites
-	 * @param g
-	 * 				Graphics
-	 * @param entites
-	 * 				HashMap avec toutes les armees
+	 * @param g Graphics
+	 * @param entites HashMap<Integer, Armee> : HashMap avec toutes les armees
 	 */
 	private void draw(Graphics g, HashMap<Integer, Armee> entites) {
 		
@@ -207,14 +206,10 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	
 	/**
 	 * Dessine l'objectif du groupe selectionne
-	 * @param g
-	 * 			Graphics
-	 * @param grp
-	 * 			Groupe selectionne
-	 * @param ratio
-	 * 			Ratio d'affichage
-	 * @param offSet
-	 * 			Vect2 : decalage en x et y
+	 * @param g Graphics
+	 * @param grp Groupe : Groupe selectionne
+	 * @param ratio float : Ratio d'affichage
+	 * @param offSet Vect2 : Decalage en x et y
 	 */
 	private void drawObjectifSelect(Graphics g, Groupe grp, float ratio, Vect2 offSet) {
 		float rayon = VarPartie.RAYON_OBJECTIF * ratio; // Calcule le rayon du cercle à afficher en fonction du ratio
@@ -228,9 +223,8 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	}
 	
 	/**
-	 * Methode appelee par le serveur qui met à jour les donnees des armees
-	 * @param entites
-	 * 				Les armees de tous les joueurs
+	 * Methode appelee par le serveur qui met a jour les donnees des armees
+	 * @param entites HashMap<Integer, Armee> : Les armees de tous les joueurs
 	 */
 	public void update(HashMap<Integer, Armee> entites) {
 		
@@ -252,8 +246,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	
 	/**
 	 * Retire de l'argent au joueur
-	 * @param arg
-	 * 			Somme à enlever
+	 * @param arg int : Somme à enlever
 	 * @return vrai si la somme a pu etre enlevee et faux si le joueur n'a pas assez d'argent
 	 */
 	private boolean prendreArgent(int arg) {

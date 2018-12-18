@@ -24,14 +24,9 @@ public class Defense extends Unite implements Serializable {
 	 * Met à jour l'unite<li>
 	 * 	Diminue le cooldown grâce à dt<li>
 	 *  Determine l'action de l'unite en fonction de son environnement
-	 * @param dt
-	 * 			Temps depuis la derniere mise à jour
-	 * @param estPremiere
-	 * 			Represente la position de l'unite dans son groupe
-	 * @param entites
-	 * 			Ensemble des unites de la partie
-	 * @param joueurs
-	 * 			Ensemble des joueurs de la partie
+	 * @param dt float : Temps depuis la derniere mise à jour
+	 * @param entites HashMap<Integer, Armee> : Ensemble des unites de la partie
+	 * @param joueurs HashMap<Integer, JoueurPartie> : Ensemble des joueurs de la partie
 	 */
 	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		if (cooldown > 0) {
@@ -53,18 +48,18 @@ public class Defense extends Unite implements Serializable {
 	
 	/**
 	 * Dessine l'unite sur le plateau
-	 * @param g
-	 * 			Graphics du JPanel plateau
-	 * @param ratio
-	 * 			Ratio d'affichage
-	 * @param offSet
-	 * 			Decalage d'affichage en X et Y
+	 * @param g Graphics : Graphics du JPanel plateau
+	 * @param ratio float : Ratio d'affichage
+	 * @param offSetA Vect2 : Decalage d'affichage en X et Y
+	 * @param offSetB Vect2 : Second decalage d'affichage en X et Y qui evite que les defenses se superposent
+	 * @param images Images : Classe contenant toutes les images du jeu
+	 * @param campJoueurImpl int : camp du joueur
 	 */
 	public void draw(Graphics g, float ratio, Vect2 offSetA, Vect2 offSetB, Images images, int campJoueurImpl) {
 		float rayon = rayonEntite * ratio;
 		
 		int posX = (int)offSetA.x + (int)offSetB.x + (int)Math.floor(position.x * ratio - rayon);
-		int posY = (int)offSetA.y + (int)offSetB.x + (int)Math.floor(position.y * ratio - rayon);
+		int posY = (int)offSetA.y + (int)offSetB.y + (int)Math.floor(position.y * ratio - rayon);
 		int r = (int)(rayon * 2);
 		
 		g.setColor(color);

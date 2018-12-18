@@ -22,12 +22,9 @@ public abstract class Entite implements Serializable {
 	 * Construteur de l'entite<li>
 	 * 	Initialise toutes les variables
 	 *  Definit ola couleur de l'entite avec le camp
-	 * @param pos
-	 * 			Position de l'entite
-	 * @param vie
-	 * 			Vie de l'entite
-	 * @param camp
-	 * 			Camp de l'entite
+	 * @param pos Vect2 : Position de l'entite
+	 * @param vie int : Vie max de l'entite
+	 * @param camp int : Camp de l'entite
 	 */
 	public Entite(Vect2 pos, int vie, int camp, int rayonEntite) {
 		this.position = new Vect2(pos.x, pos.y);
@@ -35,41 +32,10 @@ public abstract class Entite implements Serializable {
 		this.vie = vie;
 		this.camp = camp;
 		this.rayonEntite = rayonEntite;
-		defineColor();
+		this.color = Outils.defineColor(camp);
 		this.angle = 0;
 	}
 	
-	/**
-	 * Definit la couleur de l'entite grâce au camp de celle-ci
-	 */
-	private void defineColor() {
-		switch (camp) {
-		case 1 :
-			color = Color.RED;
-			break;
-		case 2 :
-			color = Color.BLUE;
-			break;
-		case 3 :
-			color = Color.DARK_GRAY;
-			break;
-		case 4 :
-			color = Color.MAGENTA;
-			break;
-		case 5 :
-			color = Color.GREEN;
-			break;
-		case 6 :
-			color = Color.CYAN;
-			break;
-		case 7 :
-			color = Color.ORANGE;
-			break;
-		case 8 :
-			color = Color.YELLOW;
-			break;
-		}
-	}
 	
 	public Vect2 getPosition() { return this.position; }
 	public int getVie() { return this.vie; }
@@ -84,8 +50,7 @@ public abstract class Entite implements Serializable {
 	 * Gère la prise de dommage<li>
 	 *  Prends les dommages<li>
 	 *  Verifie si l'entite se fait tuer
-	 * @param d
-	 * 			Dommage pris
+	 * @param d int : Dommage pris
 	 * @return vrai si l'entite est tuee et faux sinon
 	 */
 	public void takeDamage(int d) {

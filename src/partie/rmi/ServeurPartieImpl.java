@@ -68,7 +68,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	
 	/**
 	 * Initialise la partie<li>
-	 * 	Creer les diffï¿½rents HashMap<li>
+	 * 	Creer les differents HashMap<li>
 	 * 	Creer les joueurs<li>
 	 * 	Initialise les armees et l'objectif de chaque groupe
 	 */
@@ -137,12 +137,9 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 
 	/**
 	 * Creer une unite selon typeU et la place dans le bon camp et le grp selectionne par le joueur
-	 * @param camp
-	 * 				Le camp du joueur
-	 * @param typeU
-	 * 				Le tupe d'unite creee
-	 * @param grpSelect 
-	 * 				Le groupe selectionne par le joueur lors de la creation de l'unite
+	 * @param camp int : Le camp du joueur
+	 * @param typeU TypeUnite : Le tupe d'unite creee
+	 * @param grpSelect int : Le groupe selectionne par le joueur lors de la creation de l'unite
 	 */
 	public void ajouterUnite(int camp, TypeUnite typeU, int grpSelect) {
 	
@@ -150,14 +147,21 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence a� 1 (et les listes a 0)
 
 	}
-
+	/**
+	 * Creer une defense selon typeU et la place dans le bon camp et le grp selectionne par le joueur
+	 * @param camp int : Le camp du joueur
+	 * @param typeU TypeUnite : Le tupe d'unite creee
+	 * @param menu TypeMenu : Emplacement de defense selectionne
+	 */
 	public void ajouterDefence(int camp, TypeUnite typeU, Menu menu) {
 		
 		Defense d = (Defense)uniteXmlLoader.createUnite(typeU, camp, entites.get(camp).getBase().getPosition());
 		entites.get(camp).getBase().addDef(menu, d);
 		
 	}
-
+	/**
+	 * Supprime la defense selectionne
+	 */
 	public void supprimerDefence(int camp, Menu menu) {
 		Defense d = entites.get(camp).getBase().getDefence(menu); 
 		if (d != null)
@@ -171,8 +175,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	
 	/**
 	 * Supprime l'unite en parametre de la liste des unites du serveur
-	 * @param u
-	 * 				L'unite e supprimer
+	 * @param u Unite : L'unite e supprimer
 	 */
 	private void supprimerUnite(Unite u) {
 		//  Parcourt tous les groupes et supprimes U lorsque celle-ci est trouvee
@@ -181,11 +184,18 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		}
 	}
 
-
+	/**
+	 * Renvoie vrai si une defense est equipee a l'emplacement selectionne et faux sinon
+	 */
 	public boolean aDefence(int camp, Menu menu) {
 		return (entites.get(camp).getBase().getDefence(menu) != null);
 	}
-	
+	/**
+	 * Change la position de l'objectif du groupe selectionne
+	 * @param camp int : camp du groupe selectionne
+	 * @param grpSelect int : groupe selectionne
+	 * @param pos Vect2 : nouvelle position de l'objectif
+	 */
 	public void changeObjectifGroupe(int camp, int grpSelect, Vect2 pos) {
 		entites.get(camp).getGroupes().get(grpSelect - 1).setObjectif(pos);
 	}
@@ -194,7 +204,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	public static void main(String[] args) {
 		try {
 			//on cree le registre directement au bon endroit pour les tests
-			Registry registry = LocateRegistry.createRegistry(1091);
+			Registry registry = LocateRegistry.createRegistry(1099);
 			// les joueurs sont ajoutes par serveurPartie pour respecter l'ordre d'enregistrement sur le registre
 			new ServeurPartieImpl();
 		} catch (RemoteException e) {

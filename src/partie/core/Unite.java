@@ -58,21 +58,18 @@ public class Unite extends Entite {
 	
 	/**
 	 * Decale l'unite
-	 * @param dx
-	 * 			Decalage en X
-	 * @param dy
-	 * 			Decalage en Y
+	 * @param dx float : Decalage en X
+	 * @param dy float : Decalage en Y
 	 */
 	public void deplacement(float dx, float dy) {
 		this.position.setPos(position.x + dx, position.y + dy);
 	}
 	
 	/**
-	 * Gère l'attaque de l'unite sur une cible<li>
+	 * Gère l'attaque cette unite sur une cible<li>
 	 * 	Change le cooldown<li>
 	 *  Attaque l'entite
-	 * @param e
-	 * 			L'entite cible
+	 * @param e Entite : L'entite cible
 	 * @return vrai si la cible est tuee et faux sinon
 	 */
 	public void attaque(Entite e) {
@@ -92,16 +89,11 @@ public class Unite extends Entite {
 	 * Met à jour l'unite<li>
 	 * 	Diminue le cooldown grâce à dt<li>
 	 *  Determine l'action de l'unite en fonction de son environnement
-	 * @param dt
-	 * 			Temps depuis la derniere mise à jour
-	 * @param estPremiere
-	 * 			Represente la position de l'unite dans son groupe
-	 * @param grp
-	 * 			Groupe dans lequel appartient l'unite
-	 * @param entites
-	 * 			Ensemble des unites de la partie
-	 * @param joueurs
-	 * 			Ensemble des joueurs de la partie
+	 * @param dt float : Temps depuis la derniere mise à jour
+	 * @param estPremiere boolean : Represente la position de l'unite dans son groupe
+	 * @param grp Groupe : Groupe dans lequel appartient l'unite
+	 * @param entites HashMap<Integer, Armee> : Ensemble des unites de la partie
+	 * @param joueurs HashMap<Integer, JoueurPartie> Ensemble des joueurs de la partie
 	 */
 	public void update(float dt, boolean estPremiere, Groupe grp, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		if (cooldown > 0) {
@@ -165,9 +157,8 @@ public class Unite extends Entite {
 	
 	
 	/**
-	 * Definit l'entite que u doit attaquer 
-	 * @param unite
-	 * 				l'attaquant
+	 * Definit l'entite que cette unite doit attaquer 
+	 * @param entites HashMap<Integer, Armee> : Ensemble des entites de la partie
 	 * @return une entite à portee de l'attaquant et rien si aucune entite verifie ce critère  
 	 */
 	protected Entite entiteAAttaquer(HashMap<Integer, Armee> entites) {
@@ -202,11 +193,11 @@ public class Unite extends Entite {
 	
 	
 	/**
-	 * Gère l'attaque de l'unite u sur l'entite cible
-	 * @param u
-	 * 				attaquant
-	 * @param cible
-	 * 				entite qui se fait attaquer
+	 * Gère l'attaque de cette unite sur l'entite cible<li>
+	 *  Supprime l'entite cible de son armee en cas de mort
+	 * @param cible Unite : L'entite cible
+	 * @param entites HashMap<Integer, Armee> : Ensemble des entites de la partie
+	 * @param joueurs HashMap<Integer, JoueurPartie> : Ensemble  des joueurs de la partie
 	 */
 	protected void attaqueEntite(Entite cible, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		// Si U peut attaquer (le cooldown de U est à 0)
@@ -237,10 +228,8 @@ public class Unite extends Entite {
 	
 	/**
 	 * Calcule si l'entite e est à portee d'attaque de l'attaquant u
-	 * @param e
-	 * 				l'entite cible 
-	 * @param u
-	 * 				l'attaquant
+	 * @param e Unite : L'entite cible 
+	 * @param u Unite : L'attaquant
 	 * @return vrai si l'attaquant est à portee de tir de la cible et faux sinon
 	 */
 	protected boolean aPorteeDe(Entite e, Unite u) {
@@ -259,12 +248,11 @@ public class Unite extends Entite {
 	
 	/**
 	 * Dessine l'unite sur le plateau
-	 * @param g
-	 * 			Graphics du JPanel plateau
-	 * @param ratio
-	 * 			Ratio d'affichage
-	 * @param offSet
-	 * 			Decalage d'affichage en X et Y
+	 * @param g Graphics : Graphics du JPanel plateau
+	 * @param ratio float : Ratio d'affichage
+	 * @param offSet Vect2 : Decalage d'affichage en X et Y
+	 * @param images Images : Classe contenant toutes les images du jeu
+	 * @param campJoueurImpl int : camp du joueur
 	 */
 	public void draw(Graphics g, float ratio, Vect2 offSet, Images images, int campJoueurImpl) {
 		float rayon = rayonEntite * ratio;

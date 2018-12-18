@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
+import partie.core.Outils;
 import partie.core.TypeUnite;
 import partie.core.VarPartie;
 import partie.rmi.JoueurPartieImpl;
@@ -73,12 +74,11 @@ public class InterfacePartie  extends JFrame {
 	/**
 	 * Constructeur de l'interface graphique<li>
 	 *  Initialisation des differents JPanel et boutons
-	 * @param j
-	 * 			Joueur auquel l'interface est liee
+	 * @param j JoueurPartieImpl : joueur auquel l'interface est liee
 	 */
 	public InterfacePartie(JoueurPartieImpl j) {
 		this.joueurP = j;
-		this.color = defineColor();
+		this.color = Outils.defineColor(joueurP.getCamp());
 		this.setIconImage(new ImageIcon(getClass().getResource(pathIcon)).getImage());
 		
 		this.setTitle("Age Of War");
@@ -121,7 +121,7 @@ public class InterfacePartie  extends JFrame {
 		//----------------------------------------------------------------
 		panBot = new JPanel();
 		panBot.setLayout(new BorderLayout());
-		panBot.setBackground(defineColor());
+		panBot.setBackground(color);
 		this.currentMenu = Menu.GENERAL;
 
 		// Construction du Menu General
@@ -218,6 +218,18 @@ public class InterfacePartie  extends JFrame {
 		this.pack();
 	}
 	
+	/**
+	 * Raccourci pour creer un bouton avec<li>
+	 *  Une image en fond<li>
+	 *  Un label fixe en fond
+	 * @param pathFond String : Chemin de l'image de fond
+	 * @param text String : Texte du label de fond
+	 * @param c Color : couleur du texte
+	 * @param w int : Largeur du bouton
+	 * @param h int : Hauteur du bouton
+	 * @param act ActionListener actionListener lie au bouton
+	 * @return JButton personnalise
+	 */
 	private JButton buttonWithLabelFond(String pathFond, String text, Color c, int w, int h, ActionListener act) {
 	
 		JButton b = new ButtonImageFond(pathFond, w, h, act);
@@ -229,7 +241,20 @@ public class InterfacePartie  extends JFrame {
 		
 		return b;
 	}
-	
+	/**
+	 * Raccourci pour creer un bouton avec<li>
+	 *  Une image en fond<li>
+	 *  Une image en premier plan<li>
+	 *  Un label fixe en fond
+	 * @param pathFond String : Chemin de l'image de fond
+	 * @param pathImage String : Chemin de l'image au premier plan
+	 * @param text String : Texte du label de fond
+	 * @param c Color : couleur du texte
+	 * @param w int : Largeur du bouton
+	 * @param h int : Hauteur du bouton
+	 * @param act ActionListener actionListener lie au bouton
+	 * @return JButton personnalise
+	 */
 	private JButton buttonWithLabelFondImage(String pathFond, String pathImage, String text, Color c, int w, int h, ActionListener act) {
 		
 		JButton b = new ButtonImageFond(pathFond, pathImage, w, h, act);
@@ -284,8 +309,7 @@ public class InterfacePartie  extends JFrame {
 		
 	/**
 	 * Creer un JPanel de menu
-	 * @param m
-	 * 			Onglet du menu associe
+	 * @param m Menu : Onglet du menu associe
 	 * @return un JPanel au bon format du Menu avec le nom de l'onglet associe
 	 */
 	private JPanel createPanelMenu(Menu m) {
@@ -326,9 +350,8 @@ public class InterfacePartie  extends JFrame {
 	
 	/**
 	 * Creer un JPanel de menu (defence)
-	 * @param m
-	 * 			Onglet du menu associe
-	 * @return un JPanel au bon format du Menu avec le nom de l'onglet associe
+	 * @param m Menu : Onglet du menu associe
+	 * @return un JPanel au bon format du Menu avec les boutons de defense associes
 	 */
 	private JPanel createPanDef(Menu m) {
 		JPanel panP = new JPanel();
@@ -348,7 +371,6 @@ public class InterfacePartie  extends JFrame {
 		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD2, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFII), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DEFII)));
 		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFIII), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DEFIII)));
 		
-		//pan.add(new ButtonImageFond(pathFondMenu3, 60, 45, new ButtonSellDef(this)));
 		
 		JButton sellButton = new ButtonImageFond(pathFondMenu3, 65, 45, new ButtonSellDef(this));
 		sellButton.setLayout(new BorderLayout());
@@ -389,44 +411,11 @@ public class InterfacePartie  extends JFrame {
 	
 	public JPanel getCenterPan() { return this.panCenter; }
 	
-	/**
-	 * Definit la couleur du joueur suivant son camp
-	 * @return la couleur du joueur
-	 */
-	private Color defineColor() {
-		switch (joueurP.getCamp()) {
-		case 1 :
-			color = Color.RED;
-			break;
-		case 2 :
-			color = Color.BLUE;
-			break;
-		case 3 :
-			color = Color.DARK_GRAY;
-			break;
-		case 4 :
-			color = Color.MAGENTA;
-			break;
-		case 5 :
-			color = Color.GREEN;
-			break;
-		case 6 :
-			color = Color.CYAN;
-			break;
-		case 7 :
-			color = Color.ORANGE;
-			break;
-		case 8 :
-			color = Color.YELLOW;
-			break;
-		}
-		return color;
-	}
+	
 	
 	/**
 	 * Affiche le menu selectionne 
-	 * @param menu
-	 * 			Nouveau menu selectionne
+	 * @param menu Menu : Nouveau menu selectionne
 	 */
 	public void switchMenu(Menu menu) {
 		// Rend invisible l'ancien menu
@@ -515,7 +504,7 @@ public class InterfacePartie  extends JFrame {
 	}
 	
 	/**
-	 * Met à jour le Label qui affiche l'argent
+	 * Met a jour le Label qui affiche l'argent
 	 */
 	public void changementArgent() {
 		labArgent.setText(String.format("Argent : %d", joueurP.getArgent()));
@@ -526,7 +515,9 @@ public class InterfacePartie  extends JFrame {
 	public void changementGroupe() {
 		labGroupe.setText(String.format("Groupe selectionne : %d", joueurP.getGroupeSelect()));
 	}
-	
+	/**
+	 * Met à jour les Label qui affichent le prix de vente de chaque defense
+	 */
 	public void changementDefense(Menu m, int cout) {
 		switch (m) {
 		case DEF1:

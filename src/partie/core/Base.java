@@ -55,13 +55,12 @@ public class Base extends Entite {
 	
 	
 	/**
-	 * Dessine l'unite sur le plateau
-	 * @param g
-	 * 			Graphics du JPanel plateau
-	 * @param ratio
-	 * 			Ratio d'affichage
-	 * @param offSet
-	 * 			Decalage d'affichage en X et Y
+	 * Dessine la base et les defenses sur le plateau
+	 * @param g Graphics : Graphics du JPanel plateau
+	 * @param ratio float : Ratio d'affichage
+	 * @param offSet Vect2 : Decalage d'affichage en X et Y
+	 * @param images Images : Classe contenant toutes les images du jeu
+	 * @param campJoueurImpl int : camp du joueur
 	 */
 	public void draw(Graphics g, float ratio, Vect2 offSet, Images images, int campJoueurImpl) {
 		float rayon = rayonEntite * ratio;
@@ -105,7 +104,7 @@ public class Base extends Entite {
 			defences.get(Menu.DEF2).draw(g, ratio, offSet, new Vect2( (int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
 		}
 		if (defences.containsKey(Menu.DEF3)) {
-			defences.get(Menu.DEF3).draw(g, ratio, offSet, new Vect2(- (int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
+			defences.get(Menu.DEF3).draw(g, ratio, offSet, new Vect2(-(int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
 		}
 		
 		
