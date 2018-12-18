@@ -16,17 +16,16 @@ import partie.rmi.JoueurPartieImpl;
 
 public class Unite extends Entite {
 
-	protected int degatA;
-	protected float vitesseA;
-	protected float cooldown;
-	protected float porteeA;
-	protected EtatUnite etat;
+	transient protected int degatA;
+	transient protected float vitesseA;
+	transient protected float cooldown;
+	transient protected float porteeA;
 	
-	protected float vitesseDeDeplacement;
-	protected int cout;
+	transient protected float vitesseDeDeplacement;
+	transient protected int cout;
 	
 	/**
-	 * Constructeur de l'unité
+	 * Constructeur de l'unite
 	 * @param pos Vect2
 	 * @param vie int
 	 * @param camp int
@@ -45,34 +44,33 @@ public class Unite extends Entite {
 		this.vitesseA = vitesseA;
 		this.porteeA = porteeA;
 		this.vitesseDeDeplacement = vitesseDeDeplacement;
-		setImage(imageName);
+		setImageName(imageName);
 		
 	}
 	
 	public float getPorteeA() { return this.porteeA; }
-	public EtatUnite getEtat() { return this.etat; }
 	public int getCout() { return this.cout; }
 	public float getVitesseDeplacement() { return this.vitesseDeDeplacement; }
 	
 	
 	/**
-	 * Décale l'unité
+	 * Decale l'unite
 	 * @param dx
-	 * 			Décalage en X
+	 * 			Decalage en X
 	 * @param dy
-	 * 			Décalage en Y
+	 * 			Decalage en Y
 	 */
 	public void deplacement(float dx, float dy) {
 		this.position.setPos(position.x + dx, position.y + dy);
 	}
 	
 	/**
-	 * Gère l'attaque de l'unité sur une cible<li>
+	 * Gère l'attaque de l'unite sur une cible<li>
 	 * 	Change le cooldown<li>
-	 *  Attaque l'entité
+	 *  Attaque l'entite
 	 * @param e
-	 * 			L'entité cible
-	 * @return vrai si la cible est tuée et faux sinon
+	 * 			L'entite cible
+	 * @return vrai si la cible est tuee et faux sinon
 	 */
 	public void attaque(Entite e) {
 		cooldown = vitesseA;
@@ -80,7 +78,7 @@ public class Unite extends Entite {
 	}
 	
 	/**
-	 * Dit si l'unité peut attaquer
+	 * Dit si l'unite peut attaquer
 	 * @return vrai si le cooldown est à 0 et faux sinon
 	 */
 	public boolean canAttack() { 
@@ -88,17 +86,17 @@ public class Unite extends Entite {
 	}
 	
 	/***
-	 * Met à jour l'unité<li>
+	 * Met à jour l'unite<li>
 	 * 	Diminue le cooldown grâce à dt<li>
-	 *  Détermine l'action de l'unité en fonction de son environnement
+	 *  Determine l'action de l'unite en fonction de son environnement
 	 * @param dt
 	 * 			Temps depuis la derniere mise à jour
 	 * @param estPremiere
-	 * 			Représente la position de l'unité dans son groupe
+	 * 			Represente la position de l'unite dans son groupe
 	 * @param grp
-	 * 			Groupe dans lequel appartient l'unité
+	 * 			Groupe dans lequel appartient l'unite
 	 * @param entites
-	 * 			Ensemble des unités de la partie
+	 * 			Ensemble des unites de la partie
 	 * @param joueurs
 	 * 			Ensemble des joueurs de la partie
 	 */
@@ -111,11 +109,11 @@ public class Unite extends Entite {
 		}
 		
 		if (estPremiere) {
-			// Calcule et renvoie l'unité la plus proche à distance d'attaque de U
+			// Calcule et renvoie l'unite la plus proche à distance d'attaque de U
 			Entite entiteCible = entiteAAttaquer(entites); 
 			
 			if (entiteCible != null) {
-				// Si la cible pointe sur une entité, U attaque la cible
+				// Si la cible pointe sur une entite, U attaque la cible
 				
 				attaqueEntite(entiteCible, entites, joueurs); 
 				angle = Outils.getAngle(position, entiteCible.getPosition()) + (float)Math.PI / 2;
@@ -123,25 +121,27 @@ public class Unite extends Entite {
 				// Sinon, si la cible est null, on calcule le deplacement de U
 				// d la distance entre U et l'objectif
 				float d = (float)Math.sqrt(Outils.norme2AB(grp.getObjectif(), this.getPosition()));
-				// dd la distance de deplacement de U pendant dt en fonction de sa vitesse
-				float dd = (dt / 1000)  * (float)this.getVitesseDeplacement() / d;
-
-				// Théorème de Thales => on calcule dx et dy les déplacements en x et y
-				float dx = dd * (grp.getObjectif().x - this.getPosition().x);
-				float dy = dd * (grp.getObjectif().y - this.getPosition().y);
-				this.deplacement(dx, dy); // application de ces déplacements
-				angle = Outils.getAngle(position, grp.getObjectif()) + (float)Math.PI / 2;
+				if (d >= 4) {
+					// dd la distance de deplacement de U pendant dt en fonction de sa vitesse
+					float dd = (dt / 1000)  * (float)this.getVitesseDeplacement() / d;
+		
+					// Theorème de Thales => on calcule dx et dy les deplacements en x et y
+					float dx = dd * (grp.getObjectif().x - this.getPosition().x);
+					float dy = dd * (grp.getObjectif().y - this.getPosition().y);
+					this.deplacement(dx, dy); // application de ces deplacements
+					angle = Outils.getAngle(position, grp.getObjectif()) + (float)Math.PI / 2;
+				}
 				
 			}
 		} else {
-			// Calcule et renvoie l'unité la plus proche à distance d'attaque de U
+			// Calcule et renvoie l'unite la plus proche à distance d'attaque de U
 			Entite entiteCible = entiteAAttaquer(entites);
 			
 			if (entiteCible != null) {
 				attaqueEntite(entiteCible, entites, joueurs);
 			} else {
-				// U0 pointe sur la (i)e unité du groupe (l'unité devant U)
-				Unite u0 = grp.getUnites().get(grp.getUnites().indexOf(this) - 1);// U pointe sur la (i + 1)e unité du groupe
+				// U0 pointe sur la (i)e unite du groupe (l'unite devant U)
+				Unite u0 = grp.getUnites().get(grp.getUnites().indexOf(this) - 1);// U pointe sur la (i + 1)e unite du groupe
 				
 				// d la distance entre U et U0
 				float d = (float)Math.sqrt(Outils.norme2AB(u0.getPosition(), this.getPosition()));
@@ -153,7 +153,7 @@ public class Unite extends Entite {
 					float dx = dd * (u0.getPosition().x - this.getPosition().x);
 					float dy = dd * (u0.getPosition().y - this.getPosition().y);
 					this.deplacement(dx, dy);
-					angle = Outils.getAngle(position, grp.getObjectif()) + (float)Math.PI / 2;
+					angle = Outils.getAngle(position, u0.getPosition()) + (float)Math.PI / 2;
 				}
 			}
 		}
@@ -162,30 +162,30 @@ public class Unite extends Entite {
 	
 	
 	/**
-	 * Définit l'entité que u doit attaquer 
+	 * Definit l'entite que u doit attaquer 
 	 * @param unite
 	 * 				l'attaquant
-	 * @return une entité à portée de l'attaquant et rien si aucune entité vérifie ce critère  
+	 * @return une entite à portee de l'attaquant et rien si aucune entite verifie ce critère  
 	 */
 	protected Entite entiteAAttaquer(HashMap<Integer, Armee> entites) {
 		Entite e = null;
 		
-		// Parcourt toutes les entités de la partie
+		// Parcourt toutes les entites de la partie
 		for (Integer i : entites.keySet()) {
-			// Regarde seulelement les unités des autres camps
+			// Regarde seulelement les unites des autres camps
 			if (i != this.getCamp()) {
 				
 				if (aPorteeDe(entites.get(i).getBase(), this)) {
-					// Si la base est à portée d'attaque, alors elle devient la cible
+					// Si la base est à portee d'attaque, alors elle devient la cible
 					e = entites.get(i).getBase();
 				}
 				
-				// Parcourt toutes les unités
+				// Parcourt toutes les unites
 				for (int j = 0; j < entites.get(i).getGroupes().size(); j++) {
 					for (Unite u : entites.get(i).getGroupes().get(j).getUnites()) {
 						if (aPorteeDe(u, this)) {
-							// Si l'unité est à portée d'attaque, alors elle devient la cible 
-							// Remarque : les unités sont prioritaires face aux bases
+							// Si l'unite est à portee d'attaque, alors elle devient la cible 
+							// Remarque : les unites sont prioritaires face aux bases
 							e = u;
 						}
 					}
@@ -199,11 +199,11 @@ public class Unite extends Entite {
 	
 	
 	/**
-	 * Gère l'attaque de l'unité u sur l'entité cible
+	 * Gère l'attaque de l'unite u sur l'entite cible
 	 * @param u
 	 * 				attaquant
 	 * @param cible
-	 * 				entité qui se fait attaquer
+	 * 				entite qui se fait attaquer
 	 */
 	protected void attaqueEntite(Entite cible, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		// Si U peut attaquer (le cooldown de U est à 0)
@@ -212,13 +212,13 @@ public class Unite extends Entite {
 			this.attaque(cible);
 			if (cible.estMorte()) {
 				if (cible instanceof Base) {
-					// Si l'unité tuée est une base
+					// Si l'unite tuee est une base
 					
 					//entites.remove(cible.camp);
 				} else 
 					if (cible instanceof Unite) {
-						// Si l'unité tuée est une unité
-						// Donne l'argent de l'élimination au joueur "assassin"
+						// Si l'unite tuee est une unite
+						// Donne l'argent de l'elimination au joueur "assassin"
 						try {
 							joueurs.get(this.getCamp()).ajouterArgent((int)Math.floor(((Unite)cible).getCout() * VarPartie.REMBOURSEMENT_UNITE));
 						} catch (RemoteException e) {
@@ -233,12 +233,12 @@ public class Unite extends Entite {
 	
 	
 	/**
-	 * Calcule si l'entité e est à portée d'attaque de l'attaquant u
+	 * Calcule si l'entite e est à portee d'attaque de l'attaquant u
 	 * @param e
-	 * 				l'entité cible 
+	 * 				l'entite cible 
 	 * @param u
 	 * 				l'attaquant
-	 * @return vrai si l'attaquant est à portée de tir de la cible et faux sinon
+	 * @return vrai si l'attaquant est à portee de tir de la cible et faux sinon
 	 */
 	protected boolean aPorteeDe(Entite e, Unite u) {
 		int dx = (int)Math.abs(u.getPosition().x - e.getPosition().x); // Distance selon x de E et U
@@ -255,15 +255,15 @@ public class Unite extends Entite {
 	}
 	
 	/**
-	 * Dessine l'unité sur le plateau
+	 * Dessine l'unite sur le plateau
 	 * @param g
 	 * 			Graphics du JPanel plateau
 	 * @param ratio
 	 * 			Ratio d'affichage
 	 * @param offSet
-	 * 			Décalage d'affichage en X et Y
+	 * 			Decalage d'affichage en X et Y
 	 */
-	public void draw(Graphics g, float ratio, Vect2 offSet) {
+	public void draw(Graphics g, float ratio, Vect2 offSet, Images images) {
 		float rayon = rayonEntite * ratio;
 		
 		int posX = (int)offSet.x + (int)Math.floor(position.x * ratio - rayon);
@@ -271,7 +271,8 @@ public class Unite extends Entite {
 		int r = (int)(rayon * 2);
 		
 		g.setColor(color);
-		if (image != null) {
+		if (imageName != null) {
+			Image image = images.getImage(imageName);
 			AffineTransform rotation = new AffineTransform();
 			rotation.translate(posX , posY);
 			rotation.scale(r / (float)(image.getWidth(null)), r / (float)(image.getHeight(null)));

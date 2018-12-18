@@ -62,7 +62,7 @@ public class UniteXmlLoader {
 		
 	}
 	
-	public Defence createDefence(TypeDefense typeD, int camp, Vect2 pos) {
+	public Defense createDefence(TypeDefense typeD, int camp, Vect2 pos) {
 		Node u = Outils.getChild(typeD.toString(), root);
 		if (u != null) {
 			
@@ -76,7 +76,7 @@ public class UniteXmlLoader {
 			float vitesseA = Float.parseFloat(attaque.getAttribute("vitesse"));
 			float porteeA = Float.parseFloat(attaque.getAttribute("portee"));
 			
-			return new Defence(pos, camp, rayonUnite, cout, degatA, vitesseA, porteeA, imageName);
+			return new Defense(pos, camp, rayonUnite, cout, degatA, vitesseA, porteeA, imageName);
 			
 		} else { return null; }
 		

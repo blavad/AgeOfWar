@@ -11,6 +11,8 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
@@ -70,9 +72,9 @@ public class InterfacePartie  extends JFrame {
 	
 	/**
 	 * Constructeur de l'interface graphique<li>
-	 *  Initialisation des différents JPanel et boutons
+	 *  Initialisation des differents JPanel et boutons
 	 * @param j
-	 * 			Joueur auquel l'interface est liée
+	 * 			Joueur auquel l'interface est liee
 	 */
 	public InterfacePartie(JoueurPartieImpl j) {
 		this.joueurP = j;
@@ -181,7 +183,7 @@ public class InterfacePartie  extends JFrame {
 		panGroupe.setLayout(new BorderLayout());
 		JPanel pan2 = new PanelImageFond(pathFondMenu2);
 		labGroupe = new JLabel();
-		labGroupe.setText(String.format("Groupe selectionné : %d", joueurP.getGroupeSelect()));
+		labGroupe.setText(String.format("Groupe selectionne : %d", joueurP.getGroupeSelect()));
 		labGroupe.setHorizontalAlignment(labGroupe.CENTER);
 		labGroupe.setForeground(Color.WHITE);
 		pan2.add(labGroupe);
@@ -205,6 +207,7 @@ public class InterfacePartie  extends JFrame {
 		panCenter = new JPanel();
 		panCenter.setPreferredSize(new Dimension(300, 350));
 		panCenter.setBackground(Color.BLACK);
+		panCenter.addMouseListener(new PointeurPlateau(this));
 		
 		
 		
@@ -280,10 +283,10 @@ public class InterfacePartie  extends JFrame {
 		
 		
 	/**
-	 * Créer un JPanel de menu
+	 * Creer un JPanel de menu
 	 * @param m
-	 * 			Onglet du menu associé
-	 * @return un JPanel au bon format du Menu avec le nom de l'onglet associé
+	 * 			Onglet du menu associe
+	 * @return un JPanel au bon format du Menu avec le nom de l'onglet associe
 	 */
 	private JPanel createPanelMenu(Menu m) {
 		JPanel pan = new JPanel();
@@ -322,10 +325,10 @@ public class InterfacePartie  extends JFrame {
 	}
 	
 	/**
-	 * Créer un JPanel de menu (défence)
+	 * Creer un JPanel de menu (defence)
 	 * @param m
-	 * 			Onglet du menu associé
-	 * @return un JPanel au bon format du Menu avec le nom de l'onglet associé
+	 * 			Onglet du menu associe
+	 * @return un JPanel au bon format du Menu avec le nom de l'onglet associe
 	 */
 	private JPanel createPanDef(Menu m) {
 		JPanel panP = new JPanel();
@@ -360,7 +363,7 @@ public class InterfacePartie  extends JFrame {
 	public JPanel getCenterPan() { return this.panCenter; }
 	
 	/**
-	 * Définit la couleur du joueur suivant son camp
+	 * Definit la couleur du joueur suivant son camp
 	 * @return la couleur du joueur
 	 */
 	private Color defineColor() {
@@ -378,9 +381,9 @@ public class InterfacePartie  extends JFrame {
 	}
 	
 	/**
-	 * Affiche le menu sélectionné 
+	 * Affiche le menu selectionne 
 	 * @param menu
-	 * 			Nouveau menu sélectionné
+	 * 			Nouveau menu selectionne
 	 */
 	public void switchMenu(Menu menu) {
 		// Rend invisible l'ancien menu
@@ -407,7 +410,7 @@ public class InterfacePartie  extends JFrame {
 			break;
 		
 		}
-		// Affiche le menu selectionné
+		// Affiche le menu selectionne
 		switch (menu) {
 		case GENERAL : 
 			panBot.add(panMenu, BorderLayout.SOUTH);
@@ -441,7 +444,7 @@ public class InterfacePartie  extends JFrame {
 	}
 	
 	/**
-	 * Revient au menu précédent
+	 * Revient au menu precedent
 	 */
 	public void backMenu() {
 		switch (currentMenu) {
@@ -475,10 +478,10 @@ public class InterfacePartie  extends JFrame {
 		labArgent.setText(String.format("Argent : %d", joueurP.getArgent()));
 	}
 	/**
-	 * Met à jour le Label qui affiche le groupe sélectionné
+	 * Met à jour le Label qui affiche le groupe selectionne
 	 */
 	public void changementGroupe() {
-		labGroupe.setText(String.format("Groupe selectionné : %d", joueurP.getGroupeSelect()));
+		labGroupe.setText(String.format("Groupe selectionne : %d", joueurP.getGroupeSelect()));
 	}
 
 	public Menu getCurrentMenu() { return this.currentMenu; }
@@ -562,8 +565,6 @@ public class InterfacePartie  extends JFrame {
 			interfaceP.backMenu();
 		}
 	}
-	
-	
 	private class ButtonGroupe implements ActionListener {
 
 		private InterfacePartie interfaceP;
@@ -579,6 +580,46 @@ public class InterfacePartie  extends JFrame {
 			// TODO Auto-generated method stub
 			interfaceP.getJoueurP().selectionneGroupe(num);;
 		}
+	}
+	private class PointeurPlateau implements MouseListener  {
+
+		private InterfacePartie interfaceP;
+		
+		PointeurPlateau (InterfacePartie i) {
+			this.interfaceP = i;
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent arg0) {
+			this.interfaceP.joueurP.changeObjectifGroupe(arg0.getX(), arg0.getY());
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		
 	}
 
 }

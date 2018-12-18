@@ -3,9 +3,12 @@ package partie.core;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
 import java.util.HashMap;
+
+import javax.swing.ImageIcon;
 
 import partie.ihm.InterfacePartie.Menu;
 import partie.rmi.JoueurPartie;
@@ -13,15 +16,15 @@ import partie.rmi.JoueurPartieImpl;
 
 public class Base extends Entite {
 	
-	private HashMap<Menu, Defence> defences;
+	private HashMap<Menu, Defense> defences;
 
 	public Base(Vect2 pos, int camp) {
 		super(pos, VarPartie.VIE_BASE, camp, VarPartie.RAYON_BASE);
-		defences = new HashMap<Menu, Defence>();
-		setImage("Vaisseau0.png");
+		defences = new HashMap<Menu, Defense>();
+		setImageName("Vaisseau0");
 	}
 	
-	public void addDef(Menu menu, Defence def) {
+	public void addDef(Menu menu, Defense def) {
 		if (!defences.containsKey(menu)) defences.put(menu, def);
 		else defences.replace(menu, def);
 	}
@@ -30,14 +33,14 @@ public class Base extends Entite {
 		defences.remove(menu);
 	}
 	
-	public Defence getDefence(Menu menu) {
+	public Defense getDefence(Menu menu) {
 		if (defences.containsKey(menu)) return defences.get(menu);
 		else return null;
 	}
 	
 	/**
 	 * Met à jour la base<li>
-	 *  Calcule les actions des défences
+	 *  Calcule les actions des defences
 	 * @param dt Float
 	 * @param entites HashMap<Integer, Armee>
 	 * @param joueurs HashMap<Integer, JoueurPartieImpl>
@@ -45,22 +48,22 @@ public class Base extends Entite {
 	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		
 		for (Menu m : defences.keySet()) {
-			defences.get(m).update(dt, entites, joueurs); // update l'unité (cooldown, ...)
+			defences.get(m).update(dt, entites, joueurs); // update l'unite (cooldown, ...)
 		}
 		
 	}
 	
 	
 	/**
-	 * Dessine l'unité sur le plateau
+	 * Dessine l'unite sur le plateau
 	 * @param g
 	 * 			Graphics du JPanel plateau
 	 * @param ratio
 	 * 			Ratio d'affichage
 	 * @param offSet
-	 * 			Décalage d'affichage en X et Y
+	 * 			Decalage d'affichage en X et Y
 	 */
-	public void draw(Graphics g, float ratio, Vect2 offSet) {
+	public void draw(Graphics g, float ratio, Vect2 offSet, Images images) {
 		float rayon = rayonEntite * ratio;
 		
 		int posX = (int)offSet.x + (int)Math.floor(position.x * ratio - rayon);
@@ -68,7 +71,8 @@ public class Base extends Entite {
 		int r = (int)(rayon * 2);
 		
 		//Dessine la base
-		if (image != null) {
+		if (imageName != null) {
+			Image image = images.getImage(imageName);
 			AffineTransform rotation = new AffineTransform();
 			rotation.translate(posX , posY);
 			rotation.scale(r / (float)(image.getWidth(null)), r / (float)(image.getHeight(null)));
@@ -95,13 +99,13 @@ public class Base extends Entite {
 
 		//Dessine les defences
 		if (defences.containsKey(Menu.DEF1)) {
-			defences.get(Menu.DEF1).draw(g, ratio, new Vect2(offSet.x, offSet.y - (int)Math.floor(15 * ratio)));
+			defences.get(Menu.DEF1).draw(g, ratio, new Vect2(offSet.x, offSet.y - (int)Math.floor(15 * ratio)), images);
 		}
 		if (defences.containsKey(Menu.DEF2)) {
-			defences.get(Menu.DEF2).draw(g, ratio, new Vect2(offSet.x + (int)Math.floor(12 * ratio), offSet.y + (int)Math.floor(10 * ratio)));
+			defences.get(Menu.DEF2).draw(g, ratio, new Vect2(offSet.x + (int)Math.floor(12 * ratio), offSet.y + (int)Math.floor(10 * ratio)), images);
 		}
 		if (defences.containsKey(Menu.DEF3)) {
-			defences.get(Menu.DEF3).draw(g, ratio, new Vect2(offSet.x - (int)Math.floor(12 * ratio), offSet.y + (int)Math.floor(10 * ratio)));
+			defences.get(Menu.DEF3).draw(g, ratio, new Vect2(offSet.x - (int)Math.floor(12 * ratio), offSet.y + (int)Math.floor(10 * ratio)), images);
 		}
 		
 		

@@ -70,9 +70,9 @@ public class Groupe implements Serializable {
 	 * @param offSet
 	 * 			Vect2 : décalage en x et y
 	 */
-	public void draw(Graphics g, float ratio, Vect2 offSet) {
+	public void draw(Graphics g, float ratio, Vect2 offSet, Images images) {
 		for (Unite u : unites) {
-			u.draw(g, ratio, offSet);
+			u.draw(g, ratio, offSet, images);
 		}
 	}
 	

@@ -13,11 +13,12 @@ public class Armee implements Serializable {
 	private ArrayList<Groupe> groupes;
 	private Base base;
 	
-	public Armee () {
+	public Armee (Vect2 posBase, int camp) {
+		this.base = new Base(posBase, camp);
 		this.groupes = new ArrayList<Groupe>();
-		this.groupes.add(new Groupe());
-		this.groupes.add(new Groupe());
-		this.groupes.add(new Groupe());
+		this.groupes.add(new Groupe(base.getPosition()));
+		this.groupes.add(new Groupe(base.getPosition()));
+		this.groupes.add(new Groupe(base.getPosition()));
 	}
 	
 	
@@ -57,15 +58,15 @@ public class Armee implements Serializable {
 	 * @param offSet
 	 * 			Vect2 : décalage en x et y
 	 */
-	public void draw(Graphics g, float ratio, Vect2 offSet) {
+	public void draw(Graphics g, float ratio, Vect2 offSet, Images images) {
 		
 		for (int j = 0; j < this.getGroupes().size(); j++) {
-			this.getGroupes().get(j).draw(g, ratio, offSet);
+			this.getGroupes().get(j).draw(g, ratio, offSet, images);
 		}
 		// On vérifie si la base existe
 		if (this.getBase() != null) {
 			// On dessine la base sur le plateau
-			this.getBase().draw(g, ratio, offSet);
+			this.getBase().draw(g, ratio, offSet, images);
 		}
 	}
 	

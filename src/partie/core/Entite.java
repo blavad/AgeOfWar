@@ -15,19 +15,19 @@ public abstract class Entite implements Serializable {
 	
 	protected Color color;
 	protected int rayonEntite;
-	protected Image image;
+	protected String imageName;
 	protected float angle;
 	
 	/**
-	 * Construteur de l'entité<li>
+	 * Construteur de l'entite<li>
 	 * 	Initialise toutes les variables
-	 *  Définit ola couleur de l'entité avec le camp
+	 *  Definit ola couleur de l'entite avec le camp
 	 * @param pos
-	 * 			Position de l'entité
+	 * 			Position de l'entite
 	 * @param vie
-	 * 			Vie de l'entité
+	 * 			Vie de l'entite
 	 * @param camp
-	 * 			Camp de l'entité
+	 * 			Camp de l'entite
 	 */
 	public Entite(Vect2 pos, int vie, int camp, int rayonEntite) {
 		this.position = new Vect2(pos.x, pos.y);
@@ -40,7 +40,7 @@ public abstract class Entite implements Serializable {
 	}
 	
 	/**
-	 * Définit la couleur de l'entité grâce au camp de celle-ci
+	 * Definit la couleur de l'entite grâce au camp de celle-ci
 	 */
 	private void defineColor() {
 		switch (camp) {
@@ -64,17 +64,17 @@ public abstract class Entite implements Serializable {
 	public boolean estMorte() { return this.vie == 0; }
 	public int getCamp() { return this.camp; }
 	public int getRayonEntite() { return this.rayonEntite; }
-	public void setImage(String path) {
-		image = new ImageIcon(getClass().getResource("/" + path)).getImage();
+	public void setImageName(String name) {
+		imageName = name;
 	}
 	
 	/**
 	 * Gère la prise de dommage<li>
 	 *  Prends les dommages<li>
-	 *  Vérifie si l'entité se fait tuer
+	 *  Verifie si l'entite se fait tuer
 	 * @param d
 	 * 			Dommage pris
-	 * @return vrai si l'entité est tuée et faux sinon
+	 * @return vrai si l'entite est tuee et faux sinon
 	 */
 	public void takeDamage(int d) {
 		int v = this.vie - d;
@@ -87,15 +87,15 @@ public abstract class Entite implements Serializable {
 	}
 	
 	/**
-	 * Dessine l'unité sur le plateau
+	 * Dessine l'unite sur le plateau
 	 * @param g
 	 * 			Graphics du JPanel plateau
 	 * @param ratio
 	 * 			Ratio d'affichage
 	 * @param offSet
-	 * 			Décalage d'affichage en X et Y
+	 * 			Decalage d'affichage en X et Y
 	 */
-	public abstract void draw(Graphics g, float ratio, Vect2 offSet);
+	public abstract void draw(Graphics g, float ratio, Vect2 offSet, Images images);
 	
 	
 

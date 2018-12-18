@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 
 import partie.core.Armee;
 import partie.core.Groupe;
+import partie.core.Images;
 import partie.core.TypeDefense;
 import partie.core.TypeUnite;
 import partie.core.UniteXmlLoader;
@@ -38,6 +39,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	private int heightP = VarPartie.HEIGHT_PARTIE;
 	
 	private Image plateau;
+	public Images images;
 	
 	/**
 	 * Constructeur de JoueurPartieImpl<li>
@@ -53,6 +55,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		super();
 		this.argent = 1000;
 		this.camp = camp;
+		this.images = new Images();
 		try {
 			this.registry = reg;
 			registry.rebind("joueur "+camp, this);
@@ -63,7 +66,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		this.plateau = new ImageIcon(getClass().getResource("/space2.jpeg")).getImage();
 		this.uniteXmlLoader = new UniteXmlLoader();
 		this.interfaceP = new InterfacePartie(this);
-		selectionneGroupe(1); // Initialise le groupe sélectionné à 1
+		selectionneGroupe(1); // Initialise le groupe selectionne à 1
 	}
 	
 	public int getArgent() { return this.argent; }
@@ -72,20 +75,20 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	public UniteXmlLoader getUniteXmlLoader() { return this.uniteXmlLoader; }
 	
 	/**
-	 * Créer une unité lorque le bouton associé est pressé<li>
-	 * 	Vérifie avant la création si le joueur a assez d'argent.<li> 
-	 * 	Si la création est possible, enlève la somme d'argent au joueur
-	 * et demande au serveur de créer cette unité 
+	 * Creer une unite lorque le bouton associe est presse<li>
+	 * 	Verifie avant la creation si le joueur a assez d'argent.<li> 
+	 * 	Si la creation est possible, enlève la somme d'argent au joueur
+	 * et demande au serveur de creer cette unite 
 	 * @param typeU
-	 * 				Le type d'unité à créer
+	 * 				Le type d'unite à creer
 	 */
 	public void creerUnite(TypeUnite typeU) {
-		// Recherche le cout de l'unité crée avec le typeU
+		// Recherche le cout de l'unite cree avec le typeU
 		int cout = uniteXmlLoader.getCout(typeU);
 		
 		if (prendreArgent(cout)) {
 			// Si prendreArgent retourne vrai => le transfert a pu se faire 
-			// On signale donc au serveur de créer une nouvelle unité 
+			// On signale donc au serveur de creer une nouvelle unite 
 			try {
 				this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
 			} catch (RemoteException e) {
@@ -95,14 +98,14 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	}
 	
 	/**
-	 * Créer une défence lorsque le bouton associé est pressé<li>
-	 * 	Vérifie avant la création si le joueur a assez d'argent.<li> 
-	 * 	Si la création est possible, enlève la somme d'argent au joueur
-	 * et demande au serveur de créer cette défence 
+	 * Creer une defence lorsque le bouton associe est presse<li>
+	 * 	Verifie avant la creation si le joueur a assez d'argent.<li> 
+	 * 	Si la creation est possible, enlève la somme d'argent au joueur
+	 * et demande au serveur de creer cette defence 
 	 * @param menu
-	 * 				Permet de savoir sur quel emplacement créer la défence
+	 * 				Permet de savoir sur quel emplacement creer la defence
 	 * @param type
-	 * 				Type de défence à créer
+	 * 				Type de defence à creer
 	 */
 	public void creerDefence(Menu menu, TypeDefense typeD) {
 		try {
@@ -111,7 +114,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 				
 				if (prendreArgent(cout)) {
 					// Si prendreArgent retourne vrai => le transfert a pu se faire 
-					// On signale donc au serveur de créer une nouvelle unité 
+					// On signale donc au serveur de creer une nouvelle unite 
 					this.serveur.ajouterDefence(camp, typeD, menu);
 				}
 			}
@@ -121,11 +124,11 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	}
 	
 	/**
-	 * Vend la défence sélectionnée<li>
-	 * 	Si l'emplacement de défence sélectionné n'est pas vide, 
-	 * demande au serveur d'enlever cette défence 
+	 * Vend la defence selectionnee<li>
+	 * 	Si l'emplacement de defence selectionne n'est pas vide, 
+	 * demande au serveur d'enlever cette defence 
 	 * et ajoute l'argent de la vente au joueur
-	 * @param menu
+	 * @param menu TypeMenu : permet de savoir la defence selectionnee
 	 */
 	public void vendreDefence(Menu menu) {
 		try {
@@ -136,27 +139,40 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	}
 	
 	/**
-	 * Met à jour le groupe sélectionné
-	 * @param i
-	 * 			nouveau groupe sélectionné
+	 * Met a jour le groupe selectionne
+	 * @param i int : nouveau groupe selectionne
 	 */
 	public void selectionneGroupe(int i) {
-		// Change le groupe sélectionné
+		// Change le groupe selectionne
 		this.groupeSelectioner = i;
-		// Prévient l'interface que le groupe sélectionné a changé
+		// Previent l'interface que le groupe selectionne a change
 		interfaceP.changementGroupe();
 	}
 	
 	/**
-	 * Affiche toutes les entités sur le plateau<li>
+	 * Change la position de l'objectif du groupe selectionne
+	 * @param pos Vect2 : nouvelle position
+	 */
+	public void changeObjectifGroupe(int x, int y) {
+		Vect2 ratios = new Vect2((float)interfaceP.getCenterPan().getWidth() / widthP, (float)interfaceP.getCenterPan().getHeight() / heightP);
+		Vect2 pos = new Vect2((float)Math.floor(x / ratios.x), (float)Math.floor(y / ratios.y));
+		try {
+			serveur.changeObjectifGroupe(camp, groupeSelectioner, pos);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Affiche toutes les entites sur le plateau<li>
 	 *  Calcule d'abord le ratio : dimension fenêtre / taille jeu<li>
 	 *  Dessine le plateau<li>
-	 *  Dessine l'objectif du groupe sélectionné<li>
-	 *  Dessine toutes le entités
+	 *  Dessine l'objectif du groupe selectionne<li>
+	 *  Dessine toutes le entites
 	 * @param g
 	 * 				Graphics
 	 * @param entites
-	 * 				HashMap avec toutes les armées
+	 * 				HashMap avec toutes les armees
 	 */
 	private void draw(Graphics g, HashMap<Integer, Armee> entites) {
 		
@@ -164,8 +180,8 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		Vect2 ratios = new Vect2((float)interfaceP.getCenterPan().getWidth() / widthP, (float)interfaceP.getCenterPan().getHeight() / heightP);
 		
 		float ratioMin, ratioMax;
-		int longueur; // longueur du côté du plateau (carré) => longueur = min(widthFenetre, heightFenetre)
-		Vect2 offSet = new Vect2(); // Permet de centrer les Entites sur le côté le plus long
+		int longueur; // longueur du côte du plateau (carre) => longueur = min(widthFenetre, heightFenetre)
+		Vect2 offSet = new Vect2(); // Permet de centrer les Entites sur le côte le plus long
 		
 		int longueurFond;
 		Vect2 offSetFond = new Vect2();
@@ -192,31 +208,31 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		g.drawImage(plateau, (int)offSetFond.x, (int)offSetFond.y, longueurFond, longueurFond, null);
 		
 		
-		// Parcourt toutes armées et dessine les unités 
+		// Parcourt toutes armees et dessine les unites 
 		for (Integer i : entites.keySet()) {
 			Armee a = entites.get(i);
 			
 			try {
-				a.draw(g, ratioMin, offSet);
+				a.draw(g, ratioMin, offSet, images);
 			} catch (ConcurrentModificationException e) {
 				
 			}
 		}
 		
-		// Dessine un point noir qui représente l'ojectif du groupe selectioné
+		// Dessine un point noir qui represente l'ojectif du groupe selectione
 		drawObjectifSelect(g, entites.get(camp).getGroupes().get(groupeSelectioner - 1), ratioMin, offSet);
 	}
 	
 	/**
-	 * Dessine l'objectif du groupe sélectionné
+	 * Dessine l'objectif du groupe selectionne
 	 * @param g
 	 * 			Graphics
 	 * @param grp
-	 * 			Groupe sélectionné
+	 * 			Groupe selectionne
 	 * @param ratio
 	 * 			Ratio d'affichage
 	 * @param offSet
-	 * 			Vect2 : décalage en x et y
+	 * 			Vect2 : decalage en x et y
 	 */
 	private void drawObjectifSelect(Graphics g, Groupe grp, float ratio, Vect2 offSet) {
 		float rayon = VarPartie.RAYON_OBJECTIF * ratio; // Calcule le rayon du cercle à afficher en fonction du ratio
@@ -230,9 +246,9 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	}
 	
 	/**
-	 * Méthode appelée par le serveur qui met à jour les données des armées
+	 * Methode appelee par le serveur qui met à jour les donnees des armees
 	 * @param entites
-	 * 				Les armées de tous les joueurs
+	 * 				Les armees de tous les joueurs
 	 */
 	public void update(HashMap<Integer, Armee> entites) {
 		
@@ -248,7 +264,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 */
 	public void ajouterArgent(int arg) {
 		this.argent += arg; // Rajoute l'argent à la banque du joueur
-		//signale à l'interface graphique que l'argent du joueur à été modifié
+		//signale à l'interface graphique que l'argent du joueur à ete modifie
 		this.interfaceP.changementArgent();
 	}
 	
@@ -256,7 +272,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * Retire de l'argent au joueur
 	 * @param arg
 	 * 			Somme à enlever
-	 * @return vrai si la somme a pu étre enlevée et faux si le joueur n'a pas assez d'argent
+	 * @return vrai si la somme a pu etre enlevee et faux si le joueur n'a pas assez d'argent
 	 */
 	private boolean prendreArgent(int arg) {
 		//Retourne faux si le transfert n'a pas pu se faire et vrai sinon
@@ -266,7 +282,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		}
 		else {
 			this.argent = a;
-			//signale à l'interface graphique que l'argent du joueur à été modifié
+			//signale à l'interface graphique que l'argent du joueur à ete modifie
 			this.interfaceP.changementArgent();
 			return true;
 		}
