@@ -108,6 +108,7 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 		try {
 			// Connection au serveur grace a une IP
 			String ip = DialogBox.infoPlayer(null, "IP Serveur :");
+			//String ip = "172.18.16.226";
 			if (args.length > 0)
 				registry = LocateRegistry.getRegistry(args[0]);
 			else 

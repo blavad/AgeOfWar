@@ -9,6 +9,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.SwingWorker;
+
 import lobby.core.Client;
 import lobby.core.Partie;
 import partie.core.Armee;
@@ -58,12 +60,6 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		try {
-			System.out.println(registry.list()[0]);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	/**
@@ -82,6 +78,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		int i=2;
 		for (Client c : clients) {
 			addJoueur(c,i);
+			System.out.println(c.toString());
 			i++;
 		}
 	}
@@ -96,7 +93,6 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 			e.printStackTrace();
 		}
 		float angle = (float)(Math.PI * 2 * (camp - 1)) / partie.getNbMaxJoueur();
-		System.out.println(partie.getNbJoueur());
 		Armee a = new Armee((new Vect2(offSet.x + (float)Math.sin(angle) * rayon, offSet.y + (float)Math.cos(angle) * rayon)), camp);
 		entites.put(camp, a);
 	}
@@ -114,14 +110,14 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		long currentTime;
 		float FPSLIMIT = 40;
 		float LIMITEUR = 1000/FPSLIMIT;
-		
 		while (finPartie) {
+			
 			currentTime = System.currentTimeMillis();
 			dt += currentTime - previousTime;
 			// Permet de gérer la fréquence de calcul
 			if (dt > LIMITEUR) { 
 				
-				// Met e jour tous les groupes un par un
+				// Met a jour tous les groupes un par un
 				for (Integer i : entites.keySet()) {
 					entites.get(i).update(dt, entites, joueurs);
 				}
@@ -133,17 +129,29 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 						e.printStackTrace();
 					}
 				}
+				
+				
 				dt = 0;
 			}
-
+		
 			previousTime = currentTime;
 			
+		}
+		
+	}
+	
+	private class BoucleWorker extends SwingWorker<Void,Void>{
+		@Override
+		public Void doInBackground() {
+			bouclePartie();
+			return null;
 		}
 	}
 	
 	public void startPartie() {
 		initialiserPartie();
-		bouclePartie();
+		BoucleWorker boucleWorker = new BoucleWorker();
+		boucleWorker.execute();
 	}
 	/**
 	 * Creer une unite selon typeU et la place dans le bon camp et le grp selectionne par le joueur
@@ -210,6 +218,9 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		entites.get(camp).getGroupes().get(grpSelect - 1).setObjectif(pos);
 	}
 	
+	public HashMap<Integer, Armee> getEntites(){
+		return this.entites;
+	}
 	
 	public static void main(String[] args) {
 		try {
@@ -221,5 +232,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 }
