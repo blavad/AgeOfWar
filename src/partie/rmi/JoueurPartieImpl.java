@@ -65,6 +65,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	public int getGroupeSelect() { return this.groupeSelectioner; }
 	public int getCamp() { return this.camp; }
 	public UniteXmlLoader getUniteXmlLoader() { return this.uniteXmlLoader; }
+	public Images getImages() { return this.images; }
 	
 	/**
 	 * Creer une unite lorque le bouton associe est presse<li>
