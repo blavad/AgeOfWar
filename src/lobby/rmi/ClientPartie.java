@@ -21,6 +21,8 @@ public interface ClientPartie extends Remote, Serializable {
 	 */
 	public void notifier(ArrayList<Partie> l_parties) throws RemoteException;
 
-	public void lancerPartie(String hote, Integer camp) throws RemoteException;
+	public void lancerPartie() throws RemoteException;
+	
+	public void creerPartie(Partie partie, int camp) throws RemoteException;
 
 }

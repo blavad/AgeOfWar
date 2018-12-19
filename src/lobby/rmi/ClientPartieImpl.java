@@ -25,7 +25,7 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 	 * Les données du joueur
 	 */
 	Client client;
-	
+	Registry localReg;
 	
 	/**
 	 * Le constructeur
@@ -33,9 +33,17 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 	 * @param p Le pseudo du joueur
 	 * @param serveur Le serveur avec lequel communique le joueur
 	 */
-	public ClientPartieImpl(String pseudo, ServeurParties serveur) throws RemoteException {
+	public ClientPartieImpl(String pseudo, ServeurParties serveur) throws RemoteException{
 		super();
 		this.client = new Client(serveur, pseudo);
+		try {
+			localReg = LocateRegistry.getRegistry(1099);
+			System.out.println("registre deja existant");
+		} catch (RemoteException e) {
+			localReg = LocateRegistry.createRegistry(1099);
+			System.out.println("registre cree");
+		}
+		localReg.rebind(pseudo, this);
 	}
 
 	/**
@@ -53,26 +61,37 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 	 * 
 	 */
 	@Override
-	public void lancerPartie(String hote, Integer camp) throws RemoteException {
+	public void creerPartie(Partie partie, int camp) throws RemoteException {
+		Client hote = partie.getHost();
 		this.client.fenetreConnexion.setVisible(false);
-		if (this.client.getPseudo().equals(hote)){
-			ServeurPartieImpl jeuHote = new ServeurPartieImpl();
+		Registry localReg = LocateRegistry.getRegistry(1099);
+		if (this.client.getPseudo().equals(hote.getPseudo())){
+			ServeurPartieImpl jeuHote = new ServeurPartieImpl(partie);
  		}
-		else {
-			Registry registry;
-			ServeurPartie serveur;
-			
-			registry = LocateRegistry.getRegistry();
-			try {
-				serveur = (ServeurPartie)registry.lookup(hote);
-				JoueurPartieImpl jeuClient = new JoueurPartieImpl(serveur, camp);
-			} catch (NotBoundException e) {
-				e.printStackTrace();
-			}
+		ServeurPartie serveur;
+		String ip = hote.getIp();
+		Registry hoteRegistry = LocateRegistry.getRegistry(ip,1099);
+		try {
+			serveur = (ServeurPartie)hoteRegistry.lookup("hote");
+			JoueurPartieImpl jeuClient = new JoueurPartieImpl(serveur, camp);
+			localReg.rebind("joueur "+camp, jeuClient);
+		} catch (NotBoundException e) {
+			e.printStackTrace();
 		}
+		
 	}
 	
 
+	public void lancerPartie() {
+		try {
+			Registry hoteReg = LocateRegistry.getRegistry();
+			ServeurPartie serveur = (ServeurPartie) hoteReg.lookup("hote");
+			serveur.startPartie();
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	
 	/**
@@ -95,7 +114,8 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 			// Creation du client avec son pseudo
 			String pseudo = DialogBox.infoPlayer(null, "Pseudo :");
 			ClientPartieImpl client = new ClientPartieImpl(pseudo, serveur);
-			registry.rebind(pseudo, client);
+			System.out.println("test");
+			//registry.rebind(pseudo, client);
 			serveur.connect(pseudo);
 			
 			// Affiche la fenetre apres avoir connecter le joueur et correctement au serveur

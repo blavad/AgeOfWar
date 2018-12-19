@@ -6,8 +6,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import lobby.core.Client;
+import lobby.core.Partie;
 import partie.core.Armee;
 import partie.core.Base;
 import partie.core.Defense;
@@ -23,6 +26,7 @@ import partie.ihm.InterfacePartie.Menu;
 
 public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPartie  {
 	
+	private Partie partie;
 	private Registry registry;
 	private HashMap<Integer, Armee> entites;
 	private HashMap<Integer, JoueurPartie> joueurs;
@@ -35,16 +39,12 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 * Constructeur du serveur<li>
 	 * Il lance l'initialisationeet et la boucle du jeu
 	 */
-	public ServeurPartieImpl() throws RemoteException {
+	public ServeurPartieImpl(Partie partie) throws RemoteException {
 		super();
-		int nbJ = 8;
 		register();
-		// Cette boucle for est a retirer, elle sert a tester le fonctionnement pour le moment
-		for (int i=1; i<=nbJ; i++) {
-			new JoueurPartieImpl(registry,i); 
-		}
-		initialiserPartie(nbJ);
-		bouclePartie();
+		this.partie = partie;
+		//initialiserPartie(nbJoueurs);
+		//bouclePartie();
 	}
 	
 	/**
@@ -72,9 +72,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 * 	Creer les joueurs<li>
 	 * 	Initialise les armees et l'objectif de chaque groupe
 	 */
-	private void initialiserPartie(int nbJ) {
-		
-
+	private void initialiserPartie() {
 		// Initialisation des HashMap
 		joueurs = new HashMap<Integer, JoueurPartie>();
 		entites = new HashMap<Integer, Armee>();
@@ -82,16 +80,20 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		
 		float rayon = (widthP / 2) * 0.8f;
 		Vect2 offSet = new Vect2(widthP / 2, heightP / 2);
-		
-		for (int i = 1; i < nbJ + 1; i++) {
+		ArrayList<Client> clients = partie.getClients();
+		clients.add(0,partie.getHost());
+		int i=1;
+		for (Client c : clients) {
 			try {
-				joueurs.put(i, (JoueurPartie) registry.lookup("joueur " + i));
+				Registry clientReg = LocateRegistry.getRegistry(c.getIp(), 1099);
+				joueurs.put(i, (JoueurPartie) clientReg.lookup("joueur " + i));
 			} catch (RemoteException | NotBoundException e) {
 				e.printStackTrace();
 			}
-			float angle = (float)(Math.PI * 2 * (i - 1)) / nbJ;
+			float angle = (float)(Math.PI * 2 * (i - 1)) / clients.size();
 			Armee a = new Armee((new Vect2(offSet.x + (float)Math.sin(angle) * rayon, offSet.y + (float)Math.cos(angle) * rayon)), i);
 			entites.put(i, a);
+			i++;
 		}
 	}
 	
@@ -134,7 +136,11 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 			
 		}
 	}
-
+	
+	public void startPartie() {
+		initialiserPartie();
+		bouclePartie();
+	}
 	/**
 	 * Creer une unite selon typeU et la place dans le bon camp et le grp selectionne par le joueur
 	 * @param camp int : Le camp du joueur
@@ -206,7 +212,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 			//on cree le registre directement au bon endroit pour les tests
 			Registry registry = LocateRegistry.createRegistry(1099);
 			// les joueurs sont ajoutes par serveurPartie pour respecter l'ordre d'enregistrement sur le registre
-			new ServeurPartieImpl();
+			//new ServeurPartieImpl();
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

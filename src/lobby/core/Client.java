@@ -1,6 +1,10 @@
 package lobby.core;
 
 import java.io.Serializable;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import lobby.ihm.FenetreClient;
 import lobby.rmi.ServeurParties;
@@ -11,7 +15,7 @@ public class Client implements Serializable {
 	 * Le pseudo du joueur
 	 */
 	private String pseudo;
-	
+	private String ip;
 	/**
 	 * La partie du joueur
 	 */
@@ -24,13 +28,30 @@ public class Client implements Serializable {
 	
 	public Client(String pseudo){
 		this.pseudo = pseudo;
+		this.ip = trouverIp();
 	}
 	
 	public Client(ServeurParties serveur, String pseudo){
 		this.pseudo = pseudo;
 		this.fenetreConnexion = new FenetreClient(this, serveur);
+		this.ip = trouverIp();
 	}
 
+	/**
+	 * Trouve l'ip du client
+	 * @return String
+	 */
+	
+	private String trouverIp() {
+		String ip = "127.0.0.1";
+		try(final DatagramSocket socket = new DatagramSocket()){
+			  socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+			  ip = socket.getLocalAddress().getHostAddress();
+			} catch (SocketException | UnknownHostException e) {
+				e.printStackTrace();
+			}
+		return ip;
+	}
 	/**
 	 * Getter du pseudo du joueur
 	 * @return String
@@ -54,7 +75,13 @@ public class Client implements Serializable {
 	public FenetreClient getFenetre(){
 		return this.fenetreConnexion;
 	}
-	
+	/**
+	 * Getter de l'ip du client
+	 * @return String
+	 */
+	public String getIp() {
+		return this.ip;
+	}
 	/**
 	 * Setter de la partie du joueur
 	 * @param p la partie du joueur

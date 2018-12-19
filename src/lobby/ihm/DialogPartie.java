@@ -42,7 +42,7 @@ public class DialogPartie extends JDialog {
 
 	/** Image */
 	JLabel icon;
-	String pathIcon = "/age-of-war_300.jpg";
+	String pathIcon = "/icon.jpg";
 
 	/** Verifie l'envoie des donnees*/
 	boolean sendData;

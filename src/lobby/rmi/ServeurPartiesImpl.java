@@ -1,5 +1,9 @@
 package lobby.rmi;
 
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -56,7 +60,8 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	private void notifierClients() throws RemoteException {
 		for (Client cl : clients){
 			try {
-				ClientPartie clientDistant = (ClientPartie)registry.lookup(cl.getPseudo());
+				Registry clientReg = LocateRegistry.getRegistry(cl.getIp(), 1099);
+				ClientPartie clientDistant = (ClientPartie)clientReg.lookup(cl.getPseudo());
 				clientDistant.notifier(this.parties.getListParties());
 			} catch (RemoteException | NotBoundException e) {
 				deconnect(cl);
@@ -176,30 +181,33 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	 */
 	@Override
 	public void lancer(Partie partie) throws RemoteException {
-		String hote = parties.getPartie(partie).getHost().getPseudo();
+		Partie partieServ = parties.getPartie(partie);
+		Client hote = partieServ.getHost();
 		ClientPartie hoteDistant;
 		
 		// Lancement du jeu 
-		Integer camp = 1;
+		int camp = 1;
 		try {
-			hoteDistant = (ClientPartie)registry.lookup(hote);
-			hoteDistant.lancerPartie(hote,camp++);
+			Registry hoteReg = LocateRegistry.getRegistry(hote.getIp(), 1099);
+			hoteDistant = (ClientPartie)hoteReg.lookup(hote.getPseudo());
+			hoteDistant.creerPartie(partieServ,camp++);
 			for (Client cl : parties.getPartie(partie).getClients()){
-				ClientPartie clientDistant = (ClientPartie)registry.lookup(cl.getPseudo());
-				clientDistant.lancerPartie(hote,camp++);
+				Registry clientReg = LocateRegistry.getRegistry(cl.getIp(), 1099);
+				ClientPartie clientDistant = (ClientPartie)clientReg.lookup(cl.getPseudo());
+				clientDistant.creerPartie(partieServ,camp++);
 			}
+			hoteDistant.lancerPartie();
 		} catch (NotBoundException | RemoteException e1) {
 			e1.printStackTrace();
 		}
 		
 		// Suppression des joueurs et de la partie
-		for (Client cl : parties.getPartie(partie).getClients()){
+		for (Client cl : partieServ.getClients()){
 			deconnect(cl);
 		}
-		deconnect(parties.getPartie(partie).getHost());
+		deconnect(partieServ.getHost());
 		parties.getListParties().remove(parties.getPartie(partie));
 	}
-	
 	
 	/**
 	 * La methode main qui demarre et enregistre un service RMI pour le serveur central
@@ -208,12 +216,17 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	 */
 	public static void main(String[] args) {
 		try {
-			Registry registry;
-			if (args.length > 0) registry = LocateRegistry.getRegistry(args[0]);
-			else registry = LocateRegistry.getRegistry("192.168.122.1");
+			Registry registry = LocateRegistry.createRegistry(1099);
 			ServeurPartiesImpl servCentral = new ServeurPartiesImpl(registry);
 			registry.rebind("ServeurParties", servCentral);
-			System.out.println("#> Serveur Partie lancé !!!");
+			System.out.println("#> Serveur Partie lance !!!");
+			try(final DatagramSocket socket = new DatagramSocket()){
+				  socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+				  String ip = socket.getLocalAddress().getHostAddress();
+				  System.out.println("@ "+ip);
+				} catch (SocketException | UnknownHostException e) {
+					e.printStackTrace();
+				}
 		} catch (RemoteException ex) {
 			ex.printStackTrace();
 		}

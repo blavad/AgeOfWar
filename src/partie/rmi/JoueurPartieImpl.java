@@ -49,18 +49,12 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * @param camp int : Le camp du joueur
 	 * @throws RemoteException 
 	 */
-	public JoueurPartieImpl(Registry reg, int camp) throws RemoteException {
+	public JoueurPartieImpl(ServeurPartie serveur, int camp) throws RemoteException {
 		super();
 		this.argent = 1000;
 		this.camp = camp;
 		this.images = new Images();
-		try {
-			this.registry = reg;
-			registry.rebind("joueur "+camp, this);
-			serveur = (ServeurPartie) registry.lookup("hote");
-		} catch (RemoteException | NotBoundException e) {
-			e.printStackTrace();
-		}
+		this.serveur = serveur;
 		this.plateau = new ImageIcon(getClass().getResource("/space2.jpeg")).getImage();
 		this.uniteXmlLoader = new UniteXmlLoader();
 		this.interfaceP = new InterfacePartie(this);
