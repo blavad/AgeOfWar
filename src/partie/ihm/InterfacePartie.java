@@ -554,13 +554,13 @@ public class InterfacePartie  extends JFrame {
 	public void changementDefense(Menu m, int cout) {
 		switch (m) {
 		case DEF1:
-			venteDef1.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_UNITE)));
+			venteDef1.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_DEFENSE)));
 			break;
 		case DEF2:
-			venteDef2.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_UNITE)));
+			venteDef2.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_DEFENSE)));
 			break;
 		case DEF3:
-			venteDef3.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_UNITE)));
+			venteDef3.setText(String.format("+%d", (int)Math.floor(cout * VarPartie.REMBOURSEMENT_DEFENSE)));
 			break;
 		default:
 			break;

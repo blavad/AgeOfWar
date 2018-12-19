@@ -214,7 +214,8 @@ public class Unite extends Entite {
 						// Si l'unite tuee est une unite
 						// Donne l'argent de l'elimination au joueur "assassin"
 						try {
-							joueurs.get(this.getCamp()).ajouterArgent((int)Math.floor(((Unite)cible).getCout() * VarPartie.REMBOURSEMENT_UNITE));
+							if (Outils.estDefense(typeU)) joueurs.get(this.getCamp()).ajouterArgent((int)Math.floor(((Unite)cible).getCout() * VarPartie.REMBOURSEMENT_UNITE_DEFENSE));
+							else joueurs.get(this.getCamp()).ajouterArgent((int)Math.floor(((Unite)cible).getCout() * VarPartie.REMBOURSEMENT_UNITE_UNITE));
 						} catch (RemoteException e) {
 							e.printStackTrace();
 						}
