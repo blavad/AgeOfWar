@@ -77,24 +77,28 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		joueurs = new HashMap<Integer, JoueurPartie>();
 		entites = new HashMap<Integer, Armee>();
 		uniteXmlLoader = new UniteXmlLoader();
-		
-		float rayon = (widthP / 2) * 0.8f;
-		Vect2 offSet = new Vect2(widthP / 2, heightP / 2);
 		ArrayList<Client> clients = partie.getClients();
-		clients.add(0,partie.getHost());
-		int i=1;
+		addJoueur(partie.getHost(),1);
+		int i=2;
 		for (Client c : clients) {
-			try {
-				Registry clientReg = LocateRegistry.getRegistry(c.getIp(), 1099);
-				joueurs.put(i, (JoueurPartie) clientReg.lookup("joueur " + i));
-			} catch (RemoteException | NotBoundException e) {
-				e.printStackTrace();
-			}
-			float angle = (float)(Math.PI * 2 * (i - 1)) / clients.size();
-			Armee a = new Armee((new Vect2(offSet.x + (float)Math.sin(angle) * rayon, offSet.y + (float)Math.cos(angle) * rayon)), i);
-			entites.put(i, a);
+			addJoueur(c,i);
 			i++;
 		}
+	}
+	
+	private void addJoueur(Client client, int camp) {
+		float rayon = (widthP / 2) * 0.8f;
+		Vect2 offSet = new Vect2(widthP / 2, heightP / 2);
+		try {
+			Registry clientReg = LocateRegistry.getRegistry(client.getIp(), 1099);
+			joueurs.put(camp, (JoueurPartie) clientReg.lookup("joueur " + camp));
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
+		float angle = (float)(Math.PI * 2 * (camp - 1)) / partie.getNbMaxJoueur();
+		System.out.println(partie.getNbJoueur());
+		Armee a = new Armee((new Vect2(offSet.x + (float)Math.sin(angle) * rayon, offSet.y + (float)Math.cos(angle) * rayon)), camp);
+		entites.put(camp, a);
 	}
 	
 	/**
