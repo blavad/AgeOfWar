@@ -30,6 +30,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	private Registry registry;
 	private HashMap<Integer, Armee> entites;
 	private HashMap<Integer, JoueurPartie> joueurs;
+	//private Thread bouclePartie;
 	private boolean finPartie;
 	private UniteXmlLoader uniteXmlLoader;
 	private int widthP = VarPartie.WIDTH_PARTIE;
@@ -43,8 +44,6 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		super();
 		register();
 		this.partie = partie;
-		//initialiserPartie(nbJoueurs);
-		//bouclePartie();
 	}
 	
 	/**
@@ -81,8 +80,8 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		float rayon = (widthP / 2) * 0.8f;
 		Vect2 offSet = new Vect2(widthP / 2, heightP / 2);
 		ArrayList<Client> clients = partie.getClients();
-		clients.add(0,partie.getHost());
-		int i=1;
+		clients.add(partie.getHost());
+		int i = 1;
 		for (Client c : clients) {
 			try {
 				Registry clientReg = LocateRegistry.getRegistry(c.getIp(), 1099);
@@ -95,6 +94,8 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 			entites.put(i, a);
 			i++;
 		}
+		
+		
 	}
 	
 	/**
@@ -103,7 +104,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 *  Envoie aux joueurs la liste des armees pour que ces derniers puissent les afficher
 	 */
 	
-	private void bouclePartie() {
+	public void bouclePartie() {
 		finPartie = true;
 		long dt = 0;
 		long previousTime = System.currentTimeMillis();
@@ -114,7 +115,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		while (finPartie) {
 			currentTime = System.currentTimeMillis();
 			dt += currentTime - previousTime;
-			// Permet de gérer la fréquence de calcul
+			// Permet de gerer la freuence de calcul
 			if (dt > LIMITEUR) { 
 				
 				// Met e jour tous les groupes un par un
@@ -139,7 +140,17 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	
 	public void startPartie() {
 		initialiserPartie();
-		bouclePartie();
+		
+		for (Integer j : joueurs.keySet()) {
+			try {
+				joueurs.get(j).start();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Thread bouclePartie = new Thread(new BoucleJeu(this));
+		bouclePartie.start();
 	}
 	/**
 	 * Creer une unite selon typeU et la place dans le bon camp et le grp selectionne par le joueur
@@ -217,5 +228,21 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 			e.printStackTrace();
 		}
 	}
+	
+	private class BoucleJeu implements Runnable {
+		
+		private ServeurPartieImpl serv;
+		
+		public BoucleJeu(ServeurPartieImpl serv) {
+			this.serv = serv;
+		}
+
+		@Override
+		public void run() {
+			serv.bouclePartie();
+		}
+		
+	}
+
 
 }

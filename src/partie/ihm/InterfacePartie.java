@@ -247,6 +247,7 @@ public class InterfacePartie  extends JFrame {
 		panGeneral.add(panCenter, BorderLayout.CENTER);
 		
 		this.pack();
+		System.out.println("Constrution interface");
 	}
 	
 	/**

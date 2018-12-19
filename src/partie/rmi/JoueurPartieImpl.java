@@ -30,6 +30,9 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	private Registry registry;
 	private UniteXmlLoader uniteXmlLoader;
 	
+	private HashMap<Integer, Armee> entites;
+	private Thread boucleAffichage;
+	
 	private int argent;
 	private int camp;
 	private int groupeSelectioner;
@@ -51,6 +54,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 */
 	public JoueurPartieImpl(ServeurPartie serveur, int camp) throws RemoteException {
 		super();
+		System.out.println("Constrution joueur " + camp);
 		this.argent = 1000;
 		this.camp = camp;
 		this.images = new Images();
@@ -59,6 +63,10 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		this.uniteXmlLoader = new UniteXmlLoader();
 		this.interfaceP = new InterfacePartie(this);
 		selectionneGroupe(1); // Initialise le groupe selectionne à 1
+		entites = new HashMap<Integer, Armee>();
+	
+		boucleAffichage = new Thread(new BoucleAffichage(this));
+		
 	}
 	
 	public int getArgent() { return this.argent; }
@@ -83,7 +91,6 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 				if (!serveur.aDefence(camp, menu)) {
 					// Recherche le cout de l'unite cree avec le typeU
 					int cout = uniteXmlLoader.getCout(typeU);
-					
 					if (prendreArgent(cout)) {
 						// Si prendreArgent retourne vrai => le transfert a pu se faire 
 						// On signale donc au serveur de creer une nouvelle unite 
@@ -92,7 +99,9 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 				}
 			} else {
 				int cout = uniteXmlLoader.getCout(typeU);
-				this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
+				if (prendreArgent(cout)) {
+					this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
+				}
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -222,8 +231,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * @param entites HashMap<Integer, Armee> : Les armees de tous les joueurs
 	 */
 	public void update(HashMap<Integer, Armee> entites) {
-		
-		this.draw(interfaceP.getCenterPan().getGraphics(), entites);
+		this.entites = entites;
 	}
 	
 	/**
@@ -257,6 +265,56 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 			return true;
 		}
 	}
+	
+	public void start() {
+		boucleAffichage.start();
+	}
+	
+	
+	public void boucleAffichage() {
+		boolean finPartie = false;
+		long dt = 0;
+		long previousTime = System.currentTimeMillis();
+		long currentTime;
+		float FPSLIMIT = 30;
+		float LIMITEUR = 1000/FPSLIMIT;
+		
+		
+		while (!finPartie) {
 
+			/*if (!entiteUpdate) {
+				entites = entitesUpdate;
+				entiteUpdate = true;
+			}*/
+			
+			currentTime = System.currentTimeMillis();
+			dt += currentTime - previousTime;
+			// Permet de gerer la freuence de calcul
+			if (dt > LIMITEUR && entites.values().size() > 0) { 
+				
+				this.draw(interfaceP.getCenterPan().getGraphics(), entites);
+				
+				dt = 0;
+			}
+
+			previousTime = currentTime;
+			
+		}
+	}
+
+	private class BoucleAffichage implements Runnable {
+		
+		private JoueurPartieImpl joueur;
+		
+		public BoucleAffichage(JoueurPartieImpl joueur) {
+			this.joueur = joueur;
+		}
+
+		@Override
+		public void run() {
+			joueur.boucleAffichage();
+		}
+		
+	}
 	
 }

@@ -66,7 +66,7 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 		this.client.fenetreConnexion.setVisible(false);
 		Registry localReg = LocateRegistry.getRegistry(1099);
 		if (this.client.getPseudo().equals(hote.getPseudo())){
-			ServeurPartieImpl jeuHote = new ServeurPartieImpl(partie);
+			new ServeurPartieImpl(partie);
  		}
 		ServeurPartie serveur;
 		String ip = hote.getIp();
