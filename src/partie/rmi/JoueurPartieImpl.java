@@ -3,9 +3,7 @@ package partie.rmi;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ConcurrentModificationException;
@@ -30,7 +28,6 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	private Registry registry;
 	private UniteXmlLoader uniteXmlLoader;
 	
-	private HashMap<Integer, Armee> entites;
 	private Thread boucleAffichage;
 	
 	private int argent;
@@ -238,32 +235,8 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		this.entites = entites;
 	}
 	
-	/*
-	public void boucleAffichage() {
-		estMort = false;
-		long dt = 0;
-		long previousTime = System.currentTimeMillis();
-		long currentTime;
-		float FPSLIMIT = 60;
-		float LIMITEUR = 1000/FPSLIMIT;
-		while (!estMort) {
-			currentTime = System.currentTimeMillis();
-			dt += currentTime - previousTime;
-			// Permet de gérer la fréquence de calcul
-			if (dt > LIMITEUR) { 
-				try {
-					entites = serveur.getEntites();
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
-				dt = 0;
-			}
-
-			previousTime = currentTime;
-		}
-	}
 	
-	*/
+	
 	/**
 	 * Donne de l'argent au joueur<li>
 	 * 	Ajoute l'argent<li>
