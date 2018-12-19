@@ -53,6 +53,7 @@ public class InterfacePartie  extends JFrame {
 	
 	private JPanel panGroupe;
 	private JLabel labGroupe;
+	private JPanel panCenter;
 	
 	
 	//----------------------------------------------------------------
@@ -70,8 +71,8 @@ public class InterfacePartie  extends JFrame {
 	private String pathImageD2 = "/Defense2.png";
 	private String pathImageD3 = "/Defense3.png";
 	private String pathFondBGroupe = "/Bordure3.jpg";
-	private String pathFondBRetour = "/Bordure2.jpg";
-	private String pathFondBUnite = "/Bordure1.jpg";
+	private String pathFondBRetour = "/BoutonRetour.png";
+	private String pathFondBUnite = "/BoutonUnite.png";
 	
 	// Largeur de la fenetre
 	private int prefWidth = 350;
@@ -95,8 +96,10 @@ public class InterfacePartie  extends JFrame {
 	// Dimension des boutons du menu groupe
 	private int prefWidthBGroupe = 50;
 	private int prefHeightBGroupe = 40;
-	
-	private JPanel panCenter;
+
+	private Font font8 = new Font("Arial",Font.BOLD,8);
+	private Font font10 = new Font("Arial",Font.BOLD,10);
+	private Font font12 = new Font("Arial",Font.BOLD,12);
 	
 	/**
 	 * Constructeur de l'interface graphique<li>
@@ -400,8 +403,13 @@ public class InterfacePartie  extends JFrame {
 		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFIII), Color.ORANGE, prefWidthBMUnite, prefHeightBMUnite, new ButtonUnite(this, TypeUnite.DEFIII)));
 		
 		
-		JButton sellButton = new ButtonImageFond(pathFondMenu3, prefWidthBMUnite, prefHeightBMUnite, new ButtonSellDef(this));
+		JButton sellButton = new ButtonImageFond(pathFondBUnite, prefWidthBMUnite, prefHeightBMUnite, new ButtonSellDef(this));
 		sellButton.setLayout(new BorderLayout());
+		JLabel venteDef0 = new JLabel(String.format("Vendre"));
+		venteDef0.setForeground(Color.WHITE);
+		venteDef0.setHorizontalAlignment(labArgent.CENTER);
+		venteDef0.setFont(font8);
+		sellButton.add(venteDef0, BorderLayout.NORTH);
 		switch (m) {
 		case DEF1:
 			venteDef1 = new JLabel(String.format("0"));
