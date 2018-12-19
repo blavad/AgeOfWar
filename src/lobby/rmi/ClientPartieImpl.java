@@ -93,6 +93,9 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 		
 	}
 	
+	public Client getClient() {
+		return this.client;
+	}
 	
 	/**
 	 * La methode main qui lance le programme client et se connecte a un serveur de parties
@@ -113,13 +116,13 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 			
 			// Creation du client avec son pseudo
 			String pseudo = DialogBox.infoPlayer(null, "Pseudo :");
-			ClientPartieImpl client = new ClientPartieImpl(pseudo, serveur);
-			System.out.println("test");
+			ClientPartieImpl clientPartie = new ClientPartieImpl(pseudo, serveur);
+			
 			//registry.rebind(pseudo, client);
-			serveur.connect(pseudo);
+			serveur.connect(clientPartie.getClient());
 			
 			// Affiche la fenetre apres avoir connecter le joueur et correctement au serveur
-			client.client.getFenetre().showFenetre();
+			clientPartie.client.getFenetre().showFenetre();
 		} catch (RemoteException|NotBoundException e1)  {
 			DialogBox.error(null, "Serveur injoignable");
 		} catch (PseudoExistantException e) {

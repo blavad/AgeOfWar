@@ -18,11 +18,11 @@ public interface ServeurParties extends Remote {
 	/**
 	 * Connecte un joueur au serveur de parties
 	 * 
-	 * @param pseudo le pseudo du joueur qui doit etre unique pour un meme serveur de parties
+	 * @param client la classe client du joueur qui doit etre unique pour un meme serveur de parties
 	 * @throws RemoteException
 	 * @throws PseudoExistantException
 	 */
-	public void connect(String pseudo) throws RemoteException, PseudoExistantException;
+	public void connect(Client client) throws RemoteException, PseudoExistantException;
 	
 	/**
 	 * Deconnecte un joueur du serveur de parties

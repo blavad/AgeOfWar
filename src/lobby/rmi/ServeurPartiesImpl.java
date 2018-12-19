@@ -65,6 +65,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 				clientDistant.notifier(this.parties.getListParties());
 			} catch (RemoteException | NotBoundException e) {
 				deconnect(cl);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -77,14 +78,13 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	 * @throws PseudoExistantException
 	 */
 	@Override
-	public void connect(String pseudo) throws RemoteException, PseudoExistantException {
-		for (Client client : clients){
-			if (client.getPseudo().equals(pseudo))
-				throw new PseudoExistantException(pseudo);
+	public void connect(Client client) throws RemoteException, PseudoExistantException {
+		for (Client cl : clients){
+			if (cl.getPseudo().equals(client.getPseudo()))
+				throw new PseudoExistantException(cl.getPseudo());
 		}
-		Client cl = new Client(pseudo);
-		clients.add(cl);
-		System.out.println("#> Nouveau client ---> " + pseudo);	
+		clients.add(client);
+		System.out.println("#> Nouveau client ---> " + client.getPseudo() + " @ "+client.getIp());	
 		notifierClients(); 
 	}
 	
