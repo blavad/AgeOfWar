@@ -54,6 +54,11 @@ public class InterfacePartie  extends JFrame {
 	private JPanel panGroupe;
 	private JLabel labGroupe;
 	
+	
+	//----------------------------------------------------------------
+	// Constantes
+	//----------------------------------------------------------------
+	// Chemins images
 	private String pathFondMenu1 = "/Bordure1.jpg";
 	private String pathFondMenu2 = "/Bordure2.jpg";
 	private String pathFondMenu3 = "/Bordure3.jpg";
@@ -68,6 +73,28 @@ public class InterfacePartie  extends JFrame {
 	private String pathFondBRetour = "/Bordure2.jpg";
 	private String pathFondBUnite = "/Bordure1.jpg";
 	
+	// Largeur de la fenetre
+	private int prefWidth = 350;
+	// Hauteur du plateau
+	private int prefHeightPanCenter = 350;
+	// Hauteur de la barre de menu
+	private int prefHeightPanMenu = 80;
+	// Hauteur du label argent
+	private int prefHeightLabelArgent = 30;
+	// Hauteur du panel qui affiche le camp du joueur
+	private int prefHeightPanCamp = 70;
+	// Dimension des boutons du menu general
+	private int prefWidthBMGeneral = 90;
+	private int prefHeightBMGeneral = 45;
+	// Dimension des boutons des unites
+	private int prefWidthBMUnite = 65;
+	private int prefHeightBMUnite = 45;
+	// Dimension des boutons retour
+	private int prefWidthBMBack = 35;
+	private int prefHeightBMBack = 35;
+	// Dimension des boutons du menu groupe
+	private int prefWidthBGroupe = 50;
+	private int prefHeightBGroupe = 40;
 	
 	private JPanel panCenter;
 	
@@ -102,17 +129,18 @@ public class InterfacePartie  extends JFrame {
 		labArgent = new JLabel(String.format("Argent : %d", joueurP.getArgent()));
 		labArgent.setForeground(Color.WHITE);
 		labArgent.setHorizontalAlignment(labArgent.CENTER);
-		labArgent.setPreferredSize(new Dimension(300,30));
+		labArgent.setPreferredSize(new Dimension(prefWidth, prefHeightLabelArgent));
 		panTop.add(labArgent, BorderLayout.CENTER);
 		
-		JPanel panBotCenter = new PanelImageFond(pathFondMenu3);
-		panBotCenter.setLayout(new BorderLayout());
-		panBotCenter.setPreferredSize(new Dimension(300,70));
+		//Panel affichant le camp du joueur
+		JPanel panCamp = new PanelImageFond(pathFondMenu3);
+		panCamp.setLayout(new BorderLayout());
+		panCamp.setPreferredSize(new Dimension(prefWidth, prefHeightPanCamp));
 		JLabel label = new JLabel("CAMP " + joueurP.getCamp());
 		label.setHorizontalAlignment(label.CENTER);
 		label.setForeground(color);
-		panBotCenter.add(label, BorderLayout.CENTER);
-		panTop.add(panBotCenter, BorderLayout.NORTH);
+		panCamp.add(label, BorderLayout.CENTER);
+		panTop.add(panCamp, BorderLayout.NORTH);
 		
 		
 
@@ -127,8 +155,8 @@ public class InterfacePartie  extends JFrame {
 		// Construction du Menu General
 		panMenu = createPanelMenu(Menu.GENERAL);
 		
-		JButton bUnites = buttonWithLabelFond(pathFondMenu3, "Unites", color, 90, 45, new ButtonMenu(this, Menu.UNITES));
-		JButton bDefences = buttonWithLabelFond(pathFondMenu3, "Defenses", color, 90, 45, new ButtonMenu(this, Menu.DEFENSES));
+		JButton bUnites   = buttonWithLabelFond(pathFondMenu3, "Unites",   color, prefWidthBMGeneral, prefHeightBMGeneral, new ButtonMenu(this, Menu.UNITES));
+		JButton bDefences = buttonWithLabelFond(pathFondMenu3, "Defenses", color, prefWidthBMGeneral, prefHeightBMGeneral, new ButtonMenu(this, Menu.DEFENSES));
 		
 		JPanel panM = new PanelImageFond(pathFondMenu1);
 		panM.add(bUnites);
@@ -138,11 +166,11 @@ public class InterfacePartie  extends JFrame {
 		//Construction du Menu des Unites
 		panUnites = createPanelMenu(Menu.UNITES);
 		
-		JButton bUnite1 = buttonWithLabelFondImage(pathFondBUnite, pathImageV1, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.CAC), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.CAC));
-		JButton bUnite2 = buttonWithLabelFondImage(pathFondBUnite, pathImageV2, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DISTANT), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DISTANT));
-		JButton bUnite3 = buttonWithLabelFondImage(pathFondBUnite, pathImageV3, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.TANK), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.TANK));
+		JButton bUnite1 = buttonWithLabelFondImage(pathFondBUnite, pathImageV1, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.CAC),     Color.ORANGE, prefWidthBMUnite, prefHeightBMUnite, new ButtonUnite(this, TypeUnite.CAC));
+		JButton bUnite2 = buttonWithLabelFondImage(pathFondBUnite, pathImageV2, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DISTANT), Color.ORANGE, prefWidthBMUnite, prefHeightBMUnite, new ButtonUnite(this, TypeUnite.DISTANT));
+		JButton bUnite3 = buttonWithLabelFondImage(pathFondBUnite, pathImageV3, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.TANK),    Color.ORANGE, prefWidthBMUnite, prefHeightBMUnite, new ButtonUnite(this, TypeUnite.TANK));
 		
-		JButton bBackU = new ButtonImageFond(pathFondBRetour, 35, 35, new ButtonBack(this));
+		JButton bBackU = new ButtonImageFond(pathFondBRetour, prefWidthBMBack, prefHeightBMBack, new ButtonBack(this));
 
 		JPanel panU = new PanelImageFond(pathFondMenu1);
 		panU.setBackground(Color.WHITE);
@@ -155,11 +183,11 @@ public class InterfacePartie  extends JFrame {
 		//Construction du Menu des defenses
 		panDefenses = createPanelMenu(Menu.DEFENSES);
 		
-		JButton bDef1 = buttonWithLabelFond(pathFondBUnite, "Def1", color, 65, 45, new ButtonMenu(this, Menu.DEF1));
-		JButton bDef2 = buttonWithLabelFond(pathFondBUnite, "Def2", color, 65, 45, new ButtonMenu(this, Menu.DEF2));
-		JButton bDef3 = buttonWithLabelFond(pathFondBUnite, "Def3", color, 65, 45, new ButtonMenu(this, Menu.DEF3));
+		JButton bDef1 = buttonWithLabelFond(pathFondBUnite, "Def1", color, prefWidthBMUnite, prefHeightBMUnite, new ButtonMenu(this, Menu.DEF1));
+		JButton bDef2 = buttonWithLabelFond(pathFondBUnite, "Def2", color, prefWidthBMUnite, prefHeightBMUnite, new ButtonMenu(this, Menu.DEF2));
+		JButton bDef3 = buttonWithLabelFond(pathFondBUnite, "Def3", color, prefWidthBMUnite, prefHeightBMUnite, new ButtonMenu(this, Menu.DEF3));
 		
-		JButton bBackD = new ButtonImageFond(pathFondBRetour, 35, 35, new ButtonBack(this));
+		JButton bBackD = new ButtonImageFond(pathFondBRetour, prefWidthBMBack, prefHeightBMBack, new ButtonBack(this));
 
 		JPanel panD = new PanelImageFond(pathFondMenu1);
 		panD.setBackground(Color.WHITE);
@@ -192,9 +220,9 @@ public class InterfacePartie  extends JFrame {
 
 		JPanel panGroupeA = new JPanel();
 		panGroupeA.setBackground(Color.BLACK);
-		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "1", Color.WHITE, 55, 40, new ButtonGroupe(this, 1)));
-		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "2", Color.WHITE, 55, 40, new ButtonGroupe(this, 2)));
-		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "3", Color.WHITE, 55, 40, new ButtonGroupe(this, 3)));	
+		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "1", Color.WHITE, prefWidthBGroupe, prefHeightBGroupe, new ButtonGroupe(this, 1)));
+		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "2", Color.WHITE, prefWidthBGroupe, prefHeightBGroupe, new ButtonGroupe(this, 2)));
+		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "3", Color.WHITE, prefWidthBGroupe, prefHeightBGroupe, new ButtonGroupe(this, 3)));	
 		panGroupe.add(panGroupeA, BorderLayout.CENTER);
 		
 		panBot.add(panGroupe, BorderLayout.NORTH);
@@ -205,7 +233,7 @@ public class InterfacePartie  extends JFrame {
 		//Construction du Panel central (Champ de bataille)
 		//----------------------------------------------------------------
 		panCenter = new JPanel();
-		panCenter.setPreferredSize(new Dimension(300, 350));
+		panCenter.setPreferredSize(new Dimension(prefWidth, prefHeightPanCenter));
 		panCenter.setBackground(Color.BLACK);
 		panCenter.addMouseListener(new PointeurPlateau(this));
 		
@@ -314,7 +342,7 @@ public class InterfacePartie  extends JFrame {
 	 */
 	private JPanel createPanelMenu(Menu m) {
 		JPanel pan = new JPanel();
-		pan.setPreferredSize(new Dimension(350, 80));
+		pan.setPreferredSize(new Dimension(prefWidth, prefHeightPanMenu));
 		pan.setLayout(new BorderLayout());
 		JPanel pan2 = new PanelImageFond(pathFondMenu2);
 		JLabel lab = new JLabel(m.toString());
@@ -355,7 +383,7 @@ public class InterfacePartie  extends JFrame {
 	 */
 	private JPanel createPanDef(Menu m) {
 		JPanel panP = new JPanel();
-		panP.setPreferredSize(new Dimension(350, 80));
+		panP.setPreferredSize(new Dimension(prefWidth, prefHeightPanMenu));
 		panP.setLayout(new BorderLayout());
 		
 		JPanel pan2 = new PanelImageFond(pathFondMenu2);
@@ -367,33 +395,30 @@ public class InterfacePartie  extends JFrame {
 		
 		JPanel pan = new PanelImageFond(pathFondMenu1);
 		pan.setBackground(Color.WHITE);
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD1, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFI), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DEFI)));
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD2, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFII), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DEFII)));
-		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFIII), Color.ORANGE, 65, 45, new ButtonUnite(this, TypeUnite.DEFIII)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD1, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFI),   Color.ORANGE, prefWidthBMUnite, prefHeightBMUnite, new ButtonUnite(this, TypeUnite.DEFI)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD2, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFII),  Color.ORANGE, prefWidthBMUnite, prefHeightBMUnite, new ButtonUnite(this, TypeUnite.DEFII)));
+		pan.add(buttonWithLabelFondImage(pathFondBUnite, pathImageD3, ""+joueurP.getUniteXmlLoader().getCout(TypeUnite.DEFIII), Color.ORANGE, prefWidthBMUnite, prefHeightBMUnite, new ButtonUnite(this, TypeUnite.DEFIII)));
 		
 		
-		JButton sellButton = new ButtonImageFond(pathFondMenu3, 65, 45, new ButtonSellDef(this));
+		JButton sellButton = new ButtonImageFond(pathFondMenu3, prefWidthBMUnite, prefHeightBMUnite, new ButtonSellDef(this));
 		sellButton.setLayout(new BorderLayout());
 		switch (m) {
 		case DEF1:
 			venteDef1 = new JLabel(String.format("0"));
 			venteDef1.setForeground(Color.WHITE);
 			venteDef1.setHorizontalAlignment(labArgent.CENTER);
-			venteDef1.setPreferredSize(new Dimension(300,30));
 			sellButton.add(venteDef1, BorderLayout.CENTER);
 			break;
 		case DEF2:
 			venteDef2 = new JLabel(String.format("0"));
 			venteDef2.setForeground(Color.WHITE);
 			venteDef2.setHorizontalAlignment(labArgent.CENTER);
-			venteDef2.setPreferredSize(new Dimension(300,30));
 			sellButton.add(venteDef2, BorderLayout.CENTER);
 			break;
 		case DEF3:
 			venteDef3 = new JLabel(String.format("0"));
 			venteDef3.setForeground(Color.WHITE);
 			venteDef3.setHorizontalAlignment(labArgent.CENTER);
-			venteDef3.setPreferredSize(new Dimension(300,30));
 			sellButton.add(venteDef3, BorderLayout.CENTER);
 			break;
 		default:
@@ -401,7 +426,7 @@ public class InterfacePartie  extends JFrame {
 		}
 		pan.add(sellButton);
 		
-		pan.add(new ButtonImageFond(pathFondBRetour, 35, 35, new ButtonBack(this)));
+		pan.add(new ButtonImageFond(pathFondBRetour, prefWidthBMBack, prefHeightBMBack, new ButtonBack(this)));
 		panP.add(pan, BorderLayout.CENTER);
 		
 		return panP;
@@ -539,6 +564,9 @@ public class InterfacePartie  extends JFrame {
 	
 	
 	
+	//----------------------------------------------------------------
+	// ActionListeners
+	//----------------------------------------------------------------
 	private class ButtonMenu implements ActionListener {
 
 		private InterfacePartie interfaceP;
