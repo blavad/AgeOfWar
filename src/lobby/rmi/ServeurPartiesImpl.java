@@ -190,11 +190,13 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 		try {
 			Registry hoteReg = LocateRegistry.getRegistry(hote.getIp(), 1099);
 			hoteDistant = (ClientPartie)hoteReg.lookup(hote.getPseudo());
-			hoteDistant.creerPartie(partieServ,camp++);
+			hoteDistant.creerPartie(partieServ,camp);
+			camp ++;
 			for (Client cl : parties.getPartie(partie).getClients()){
 				Registry clientReg = LocateRegistry.getRegistry(cl.getIp(), 1099);
 				ClientPartie clientDistant = (ClientPartie)clientReg.lookup(cl.getPseudo());
-				clientDistant.creerPartie(partieServ,camp++);
+				clientDistant.creerPartie(partieServ,camp);
+				camp ++;
 			}
 			hoteDistant.lancerPartie();
 		} catch (NotBoundException | RemoteException e1) {

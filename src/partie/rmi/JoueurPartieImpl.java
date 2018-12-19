@@ -37,6 +37,8 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	private int camp;
 	private int groupeSelectioner;
 	private InterfacePartie interfaceP;
+	private HashMap<Integer, Armee> entites;
+	private boolean estMort;
 
 	private int widthP = VarPartie.WIDTH_PARTIE;
 	private int heightP = VarPartie.HEIGHT_PARTIE;
@@ -57,6 +59,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		System.out.println("Constrution joueur " + camp);
 		this.argent = 1000;
 		this.camp = camp;
+		this.estMort = false;
 		this.images = new Images();
 		this.serveur = serveur;
 		this.plateau = new ImageIcon(getClass().getResource("/space2.jpeg")).getImage();
@@ -230,10 +233,37 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * Methode appelee par le serveur qui met a jour les donnees des armees
 	 * @param entites HashMap<Integer, Armee> : Les armees de tous les joueurs
 	 */
+
 	public void update(HashMap<Integer, Armee> entites) {
 		this.entites = entites;
 	}
 	
+	/*
+	public void boucleAffichage() {
+		estMort = false;
+		long dt = 0;
+		long previousTime = System.currentTimeMillis();
+		long currentTime;
+		float FPSLIMIT = 60;
+		float LIMITEUR = 1000/FPSLIMIT;
+		while (!estMort) {
+			currentTime = System.currentTimeMillis();
+			dt += currentTime - previousTime;
+			// Permet de gérer la fréquence de calcul
+			if (dt > LIMITEUR) { 
+				try {
+					entites = serveur.getEntites();
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+				dt = 0;
+			}
+
+			previousTime = currentTime;
+		}
+	}
+	
+	*/
 	/**
 	 * Donne de l'argent au joueur<li>
 	 * 	Ajoute l'argent<li>

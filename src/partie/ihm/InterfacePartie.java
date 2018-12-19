@@ -241,11 +241,10 @@ public class InterfacePartie  extends JFrame {
 		panCenter.addMouseListener(new PointeurPlateau(this));
 		
 		
-		
 		panGeneral.add(panTop, BorderLayout.NORTH);
 		panGeneral.add(panBot, BorderLayout.SOUTH);
 		panGeneral.add(panCenter, BorderLayout.CENTER);
-		
+
 		this.pack();
 		System.out.println("Constrution interface");
 	}
