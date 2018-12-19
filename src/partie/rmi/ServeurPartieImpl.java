@@ -172,7 +172,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		Defense d = entites.get(camp).getBase().getDefence(menu); 
 		if (d != null)
 			try {
-				joueurs.get(camp).ajouterArgent((int)Math.floor(d.getCout() * VarPartie.REMBOURSEMENT_UNITE));
+				joueurs.get(camp).ajouterArgent((int)Math.floor(d.getCout() * VarPartie.REMBOURSEMENT_DEFENSE));
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}

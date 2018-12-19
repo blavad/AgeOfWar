@@ -4,6 +4,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
@@ -37,12 +38,11 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 		super();
 		this.client = new Client(serveur, pseudo);
 		try {
-			localReg = LocateRegistry.getRegistry(1099);
-			System.out.println("registre deja existant");
-		} catch (RemoteException e) {
 			localReg = LocateRegistry.createRegistry(1099);
-			System.out.println("registre cree");
+		} catch (ExportException e) {
+			System.out.println("registre deja existant");
 		}
+		localReg = LocateRegistry.getRegistry(1099);
 		localReg.rebind(pseudo, this);
 	}
 
