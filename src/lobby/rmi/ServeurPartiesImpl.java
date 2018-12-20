@@ -69,6 +69,8 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 			} catch (RemoteException | NotBoundException e) {
 				deconnect(cl);
 				e.printStackTrace();
+				break; //on break pour eviter une exception quand on itere sur un hashSet que l'on
+					   // modifie pendant l'iteration
 			}
 		}
 	}
@@ -105,12 +107,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 				quitterPartie(cl.getPartie(), cl);
 			} catch (SuppressionPartieException e) {}
 		}
-		try {
-			clients.remove(cl);
-		} catch (ConcurrentModificationException e) {
-			e.printStackTrace();
-
-		}
+		clients.remove(cl);
 		System.out.println("#> Supp client ---> " + cl.getPseudo());
 		notifierClients();
 	}

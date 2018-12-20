@@ -99,7 +99,22 @@ public class Client implements Serializable {
 			else return false;
 		}
 	}
-
+	/*
+	 * On redefinit hashCode pour que si le client est modifie, le hash 
+	 * ne depend que de son pseudo qui est unique, donc on pourra le 
+	 * remove d'un hashSet
+	 */
+	@Override
+	public int hashCode() {
+		int sum = 0;
+		for (int i=0;i<this.getPseudo().length();i++) {
+			char c = this.getIp().charAt(i);
+			sum += c*Math.pow(10, i);
+		}
+		return sum;
+		
+		
+	}
 	@Override
 	public String toString(){
 		return this.pseudo;
