@@ -9,11 +9,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-<<<<<<< HEAD
 import java.util.ConcurrentModificationException;
-=======
 import java.util.ArrayList;
->>>>>>> branch 'master' of https://github.com/davHub/AgeOfWar.git
 import java.util.HashSet;
 
 import lobby.core.Client;
