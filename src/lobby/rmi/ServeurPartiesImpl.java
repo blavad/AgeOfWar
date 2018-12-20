@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import lobby.core.Client;
@@ -60,6 +61,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	private void notifierClients() throws RemoteException {
 		for (Client cl : clients){
 			try {
+				System.out.println(cl.getPseudo() + " " + cl.getIp());
 				Registry clientReg = LocateRegistry.getRegistry(cl.getIp(), 1099);
 				ClientPartie clientDistant = (ClientPartie)clientReg.lookup(cl.getPseudo());
 				clientDistant.notifier(this.parties.getListParties());
@@ -105,6 +107,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 		for (Client client : clients){
 			if (client.equals(cl))
 				clients.remove(client);
+				break; //flemme de faire un tant que avec un Iterator
 		}
 		System.out.println("#> Supp client ---> " + cl.getPseudo());
 		notifierClients();
@@ -129,7 +132,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	/**
 	 * Ajoute un joueur a une partie en attente
 	 * 
-	 * @param partie la partie à rejoindre
+	 * @param partie la partie a rejoindre
 	 * @param client le client qui rejoint la partie
 	 * @throws RemoteException
 	 * @throws PartieCompleteException 
@@ -202,7 +205,6 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 		} catch (NotBoundException | RemoteException e1) {
 			e1.printStackTrace();
 		}
-		
 		// Suppression des joueurs et de la partie
 		for (Client cl : partieServ.getClients()){
 			deconnect(cl);
