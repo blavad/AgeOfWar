@@ -163,13 +163,15 @@ public class Unite extends Entite {
 	 */
 	protected Entite entiteAAttaquer(HashMap<Integer, Armee> entites) {
 		Entite e = null;
-		
+		float dMin = 0;
+		float d;
 		// Parcourt toutes les entites de la partie
 		for (Integer i : entites.keySet()) {
 			// Regarde seulelement les unites des autres camps
-			if (i != this.getCamp()) {
+			if (i != this.getCamp() && !entites.get(i).getBase().estMorte()) {
 				
-				if (aPorteeDe(entites.get(i).getBase(), this)) {
+				d = aPorteeDe(entites.get(i).getBase(), this);
+				if (d != 0) {
 					// Si la base est à portee d'attaque, alors elle devient la cible
 					e = entites.get(i).getBase();
 				}
@@ -177,10 +179,13 @@ public class Unite extends Entite {
 				// Parcourt toutes les unites
 				for (int j = 0; j < entites.get(i).getGroupes().size(); j++) {
 					for (Unite u : entites.get(i).getGroupes().get(j).getUnites()) {
-						if (aPorteeDe(u, this)) {
-							// Si l'unite est à portee d'attaque, alors elle devient la cible 
+						d = aPorteeDe(u, this);
+						if (d != 0 && (dMin == 0 || d <= dMin)) {
+							// Si l'unite cible est la plus proche de cette unite, alors elle devient la cible 
 							// Remarque : les unites sont prioritaires face aux bases
 							e = u;
+							dMin = d;
+							System.out.println("cible");
 						}
 					}
 				}
@@ -207,8 +212,12 @@ public class Unite extends Entite {
 			if (cible.estMorte()) {
 				if (cible instanceof Base) {
 					// Si l'unite tuee est une base
+					try {
+						joueurs.get(cible.getCamp()).meurt();
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
 					
-					//entites.remove(cible.camp);
 				} else 
 					if (cible instanceof Unite) {
 						// Si l'unite tuee est une unite
@@ -231,9 +240,9 @@ public class Unite extends Entite {
 	 * Calcule si l'entite e est à portee d'attaque de l'attaquant u
 	 * @param e Unite : L'entite cible 
 	 * @param u Unite : L'attaquant
-	 * @return vrai si l'attaquant est à portee de tir de la cible et faux sinon
+	 * @return un float non nul si la cible est a portee d'attaque sinon renvoie 0
 	 */
-	protected boolean aPorteeDe(Entite e, Unite u) {
+	protected float aPorteeDe(Entite e, Unite u) {
 		int dx = (int)Math.abs(u.getPosition().x - e.getPosition().x); // Distance selon x de E et U
 		int dy = (int)Math.abs(u.getPosition().y - e.getPosition().y); // Distance selon y de E et U
 		float dMin = u.getPorteeA() + e.getRayonEntite(); // Distance minimum pour que U puisse attaquer E
@@ -242,9 +251,10 @@ public class Unite extends Entite {
 		if (dx <= dMin && dy <= dMin) { 
 			// d : distance entre E et U
 			float d = (float)Math.sqrt(Outils.norme2AB(u.getPosition(), e.getPosition()));
-			return (d <= dMin);
+			if (d <= dMin) return d;
+			else return 0;
 		}
-		else return false;
+		else return 0;
 	}
 	
 	/**

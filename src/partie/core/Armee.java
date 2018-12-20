@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import partie.ihm.InterfacePartie.Menu;
 import partie.rmi.JoueurPartie;
 import partie.rmi.JoueurPartieImpl;
 
@@ -70,15 +71,32 @@ public class Armee implements Serializable {
 		}
 	}
 	
+	public void ajouterUnite(int grp, Unite u) {
+		this.groupes.get(grp).addUnite(u);
+	}
+	public void ajouterDefense(Menu m, Defense d) {
+		this.base.addDef(m, d);
+	}
+	
+	public void supprimerDef(Menu m) {
+		this.base.suppDef(m);
+	}
+	
 	/**
 	 * Supprime l'unité en paramètre de la liste des unités du serveur
-	 * @param u
-	 * 				L'unité à supprimer
+	 * @param u L'unité à supprimer
 	 */
 	public void supprimerUnite(Unite u) {
 		// Parcourt tous les groupes et supprimes U lorsque celle-ci est trouvée
 		for (Groupe g : this.getGroupes()) {
-			g.getUnites().remove(u);
+			g.suppUnite(u);
 		}
+	}
+	
+	public void supprimerToutesUnites() {
+		for (Groupe g : this.getGroupes()) {
+			g.suppToutesUnites();
+		}
+		base.suppToutesDef();
 	}
 }

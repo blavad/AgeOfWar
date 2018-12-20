@@ -129,7 +129,7 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 		} catch (PseudoExistantException e) {
 			DialogBox.error(null, e.getMessage());
 		} catch (NullPointerException e) {
-			DialogBox.info(null, "Triste de savoir que vous nous quittez déjà... ","smiley_triste_150x150.png");
+			DialogBox.info(null, "Triste de savoir que vous nous quittez deja�... ","smiley_triste_150x150.png");
 		}
 	}
 

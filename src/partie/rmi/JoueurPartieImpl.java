@@ -74,6 +74,11 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	public int getCamp() { return this.camp; }
 	public UniteXmlLoader getUniteXmlLoader() { return this.uniteXmlLoader; }
 	public Images getImages() { return this.images; }
+	public boolean estMort() { return this.estMort; }
+	
+	public void meurt() { 
+		this.estMort = true; 
+	}
 	
 	/**
 	 * Creer une unite lorque le bouton associe est presse<li>
@@ -86,25 +91,27 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * @param typeU TypeUnite : Le type d'unite à creer
 	 */
 	public void creerUnite(Menu menu, TypeUnite typeU) { 
-		try {
-			if (Outils.estDefense(typeU)) {
-				if (!serveur.aDefence(camp, menu)) {
-					// Recherche le cout de l'unite cree avec le typeU
+		if (!estMort) {
+			try {
+				if (Outils.estDefense(typeU)) {
+					if (!serveur.aDefence(camp, menu)) {
+						// Recherche le cout de l'unite cree avec le typeU
+						int cout = uniteXmlLoader.getCout(typeU);
+						if (prendreArgent(cout)) {
+							// Si prendreArgent retourne vrai => le transfert a pu se faire 
+							// On signale donc au serveur de creer une nouvelle unite 
+							this.serveur.ajouterDefence(camp, typeU, menu);
+							this.interfaceP.changementDefense(menu, cout);					}
+					}
+				} else {
 					int cout = uniteXmlLoader.getCout(typeU);
 					if (prendreArgent(cout)) {
-						// Si prendreArgent retourne vrai => le transfert a pu se faire 
-						// On signale donc au serveur de creer une nouvelle unite 
-						this.serveur.ajouterDefence(camp, typeU, menu);
-						this.interfaceP.changementDefense(menu, cout);					}
+						this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
+					}
 				}
-			} else {
-				int cout = uniteXmlLoader.getCout(typeU);
-				if (prendreArgent(cout)) {
-					this.serveur.ajouterUnite(camp, typeU, groupeSelectioner);
-				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
 			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -117,11 +124,13 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * @param menu Menu : permet de savoir la defence selectionnee
 	 */
 	public void vendreDefence(Menu menu) {
-		try {
-			this.serveur.supprimerDefence(camp, menu);
-			this.interfaceP.changementDefense(menu, 0);	
-		} catch (RemoteException e) {
-			e.printStackTrace();
+		if (!estMort) {
+			try {
+				this.serveur.supprimerDefence(camp, menu);
+				this.interfaceP.changementDefense(menu, 0);	
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -130,10 +139,12 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * @param i int : nouveau groupe selectionne
 	 */
 	public void selectionneGroupe(int i) {
-		// Change le groupe selectionne
-		this.groupeSelectioner = i;
-		// Previent l'interface que le groupe selectionne a change
-		interfaceP.changementGroupe();
+		if (!estMort) {
+			// Change le groupe selectionne
+			this.groupeSelectioner = i;
+			// Previent l'interface que le groupe selectionne a change
+			interfaceP.changementGroupe();
+		}
 	}
 	
 	/**
@@ -141,12 +152,14 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	 * @param pos Vect2 : nouvelle position
 	 */
 	public void changeObjectifGroupe(int x, int y) {
-		Vect2 ratios = new Vect2((float)interfaceP.getCenterPan().getWidth() / widthP, (float)interfaceP.getCenterPan().getHeight() / heightP);
-		Vect2 pos = new Vect2((float)Math.floor(x / ratios.x), (float)Math.floor(y / ratios.y));
-		try {
-			serveur.changeObjectifGroupe(camp, groupeSelectioner, pos);
-		} catch (RemoteException e) {
-			e.printStackTrace();
+		if (!estMort) {
+			Vect2 ratios = new Vect2((float)interfaceP.getCenterPan().getWidth() / widthP, (float)interfaceP.getCenterPan().getHeight() / heightP);
+			Vect2 pos = new Vect2((float)Math.floor(x / ratios.x), (float)Math.floor(y / ratios.y));
+			try {
+				serveur.changeObjectifGroupe(camp, groupeSelectioner, pos);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -196,16 +209,19 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		// Parcourt toutes armees et dessine les unites 
 		for (Integer i : entites.keySet()) {
 			Armee a = entites.get(i);
-			
-			try {
-				a.draw(g, ratioMin, offSet, images, camp);
-			} catch (ConcurrentModificationException e) {
-				
+			if (!a.getBase().estMorte()) {
+				try {
+					a.draw(g, ratioMin, offSet, images, camp);
+				} catch (ConcurrentModificationException e) {
+					
+				}
 			}
 		}
 		
-		// Dessine un point noir qui represente l'ojectif du groupe selectione
-		drawObjectifSelect(g, entites.get(camp).getGroupes().get(groupeSelectioner - 1), ratioMin, offSet);
+		if (!estMort) {
+			// Dessine un point noir qui represente l'ojectif du groupe selectione
+			drawObjectifSelect(g, entites.get(camp).getGroupes().get(groupeSelectioner - 1), ratioMin, offSet);
+		}
 	}
 	
 	/**

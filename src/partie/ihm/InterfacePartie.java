@@ -571,7 +571,6 @@ public class InterfacePartie  extends JFrame {
 	public JoueurPartieImpl getJoueurP() { return this.joueurP; }
 	
 	
-	
 	//----------------------------------------------------------------
 	// ActionListeners
 	//----------------------------------------------------------------
