@@ -70,14 +70,26 @@ public class Armee implements Serializable {
 			this.getBase().draw(g, ratio, offSet, images, campJoueurImpl);
 		}
 	}
-	
+	/**
+	 * Ajoute une unite dans le groupe designe
+	 * @param grp int : groupe selectionne
+	 * @param u Unite : unite a rajoute dans le groupe
+	 */
 	public void ajouterUnite(int grp, Unite u) {
 		this.groupes.get(grp).addUnite(u);
 	}
+	/**
+	 * Ajoute une defense a l'emplacement selectionne
+	 * @param m Menu : emplacement de defense selectionne
+	 * @param d Defense : defense a rajouter
+	 */
 	public void ajouterDefense(Menu m, Defense d) {
 		this.base.addDef(m, d);
 	}
-	
+	/**
+	 * Enleve la defense a l'emplacement selectionne
+	 * @param m Menu : emplacement selectionne
+	 */
 	public void supprimerDef(Menu m) {
 		this.base.suppDef(m);
 	}
@@ -93,6 +105,9 @@ public class Armee implements Serializable {
 		}
 	}
 	
+	/**
+	 * Supprime toutes les unites mobiles ainsi que les defenses
+	 */
 	public void supprimerToutesUnites() {
 		for (Groupe g : this.getGroupes()) {
 			g.suppToutesUnites();
