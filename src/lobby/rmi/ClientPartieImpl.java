@@ -15,7 +15,7 @@ import lobby.ihm.DialogBox;
 import partie.rmi.*;
 
 /**
- * Le client RMI qui communique avec le serveur central pour avoir accès à la liste de parties
+ * Le client RMI qui communique avec le serveur central pour avoir acces a la liste de parties
  * 
  * @author DHT
  * @version 1.0
@@ -23,7 +23,7 @@ import partie.rmi.*;
 public class ClientPartieImpl extends UnicastRemoteObject implements ClientPartie {
 
 	/**
-	 * Les données du joueur
+	 * Les donnees du joueur
 	 */
 	Client client;
 	Registry localReg;

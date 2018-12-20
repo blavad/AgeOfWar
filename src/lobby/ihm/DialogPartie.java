@@ -59,7 +59,7 @@ public class DialogPartie extends JDialog {
 	 * @param parent la fenetre parent 
 	 * @param title le titre de la boite de dialogue
 	 * @param modal vrai si la boite de dialogue est modal
-	 * @param client le joueur à l'origine de la nouvelle partie
+	 * @param client le joueur a l'origine de la nouvelle partie
 	 */
 	public DialogPartie(JFrame parent, String title, boolean modal, Client client) {
 		super(parent,title, modal);
@@ -75,7 +75,7 @@ public class DialogPartie extends JDialog {
 	 */
 	public void initComponent(){
 		
-		//Icône
+		//Icone
 	    icon = new JLabel(new ImageIcon(getClass().getResource(pathIcon)));
 	    JPanel panIcon = new JPanel();
 	    panIcon.setLayout(new BorderLayout());
@@ -103,11 +103,11 @@ public class DialogPartie extends JDialog {
 	    
 	    // Panel mot de passe
 	    JPanel panMDP = new JPanel();
-	    checkMDP = new JCheckBox("Privée");
+	    checkMDP = new JCheckBox("Privee");
 	    checkMDP.addChangeListener(new ControleurChangement(this));
 	    mdp = new JTextField();
 	    mdp.setPreferredSize(new Dimension(100, 25));
-	    panMDP.setBorder(BorderFactory.createTitledBorder("Partie privée"));
+	    panMDP.setBorder(BorderFactory.createTitledBorder("Partie privee"));
 	    panMDP.add(checkMDP);
 	    panMDP.add(mdp);
 	    

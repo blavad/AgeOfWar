@@ -189,7 +189,7 @@ class JoindrePartieControleur implements ActionListener {
 		} catch (PartieCompleteException e2){
 			DialogBox.error(fenetre.parent,e2.getMessage());
 		} catch (NullPointerException e3){
-			DialogBox.error(fenetre.parent,"Il faut sélectionner une partie avant de la rejoindre !");
+			DialogBox.error(fenetre.parent,"Il faut selectionner une partie avant de la rejoindre !");
 		}
 	}
 }

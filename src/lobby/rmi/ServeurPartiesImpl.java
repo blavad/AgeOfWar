@@ -9,7 +9,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+<<<<<<< HEAD
 import java.util.ConcurrentModificationException;
+=======
+import java.util.ArrayList;
+>>>>>>> branch 'master' of https://github.com/davHub/AgeOfWar.git
 import java.util.HashSet;
 
 import lobby.core.Client;
@@ -61,6 +65,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	private void notifierClients() throws RemoteException {
 		for (Client cl : clients){
 			try {
+				System.out.println(cl.getPseudo() + " " + cl.getIp());
 				Registry clientReg = LocateRegistry.getRegistry(cl.getIp(), 1099);
 				ClientPartie clientDistant = (ClientPartie)clientReg.lookup(cl.getPseudo());
 				clientDistant.notifier(this.parties.getListParties());
@@ -107,6 +112,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 			clients.remove(cl);
 		} catch (ConcurrentModificationException e) {
 			e.printStackTrace();
+
 		}
 		System.out.println("#> Supp client ---> " + cl.getPseudo());
 		notifierClients();
@@ -115,7 +121,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	/**
 	 * Cree une nouvelle partie en attente de joueur
 	 * 
-	 * @param partie la partie à creer
+	 * @param partie la partie a creer
 	 * @throws RemoteException
 	 */
 	@Override
@@ -131,7 +137,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	/**
 	 * Ajoute un joueur a une partie en attente
 	 * 
-	 * @param partie la partie à rejoindre
+	 * @param partie la partie a rejoindre
 	 * @param client le client qui rejoint la partie
 	 * @throws RemoteException
 	 * @throws PartieCompleteException 
@@ -204,7 +210,6 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 		} catch (NotBoundException | RemoteException e1) {
 			e1.printStackTrace();
 		}
-		
 		// Suppression des joueurs et de la partie
 		for (Client cl : partieServ.getClients()){
 			deconnect(cl);

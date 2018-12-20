@@ -160,7 +160,7 @@ class QuitterPartieControleur implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		DialogBox.error(this.fenetre.parent, "Vous allez être supprimé de cette partie");
+		DialogBox.error(this.fenetre.parent, "Vous allez etre supprime de cette partie");
 		try {
 			this.fenetre.parent.serveur.quitterPartie(this.fenetre.parent.client.getPartie(), this.fenetre.parent.client);
 			this.fenetre.parent.fen_choix_partie.creerP.setEnabled(true);

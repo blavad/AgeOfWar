@@ -22,7 +22,7 @@ public class DialogBox {
    		if (!res.equals("")) 
    			return res;
    		else {
-   			return infoPlayer(parent, "Incorrect, réesseyez : ");
+   			return infoPlayer(parent, "Incorrect, reesseyez : ");
    		}
 	}
 	
@@ -38,7 +38,7 @@ public class DialogBox {
 	
 	public static void error(JFrame parent, String message){
 		JOptionPane error_dialog = new JOptionPane();
-		error_dialog.showMessageDialog(parent, "Error : "+ message, "Erreur détectée" , JOptionPane.ERROR_MESSAGE);
+		error_dialog.showMessageDialog(parent, "Error : "+ message, "Erreur detectee" , JOptionPane.ERROR_MESSAGE);
 	}
 
 }
