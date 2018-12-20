@@ -185,7 +185,6 @@ public class Unite extends Entite {
 							// Remarque : les unites sont prioritaires face aux bases
 							e = u;
 							dMin = d;
-							System.out.println("cible");
 						}
 					}
 				}
