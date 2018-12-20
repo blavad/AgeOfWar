@@ -120,7 +120,8 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 				
 				// Met a jour tous les groupes un par un
 				for (Integer i : entites.keySet()) {
-					entites.get(i).update(dt, entites, joueurs);
+					if (!entites.get(i).getBase().estMorte())
+						entites.get(i).update(dt, entites, joueurs);
 				}
 				
 				for (Integer i : joueurs.keySet()) {
@@ -174,7 +175,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	public void ajouterUnite(int camp, TypeUnite typeU, int grpSelect) {
 	
 		Unite u = uniteXmlLoader.createUnite(typeU, camp, entites.get(camp).getBase().getPosition());
-		entites.get(camp).getGroupes().get(grpSelect - 1).addUnite(u); // (grpSelect - 1) car grpSelect commence a  1 (et les listes a 0)
+		entites.get(camp).ajouterUnite(grpSelect - 1, u); // (grpSelect - 1) car grpSelect commence a  1 (et les listes a 0)
 
 	}
 	/**
@@ -186,7 +187,7 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	public void ajouterDefence(int camp, TypeUnite typeU, Menu menu) {
 		
 		Defense d = (Defense)uniteXmlLoader.createUnite(typeU, camp, entites.get(camp).getBase().getPosition());
-		entites.get(camp).getBase().addDef(menu, d);
+		entites.get(camp).ajouterDefense(menu, d);
 		
 	}
 	/**
@@ -194,26 +195,17 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 */
 	public void supprimerDefence(int camp, Menu menu) {
 		Defense d = entites.get(camp).getBase().getDefence(menu); 
-		if (d != null)
+		if (d != null) {
 			try {
 				joueurs.get(camp).ajouterArgent((int)Math.floor(d.getCout() * VarPartie.REMBOURSEMENT_DEFENSE));
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
-		entites.get(camp).getBase().suppDef(menu);
-	}
-	
-	/**
-	 * Supprime l'unite en parametre de la liste des unites du serveur
-	 * @param u Unite : L'unite e supprimer
-	 */
-	private void supprimerUnite(Unite u) {
-		//  Parcourt tous les groupes et supprimes U lorsque celle-ci est trouvee
-		for (Groupe g : entites.get(u.getCamp()).getGroupes()) {
-			g.getUnites().remove(u);
+			entites.get(camp).supprimerDef(menu);
 		}
 	}
-
+	
+	
 	/**
 	 * Renvoie vrai si une defense est equipee a l'emplacement selectionne et faux sinon
 	 */

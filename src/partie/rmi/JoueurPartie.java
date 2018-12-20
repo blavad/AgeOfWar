@@ -11,4 +11,5 @@ public interface JoueurPartie extends Remote {
 	void update(HashMap<Integer, Armee> entites) throws RemoteException;
 	void ajouterArgent(int arg) throws RemoteException;
 	void start() throws RemoteException;
+	void meurt() throws RemoteException;
 }

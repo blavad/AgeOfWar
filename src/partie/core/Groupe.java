@@ -32,8 +32,10 @@ public class Groupe implements Serializable {
 		this.unites.add(u);
 	}
 	public void suppUnite(Unite u) {
-		int i = this.unites.indexOf(u);
-		this.unites.remove(i);
+		this.unites.remove(u);
+	}
+	public void suppToutesUnites() {
+		this.unites.removeAll(unites);
 	}
 	
 	/**

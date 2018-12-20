@@ -16,25 +16,30 @@ import partie.rmi.JoueurPartieImpl;
 
 public class Base extends Entite {
 	
-	private HashMap<Menu, Defense> defences;
+	private HashMap<Menu, Defense> defenses;
 
 	public Base(Vect2 pos, int camp) {
 		super(pos, VarPartie.VIE_BASE, camp, VarPartie.RAYON_BASE);
-		defences = new HashMap<Menu, Defense>();
+		defenses = new HashMap<Menu, Defense>();
 		setImageName("Vaisseau0");
 	}
 	
 	public void addDef(Menu menu, Defense def) {
-		if (!defences.containsKey(menu)) defences.put(menu, def);
-		else defences.replace(menu, def);
+		if (!defenses.containsKey(menu)) defenses.put(menu, def);
+		else defenses.replace(menu, def);
 	}
 	
 	public void suppDef(Menu menu) {
-		defences.remove(menu);
+		defenses.remove(menu);
+	}
+	public void suppToutesDef() {
+		for (Menu m : defenses.keySet()) {
+			defenses.remove(m);
+		}
 	}
 	
 	public Defense getDefence(Menu menu) {
-		if (defences.containsKey(menu)) return defences.get(menu);
+		if (defenses.containsKey(menu)) return defenses.get(menu);
 		else return null;
 	}
 	
@@ -47,8 +52,8 @@ public class Base extends Entite {
 	 */
 	public void update(float dt, HashMap<Integer, Armee> entites, HashMap<Integer, JoueurPartie> joueurs) {
 		
-		for (Menu m : defences.keySet()) {
-			defences.get(m).update(dt, entites, joueurs); // update l'unite (cooldown, ...)
+		for (Menu m : defenses.keySet()) {
+			defenses.get(m).update(dt, entites, joueurs); // update l'unite (cooldown, ...)
 		}
 		
 	}
@@ -97,14 +102,14 @@ public class Base extends Entite {
 		
 
 		//Dessine les defences
-		if (defences.containsKey(Menu.DEF1)) {
-			defences.get(Menu.DEF1).draw(g, ratio, offSet, new Vect2(0, - (int)Math.floor(15 * ratio)), images, campJoueurImpl);
+		if (defenses.containsKey(Menu.DEF1)) {
+			defenses.get(Menu.DEF1).draw(g, ratio, offSet, new Vect2(0, - (int)Math.floor(15 * ratio)), images, campJoueurImpl);
 		}
-		if (defences.containsKey(Menu.DEF2)) {
-			defences.get(Menu.DEF2).draw(g, ratio, offSet, new Vect2( (int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
+		if (defenses.containsKey(Menu.DEF2)) {
+			defenses.get(Menu.DEF2).draw(g, ratio, offSet, new Vect2( (int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
 		}
-		if (defences.containsKey(Menu.DEF3)) {
-			defences.get(Menu.DEF3).draw(g, ratio, offSet, new Vect2(-(int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
+		if (defenses.containsKey(Menu.DEF3)) {
+			defenses.get(Menu.DEF3).draw(g, ratio, offSet, new Vect2(-(int)Math.floor(12 * ratio), (int)Math.floor(10 * ratio)), images, campJoueurImpl);
 		}
 		
 		
