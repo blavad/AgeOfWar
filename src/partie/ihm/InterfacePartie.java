@@ -15,9 +15,20 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.awt.Image;
 import java.awt.RenderingHints;
 
+import javax.print.DocFlavor.URL;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,16 +38,21 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import partie.core.Outils;
 import partie.core.TypeUnite;
 import partie.core.VarPartie;
 import partie.rmi.JoueurPartieImpl;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 public class InterfacePartie  extends JFrame {
 	
 	private JoueurPartieImpl joueurP;
 	private Menu currentMenu;
 	private Color color;
+	private Clip clip;
 
 	private JPanel panGeneral;
 	
@@ -59,6 +75,8 @@ public class InterfacePartie  extends JFrame {
 	//----------------------------------------------------------------
 	// Constantes
 	//----------------------------------------------------------------
+	// Chemin musique
+	private String pathMusique = "/SpaceOfWar.wav";
 	// Chemins images
 	private String pathFondMenu1 = "/Bordure1.jpg";
 	private String pathFondMenu2 = "/Bordure2.jpg";
@@ -111,7 +129,25 @@ public class InterfacePartie  extends JFrame {
 		this.color = Outils.defineColor(joueurP.getCamp());
 		this.setIconImage(new ImageIcon(getClass().getResource(pathIcon)).getImage());
 		
-		this.setTitle("Age Of War");
+		
+		
+		java.net.URL url = getClass().getResource(pathMusique);
+		
+		try {
+			clip = AudioSystem.getClip();
+			try(AudioInputStream audioIn = AudioSystem.getAudioInputStream(url)) {
+				clip.open(audioIn);
+			} catch (IOException | UnsupportedAudioFileException e) {
+				e.printStackTrace();
+			}
+
+			clip.start();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+		
+		
+		this.setTitle("Space Of War");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //ferme le programme quand on ferme la fenetre
 		this.setLocationRelativeTo(null); //place la fenetre au milieu de l'ecran
 		this.setVisible(true);
@@ -129,11 +165,15 @@ public class InterfacePartie  extends JFrame {
 		panTop.setLayout(new BorderLayout());
 		
 		//Label de l'argent
+		JPanel panTop2 = new JPanel();
+		panTop2.setLayout(new BorderLayout());
 		labArgent = new JLabel(String.format("Argent : %d", joueurP.getArgent()));
-		labArgent.setForeground(Color.WHITE);
+		labArgent.setForeground(Color.BLACK);
 		labArgent.setHorizontalAlignment(labArgent.CENTER);
-		labArgent.setPreferredSize(new Dimension(prefWidth, prefHeightLabelArgent));
-		panTop.add(labArgent, BorderLayout.CENTER);
+		panTop2.setPreferredSize(new Dimension(prefWidth, prefHeightLabelArgent));
+		panTop2.add(labArgent, BorderLayout.CENTER);
+		panTop2.add(buttonWithLabelFond(pathFondBUnite, "Musique", Color.WHITE, 90, 20, new ButtonMusique(this)), BorderLayout.WEST);
+		panTop.add(panTop2, BorderLayout.CENTER);
 		
 		//Panel affichant le camp du joueur
 		JPanel panCamp = new PanelImageFond(pathFondMenu3);
@@ -226,6 +266,7 @@ public class InterfacePartie  extends JFrame {
 		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "1", Color.WHITE, prefWidthBGroupe, prefHeightBGroupe, new ButtonGroupe(this, 1)));
 		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "2", Color.WHITE, prefWidthBGroupe, prefHeightBGroupe, new ButtonGroupe(this, 2)));
 		panGroupeA.add(buttonWithLabelFond(pathFondBGroupe, "3", Color.WHITE, prefWidthBGroupe, prefHeightBGroupe, new ButtonGroupe(this, 3)));	
+		
 		panGroupe.add(panGroupeA, BorderLayout.CENTER);
 		
 		panBot.add(panGroupe, BorderLayout.NORTH);
@@ -569,6 +610,10 @@ public class InterfacePartie  extends JFrame {
 
 	public Menu getCurrentMenu() { return this.currentMenu; }
 	public JoueurPartieImpl getJoueurP() { return this.joueurP; }
+	public void muteMusique() {
+		if (clip.isRunning()) clip.stop();
+		else clip.start();
+	}
 	
 	
 	//----------------------------------------------------------------
@@ -689,6 +734,21 @@ public class InterfacePartie  extends JFrame {
 		}
 
 		
+	}
+	
+	private class ButtonMusique implements ActionListener {
+		
+		private InterfacePartie interfaceP;
+		
+		ButtonMusique (InterfacePartie i) {
+			this.interfaceP = i;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			interfaceP.muteMusique();
+		}
 	}
 
 }

@@ -47,7 +47,7 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 	}
 
 	/**
-	 * Notifie le clients de modifications dans la liste de partie
+	 * Notifie le clients des modifications dans la liste de partie
 	 * 
 	 */
 	@Override
