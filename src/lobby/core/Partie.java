@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
- * Classe qui représente une partie en attente 
+ * Classe qui represente une partie en attente 
  * 
  * @author DHT
  * @version 1.0
@@ -58,7 +58,7 @@ public class Partie implements Serializable {
 		this.privee = true;
 	}
 	
-	/** Ajoute un joueur à la partie 
+	/** Ajoute un joueur a la partie 
 	 * 
 	 * @param c Le joueur a ajouter
 	 */
@@ -66,7 +66,7 @@ public class Partie implements Serializable {
 		this.clients.add(c);
 	}
 	
-	/** Supprime un joueur à la partie 
+	/** Supprime un joueur de la partie 
 	 * 
 	 * @param c Le joueur a supprimer
 	 */
@@ -76,7 +76,7 @@ public class Partie implements Serializable {
 	
 	/** Verifie si le mot de passe est correct
 	 * 
-	 * @param m mot de passe à vérifier
+	 * @param m mot de passe a verifier
 	 * @return vrai si le mor de passe est correct
 	 */
 	public boolean verifierMDP(String m){

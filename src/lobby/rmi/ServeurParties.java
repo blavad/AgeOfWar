@@ -36,7 +36,7 @@ public interface ServeurParties extends Remote {
 	/**
 	 * Cree une nouvelle partie en attente de joueur
 	 * 
-	 * @param partie la partie à creer
+	 * @param partie la partie a creer
 	 * @throws RemoteException
 	 * @throws {@link PartieExistanteException}
 	 */
@@ -45,7 +45,7 @@ public interface ServeurParties extends Remote {
 	/**
 	 * Ajoute un joueur a une partie en attente
 	 * 
-	 * @param partie la partie à rejoindre
+	 * @param partie la partie a rejoindre
 	 * @param client le client qui rejoint la partie
 	 * @throws RemoteException
 	 * @throws {@link PartieCompleteException}

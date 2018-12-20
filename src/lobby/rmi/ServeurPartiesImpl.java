@@ -116,7 +116,7 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 	/**
 	 * Cree une nouvelle partie en attente de joueur
 	 * 
-	 * @param partie la partie à creer
+	 * @param partie la partie a creer
 	 * @throws RemoteException
 	 */
 	@Override
