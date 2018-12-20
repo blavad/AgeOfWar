@@ -98,6 +98,24 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		entites.put(camp, a);
 	}
 	
+	public void suppJoueurImpl(int camp) {
+		if (camp == 1) {
+			for (Integer i : joueurs.keySet()) {
+				try {
+					if (i != 1) {
+						//joueurs.get(i).quitterPartie();
+						joueurs.get(i).decoForcee();
+					}
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		joueurs.remove(camp);
+		entites.get(camp).getBase().tuer();
+		entites.get(camp).supprimerToutesUnites();
+	}
+	
 	/**
 	 * Lance la boucle du jeu<li>
 	 *  Gere les deplacements des unites<li>
@@ -105,13 +123,14 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 	 */
 	
 	public void bouclePartie() {
-		finPartie = true;
+		finPartie = false;
 		long dt = 0;
 		long previousTime = System.currentTimeMillis();
 		long currentTime;
 		float FPSLIMIT = 40;
 		float LIMITEUR = 1000/FPSLIMIT;
-		while (finPartie) {
+		
+		while (!finPartie) {
 			
 			currentTime = System.currentTimeMillis();
 			dt += currentTime - previousTime;
@@ -138,8 +157,42 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		
 			previousTime = currentTime;
 			
+			finPartie = (nbrSurvivant() == 1);
 		}
 		
+		if (nbrSurvivant() == 1) {
+			int gagnant = joueurGagnant();
+			for (Integer i : joueurs.keySet()) {
+				try {
+					joueurs.get(i).finPartie(gagnant);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	
+	private int nbrSurvivant() {
+		int joueurVivant = 0;
+		
+		for (Integer i : entites.keySet()) {
+			if (!entites.get(i).getBase().estMorte())
+				joueurVivant++;
+		}
+		
+		return joueurVivant;
+	}
+	
+	private int joueurGagnant() {
+		int joueurGagnant = 0;
+		
+		for (Integer i : entites.keySet()) {
+			if (!entites.get(i).getBase().estMorte())
+				joueurGagnant = i;
+		}
+		
+		return joueurGagnant;
 	}
 	
 	private class BoucleWorker extends SwingWorker<Void,Void>{
@@ -150,10 +203,17 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 		}
 	}
 	
-	public void startPartie() {
+	public void initPartie() {
 		initialiserPartie();
-
-		
+		System.out.println("initPartie");
+		try {
+			joueurs.get(1).pret();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void startPartie() {
 		for (Integer j : joueurs.keySet()) {
 			try {
 				joueurs.get(j).start();
@@ -162,7 +222,6 @@ public class ServeurPartieImpl extends UnicastRemoteObject implements ServeurPar
 			}
 		}
 		
-
 		BoucleWorker boucleWorker = new BoucleWorker();
 		boucleWorker.execute();
 	}

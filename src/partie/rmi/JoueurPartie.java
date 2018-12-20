@@ -12,4 +12,8 @@ public interface JoueurPartie extends Remote {
 	void ajouterArgent(int arg) throws RemoteException;
 	void start() throws RemoteException;
 	void meurt() throws RemoteException;
+	void pret() throws RemoteException;
+	void finPartie(int joueurGagnant) throws RemoteException;
+	void quitterPartie() throws RemoteException;
+	void decoForcee() throws RemoteException;
 }

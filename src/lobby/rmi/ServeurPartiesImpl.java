@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 
 import lobby.core.Client;
@@ -102,9 +103,10 @@ public class ServeurPartiesImpl extends UnicastRemoteObject implements ServeurPa
 				quitterPartie(cl.getPartie(), cl);
 			} catch (SuppressionPartieException e) {}
 		}
-		for (Client client : clients){
-			if (client.equals(cl))
-				clients.remove(client);
+		try {
+			clients.remove(cl);
+		} catch (ConcurrentModificationException e) {
+			e.printStackTrace();
 		}
 		System.out.println("#> Supp client ---> " + cl.getPseudo());
 		notifierClients();

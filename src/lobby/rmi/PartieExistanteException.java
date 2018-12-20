@@ -13,6 +13,6 @@ public class PartieExistanteException extends Exception {
 	 * @param n le nom de la partie
 	 */
 	public PartieExistanteException(String n){
-		super(n +" est un super nom de partie.\n Malheuresement il est déjà utilisé.");
+		super(n +" est un super nom de partie.\n Malheuresement il est deja utilise.");
 	}
 }

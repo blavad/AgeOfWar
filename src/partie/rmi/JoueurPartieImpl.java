@@ -3,6 +3,8 @@ package partie.rmi;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -19,8 +21,10 @@ import partie.core.TypeUnite;
 import partie.core.UniteXmlLoader;
 import partie.core.VarPartie;
 import partie.core.Vect2;
+import partie.ihm.FenetreDeco;
 import partie.ihm.InterfacePartie;
 import partie.ihm.InterfacePartie.Menu;
+import sun.awt.WindowClosingListener;
 
 public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurPartie {
 	
@@ -29,7 +33,7 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	private UniteXmlLoader uniteXmlLoader;
 	
 	private Thread boucleAffichage;
-	
+	private boolean finPartie = false;
 	private int argent;
 	private int camp;
 	private int groupeSelectioner;
@@ -62,9 +66,10 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		this.plateau = new ImageIcon(getClass().getResource("/space2.jpeg")).getImage();
 		this.uniteXmlLoader = new UniteXmlLoader();
 		this.interfaceP = new InterfacePartie(this);
+		this.interfaceP.addWindowListener(new FermetureFenetre(this));
 		selectionneGroupe(1); // Initialise le groupe selectionne à 1
 		entites = new HashMap<Integer, Armee>();
-	
+
 		boucleAffichage = new Thread(new BoucleAffichage(this));
 		
 	}
@@ -75,9 +80,14 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	public UniteXmlLoader getUniteXmlLoader() { return this.uniteXmlLoader; }
 	public Images getImages() { return this.images; }
 	public boolean estMort() { return this.estMort; }
+	public void setFinPartie(boolean b) { this.finPartie = b; }
+	public ServeurPartie getServeur() { return this.serveur; }
 	
 	public void meurt() { 
 		this.estMort = true; 
+	}
+	public void pret() {
+		this.interfaceP.pret();
 	}
 	
 	/**
@@ -161,6 +171,33 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void quitterPartie() {
+		try {
+			serveur.suppJoueurImpl(camp);
+			finPartie = true;
+			System.out.println("quitte");
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void decoForcee() {
+		System.out.println("deco");
+		try {
+			serveur.suppJoueurImpl(camp);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		finPartie = true;
+		interfaceP.dispose();
+		new FenetreDeco();
+	}
+	
+	public void finPartie(int joueurGagnant) {
+		finPartie = true;
+		interfaceP.finPartie(joueurGagnant);
 	}
 	
 	/**
@@ -286,39 +323,39 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	}
 	
 	public void start() {
+		interfaceP.muteMusique();
 		boucleAffichage.start();
 	}
 	
 	
 	public void boucleAffichage() {
-		boolean finPartie = false;
 		long dt = 0;
 		long previousTime = System.currentTimeMillis();
 		long currentTime;
 		float FPSLIMIT = 30;
 		float LIMITEUR = 1000/FPSLIMIT;
 		
-		
-		while (!finPartie) {
 
-			/*if (!entiteUpdate) {
-				entites = entitesUpdate;
-				entiteUpdate = true;
-			}*/
-			
+		while (!finPartie) {
 			currentTime = System.currentTimeMillis();
 			dt += currentTime - previousTime;
+			//System.out.println(dt);
+			
 			// Permet de gerer la freuence de calcul
 			if (dt > LIMITEUR && entites.values().size() > 0) { 
-				
 				this.draw(interfaceP.getCenterPan().getGraphics(), entites);
 				
 				dt = 0;
 			}
-
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			previousTime = currentTime;
 			
 		}
+		
 	}
 
 	private class BoucleAffichage implements Runnable {
@@ -331,7 +368,59 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 
 		@Override
 		public void run() {
+			joueur.setFinPartie(false);
 			joueur.boucleAffichage();
+		}
+		
+	}
+	
+	private class FermetureFenetre implements WindowListener {
+
+		JoueurPartieImpl joueur;
+		
+		public FermetureFenetre(JoueurPartieImpl joueur) {
+			this.joueur = joueur;
+		}
+
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+			
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			joueur.quitterPartie();
+			
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}

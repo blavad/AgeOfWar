@@ -86,7 +86,7 @@ public class ClientPartieImpl extends UnicastRemoteObject implements ClientParti
 		try {
 			Registry hoteReg = LocateRegistry.getRegistry();
 			ServeurPartie serveur = (ServeurPartie) hoteReg.lookup("hote");
-			serveur.startPartie();
+			serveur.initPartie();
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
 		}

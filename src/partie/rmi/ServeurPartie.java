@@ -16,7 +16,9 @@ public interface ServeurPartie extends Remote {
 	void supprimerDefence(int camp, Menu menu)throws RemoteException;
 	boolean aDefence(int camp, Menu menu) throws RemoteException;
 	void changeObjectifGroupe(int camp, int grpSelect, Vect2 pos) throws RemoteException;
+	void initPartie() throws RemoteException;
 	void startPartie() throws RemoteException;
 	HashMap<Integer, Armee> getEntites() throws RemoteException;
+	void suppJoueurImpl(int camp) throws RemoteException;
 }
 

@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.rmi.RemoteException;
 import java.awt.Image;
 import java.awt.RenderingHints;
 
@@ -54,6 +55,8 @@ public class InterfacePartie  extends JFrame {
 	private Color color;
 	private Clip clip;
 
+	private JButton buttonPret;
+	private JLabel labFinPartie;
 	private JPanel panGeneral;
 	
 	private JPanel panTop;
@@ -117,7 +120,7 @@ public class InterfacePartie  extends JFrame {
 
 	private Font font8 = new Font("Arial",Font.BOLD,8);
 	private Font font10 = new Font("Arial",Font.BOLD,10);
-	private Font font12 = new Font("Arial",Font.BOLD,12);
+	private Font font20 = new Font("Arial",Font.BOLD,20);
 	
 	/**
 	 * Constructeur de l'interface graphique<li>
@@ -127,8 +130,8 @@ public class InterfacePartie  extends JFrame {
 	public InterfacePartie(JoueurPartieImpl j) {
 		this.joueurP = j;
 		this.color = Outils.defineColor(joueurP.getCamp());
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setIconImage(new ImageIcon(getClass().getResource(pathIcon)).getImage());
-		
 		
 		
 		java.net.URL url = getClass().getResource(pathMusique);
@@ -140,15 +143,12 @@ public class InterfacePartie  extends JFrame {
 			} catch (IOException | UnsupportedAudioFileException e) {
 				e.printStackTrace();
 			}
-
-			clip.start();
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 		}
 		
 		
 		this.setTitle("Space Of War");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //ferme le programme quand on ferme la fenetre
 		this.setLocationRelativeTo(null); //place la fenetre au milieu de l'ecran
 		this.setVisible(true);
 		
@@ -280,7 +280,15 @@ public class InterfacePartie  extends JFrame {
 		panCenter.setPreferredSize(new Dimension(prefWidth, prefHeightPanCenter));
 		panCenter.setBackground(Color.BLACK);
 		panCenter.addMouseListener(new PointeurPlateau(this));
-		
+		panCenter.setLayout(new BorderLayout());
+		buttonPret = buttonWithLabelFond(pathFondBUnite, "Pret?", Color.WHITE, 100, 40, new ButtonPret(this));
+		buttonPret.setVisible(false);
+		panCenter.add(buttonPret, BorderLayout.NORTH);
+		labFinPartie = new JLabel();
+		labFinPartie.setFont(font20);
+		labFinPartie.setText("");
+		labFinPartie.setHorizontalAlignment(labFinPartie.CENTER);
+		panCenter.add(labFinPartie, BorderLayout.CENTER);
 		
 		panGeneral.add(panTop, BorderLayout.NORTH);
 		panGeneral.add(panBot, BorderLayout.SOUTH);
@@ -485,7 +493,19 @@ public class InterfacePartie  extends JFrame {
 	
 	public JPanel getCenterPan() { return this.panCenter; }
 	
+	public void pret() {
+		buttonPret.setVisible(true);
+	}
 	
+	public void pretPush() {
+		buttonPret.setVisible(false);
+	} 
+	
+	public void finPartie(int gagnant) {
+		labFinPartie.setForeground(Outils.defineColor(gagnant));
+		labFinPartie.setText("Le Joueur " + gagnant + " a gagne!!");
+		this.repaint();
+	}
 	
 	/**
 	 * Affiche le menu selectionne 
@@ -631,7 +651,6 @@ public class InterfacePartie  extends JFrame {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			interfaceP.switchMenu(menu);
 		}
 	}
@@ -750,7 +769,32 @@ public class InterfacePartie  extends JFrame {
 			interfaceP.muteMusique();
 		}
 	}
-
+	
+	public void dispose() {
+		this.clip.close();
+		super.dispose();
+	}
+	
+	
+	private class ButtonPret implements ActionListener {
+		
+		private InterfacePartie interfaceP;
+		
+		ButtonPret (InterfacePartie i) {
+			this.interfaceP = i;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				interfaceP.pretPush();
+				interfaceP.getJoueurP().getServeur().startPartie();
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
 }
 
 

@@ -214,6 +214,7 @@ public class Unite extends Entite {
 					// Si l'unite tuee est une base
 					try {
 						joueurs.get(cible.getCamp()).meurt();
+						entites.get(cible.getCamp()).supprimerToutesUnites();
 					} catch (RemoteException e) {
 						e.printStackTrace();
 					}

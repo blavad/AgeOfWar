@@ -13,6 +13,6 @@ public class PseudoExistantException extends Exception {
 	 * @param n le nom du joueur
 	 */
 	public PseudoExistantException(String n){
-		super("Ce pseudo est déjà utilisé.");
+		super("Ce pseudo est deja utilise.");
 	}
 }
