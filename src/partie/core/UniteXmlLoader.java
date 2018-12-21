@@ -39,7 +39,15 @@ public class UniteXmlLoader {
 	       e.printStackTrace();
 	    }
 	}
-	
+	/**
+	 * Creer une unite grace aux donnees recueillies dans le fichier xml<li>
+	 *  Lis les information suivant typeU<li>
+	 *  Initialise une unite avec ces infos
+	 * @param typeU TypeUnite : type d'unite a creer
+	 * @param camp int : Camp de l'unite creee
+	 * @param pos Vect2 : position de l'unite creee
+	 * @return l'unite voulue
+	 */
 	public Unite createUnite(TypeUnite typeU, int camp, Vect2 pos) {
 		if (!Outils.estDefense(typeU)) {
 			Node u = Outils.getChild(typeU.toString(), root);
@@ -82,7 +90,11 @@ public class UniteXmlLoader {
 		
 	}
 	
-	
+	/**
+	 * Donne le prix de l'unite voulue
+	 * @param typeU type de l'unite 
+	 * @return le cout de cette unite
+	 */
 	public int getCout(TypeUnite typeU) {
 		Node u = Outils.getChild(typeU.toString(), root);
 		if (u != null) {

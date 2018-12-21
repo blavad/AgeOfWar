@@ -45,6 +45,9 @@ public abstract class Entite implements Serializable {
 	public void setImageName(String name) {
 		imageName = name;
 	}
+	/**
+	 * Met la vie de l'entite a 0
+	 */
 	public void tuer() { this.vie = 0; }
 	
 	/**

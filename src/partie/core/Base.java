@@ -18,20 +18,36 @@ public class Base extends Entite {
 	
 	private HashMap<Menu, Defense> defenses;
 
+	/**
+	 * Constructeur de la base
+	 * @param pos Vect2 : position de la base
+	 * @param camp int : camp de la base
+	 */
 	public Base(Vect2 pos, int camp) {
 		super(pos, VarPartie.VIE_BASE, camp, VarPartie.RAYON_BASE);
 		defenses = new HashMap<Menu, Defense>();
 		setImageName("Vaisseau0");
 	}
 	
+	/**
+	 * Ajoute une defense a l'emplacement selectionne
+	 * @param menu Menu : emplacement
+	 * @param def : Defense : def a placer
+	 */
 	public void addDef(Menu menu, Defense def) {
 		if (!defenses.containsKey(menu)) defenses.put(menu, def);
 		else defenses.replace(menu, def);
 	}
-	
+	/**
+	 * Supprime la defense de l'emplacement selectionne
+	 * @param menu Menu : emplacement de defense
+	 */
 	public void suppDef(Menu menu) {
 		defenses.remove(menu);
 	}
+	/**
+	 * Supprime toutes les defenses de la base
+	 */
 	public void suppToutesDef() {
 		for (Menu m : defenses.keySet()) {
 			defenses.remove(m);

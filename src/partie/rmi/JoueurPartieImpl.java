@@ -83,9 +83,15 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 	public void setFinPartie(boolean b) { this.finPartie = b; }
 	public ServeurPartie getServeur() { return this.serveur; }
 	
+	/**
+	 * Met la variable estMort du joueur a true
+	 */
 	public void meurt() { 
 		this.estMort = true; 
 	}
+	/**
+	 * Affiche le bouton pret sur l'interface
+	 */
 	public void pret() {
 		this.interfaceP.pret();
 	}
@@ -173,6 +179,12 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		}
 	}
 	
+	/**
+	 * Fonction appelee lorsque le joueur appuie sur la croix rouge de la fenetre<li>
+	 *  Le supprime du serveur<li>
+	 *  Arrete la boucle d'affichage
+	 *  Arrete le programme
+	 */
 	public void quitterPartie() {
 		try {
 			serveur.suppJoueurImpl(camp);
@@ -182,7 +194,13 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Fonction appelee lorsque l'hote ferme sa partie<li>
+	 *  Supprime le joueur du serveur<li>
+	 *  Arrete la boucle d'affichage<li>
+	 *  Ferme l'interface de la partie<li>
+	 *  Lance la fenetre de deconnection
+	 */
 	public void decoForcee() {
 		System.out.println("deco");
 		try {
@@ -194,7 +212,11 @@ public class JoueurPartieImpl extends UnicastRemoteObject implements JoueurParti
 		interfaceP.dispose();
 		new FenetreDeco();
 	}
-	
+	/**
+	 * Fonction appelee lorsque la partie est fini<li>
+	 *  Arrete la boucle d'affichage<li>
+	 *  Demande a l'interface d'afficher le nom du gagnant
+	 */
 	public void finPartie(int joueurGagnant) {
 		finPartie = true;
 		interfaceP.finPartie(joueurGagnant);

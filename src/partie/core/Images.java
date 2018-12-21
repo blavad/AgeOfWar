@@ -9,6 +9,10 @@ public class Images {
 	
 	private HashMap<String, Image> images;
 	
+	/**
+	 * Constructeur Images<li>
+	 *  charge toutes les images du jeu
+	 */
 	public Images() {
 		images = new HashMap<String, Image>();
 		images.put("Vaisseau0", new ImageIcon(getClass().getResource("/" + "Vaisseau0.png")).getImage());
