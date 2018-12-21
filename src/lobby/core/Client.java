@@ -112,8 +112,6 @@ public class Client implements Serializable {
 			sum += c*Math.pow(10, i);
 		}
 		return sum;
-		
-		
 	}
 	@Override
 	public String toString(){
