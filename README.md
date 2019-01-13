@@ -1,3 +1,3 @@
 # AgeOfWar
 
-![alt text](https://github.com/davHub/AgeOfWar/blob/master/res/age-of-war.jpg)
+![alt text](https://github.com/davHub/AgeOfWar/blob/master/res/SOF.png)
